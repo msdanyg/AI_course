@@ -1,0 +1,8 @@
+{
+  "enabledMcpjsonServers": [
+    "obsidian-semantic",
+    "smart-connections",
+    "granola-mcp"
+  ],
+  "enableAllProjectMcpServers": true
+}
