@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solo Pilot to Squadron Leader | ActivTrak GenAI Training</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sofia+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --dark-navy: #14203F;
+            --medium-navy: #19316A;
+            --blue: #1657A0;
+            --teal: #2ED4B5;
+            --yellow: #FFC83B;
+            --white: #FFFFFF;
+            --light-gray: #E5E7EB;
+            --bg-light: #F8FAFC;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Sofia Sans', sans-serif;
+            background: var(--bg-light);
+            color: var(--dark-navy);
+            line-height: 1.6;
+        }
+
+        .hero {
+            background: linear-gradient(135deg, var(--dark-navy) 0%, var(--medium-navy) 50%, var(--blue) 100%);
+            color: white;
+            padding: 4rem 2rem 3rem;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.5px;
+        }
+
+        .hero .subtitle {
+            font-size: 1.2rem;
+            font-weight: 300;
+            opacity: 0.9;
+            margin-bottom: 1.5rem;
+        }
+
+        .hero .badge {
+            display: inline-block;
+            background: var(--teal);
+            color: var(--dark-navy);
+            padding: 0.4rem 1.2rem;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            letter-spacing: 0.5px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem 4rem;
+        }
+
+        .section-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--blue);
+            margin-top: 2.5rem;
+            margin-bottom: 0.75rem;
+            padding-left: 0.25rem;
+        }
+
+        .module-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .module-card {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            background: white;
+            border-radius: 10px;
+            padding: 1rem 1.25rem;
+            text-decoration: none;
+            color: var(--dark-navy);
+            border: 1px solid var(--light-gray);
+            transition: all 0.2s ease;
+        }
+
+        .module-card:hover {
+            border-color: var(--teal);
+            box-shadow: 0 4px 16px rgba(46, 212, 181, 0.15);
+            transform: translateY(-1px);
+        }
+
+        .module-number {
+            flex-shrink: 0;
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            background: linear-gradient(135deg, var(--medium-navy), var(--blue));
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+
+        .module-number.bonus {
+            background: linear-gradient(135deg, var(--teal), #1aa88e);
+            color: var(--dark-navy);
+            font-size: 0.65rem;
+            letter-spacing: 0.5px;
+        }
+
+        .module-info { flex: 1; }
+
+        .module-title {
+            font-weight: 600;
+            font-size: 1rem;
+            line-height: 1.3;
+        }
+
+        .module-desc {
+            font-size: 0.8rem;
+            color: #6B7280;
+            margin-top: 0.15rem;
+        }
+
+        .module-arrow {
+            flex-shrink: 0;
+            color: var(--light-gray);
+            transition: color 0.2s;
+        }
+
+        .module-card:hover .module-arrow { color: var(--teal); }
+
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            color: #9CA3AF;
+            font-size: 0.8rem;
+        }
+
+        .no-module {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        @media (max-width: 640px) {
+            .hero h1 { font-size: 1.75rem; }
+            .hero .subtitle { font-size: 1rem; }
+            .container { padding: 1.5rem 1rem 3rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="hero">
+        <h1>Solo Pilot to Squadron Leader</h1>
+        <p class="subtitle">Practical AI for Knowledge Work</p>
+        <span class="badge">14 MODULES + BONUS</span>
+    </div>
+
+    <div class="container">
+        <div class="section-label">Foundation</div>
+        <div class="module-grid">
+            <a href="Module%200%20-%20Pre-Flight%20Check/index.html" class="module-card">
+                <div class="module-number">0</div>
+                <div class="module-info">
+                    <div class="module-title">Pre-Flight Check</div>
+                    <div class="module-desc">Setup, Policy and Boundaries</div>
+                </div>
+                <svg class="module-arrow" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M7 5l5 5-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </a>
+            <a href="Module%201%20-%20The%20Cognitive%20Shift/index.html" class="module-card">
+                <div class="module-number">1</div>
+                <div class="module-info">
+                    <div class="module-title">The Cognitive Shift</div>
+                    <div class="module-desc">Understanding the Reasoning Engine</div>
+                </div>
+                <svg class="module-arrow" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M7 5l5 5-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </a>
+            <a href="Module%202%20-%20Model%20Selection/index.html" class="module-card">
+                <div class="module-number">2</div>
+                <div class="module-info">
+                    <div class="module-title">Model Selection</div>
+                    <div class="module-desc">The "Thinking" Protocol</div>
+                </div>
+                <svg class="module-arrow" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M7 5l5 5-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </a>
+        </div>
+
+        <div class="section-label">Core Skills</div>
+        <div class="module-grid">
+            <a href="Module%203%20-%20Prompt%20Architecture/index.html" class="module-card">
+                <div class="module-number">3</div>
+                <div class="module-info">
+                    <div class="module-title">Prompt Architecture</div>
+                    <div class="module-desc">Advanced Prompt Architecture (XML)</div>
+                </div>
+                <svg class="module-arrow" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M7 5l5 5-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </a>
+            <a href="Module%204%20-%20Personal%20Projects%20%26%20Folders/index.html" class="module-card">
+                <div class="module-number">4</div>
+                <div class="module-info">
+                    <div class="module-title">Personal Projects and Folders</div>
+                    <div class="module-desc">Claude Projects and ChatGPT Folders</div>
+                </div>
+                <svg class="module-arrow" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M7 5l5 5-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </a>
+            <a href="Bonus%20-%20SARA/index.html" class="module-card">
+                <div class="module-number bonus">BONUS</div>
+                <div class="module-info">
+                    <div class="module-title">SARA</div>
+                    <div class="module-desc">Mission-Specific Command Center (Claude Project)</div>
+                </div>
+                <svg class="module-arrow" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M7 5l5 5-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </a>
+            <a href="Module%205%20-%20The%20Sensory%20System/index.html" class="module-card">
+                <div class="module-number">5</div>
+                <div class="module-info">
+                    <div class="module-title">The Sensory System</div>
+                    <div class="module-desc">Gemini and Granola</div>
+                </div>
+                <svg class="module-arrow" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M7 5l5 5-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </a>
+            <a href="Module%206%20-%20Decision%20Hygiene/index.html" class="module-card">
+                <div class="module-number">6</div>
+                <div class="module-info">
+                    <div class="module-title">Decision Hygiene</div>
+                    <div class="module-desc">Beating Sycophancy</div>
+                </div>
+                <svg class="module-arrow" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M7 5l5 5-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </a>
+            <a href="Module%207%20-%20The%20Hybrid%20Agent/index.html" class="module-card">
+                <div class="module-number">7</div>
+                <div class="module-info">
+                    <div class="module-title">The Hybrid Agent</div>
+                    <div class="module-desc">Mac, Mobile and Docs</div>
+                </div>
+                <svg class="module-arrow" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M7 5l5 5-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </a>
+        </div>
+
+        <div class="section-label">Advanced</div>
+        <div class="module-grid">
+            <a href="Module%208%20-%20Introduction%20to%20Skills/index.html" class="module-card">
+                <div class="module-number">8</div>
+                <div class="module-info">
+                    <div class="module-title">Introduction to Skills</div>
+                    <div class="module-desc">Building Reusable Prompt Templates</div>
+                </div>
+                <svg class="module-arrow" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M7 5l5 5-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </a>
+            <a href="Module%209%20-%20Systemizing%20Intelligence/index.html" class="module-card">
+                <div class="module-number">9</div>
+                <div class="module-info">
+                    <div class="module-title">Systemizing Intelligence</div>
+                    <div class="module-desc">Team Collaboration and Shared Projects</div>
+                </div>
+                <svg class="module-arrow" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M7 5l5 5-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </a>
+            <a href="Module%2010%20-%20Agentic%20Data%20Analysis/index.html" class="module-card">
+                <div class="module-number">10</div>
+                <div class="module-info">
+                    <div class="module-title">Agentic Data Analysis</div>
+                    <div class="module-desc">The "No Math" Rule</div>
+                </div>
+                <svg class="module-arrow" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M7 5l5 5-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </a>
+            <a href="Module%2011%20-%20Code%20Execution/index.html" class="module-card">
+                <div class="module-number">11</div>
+                <div class="module-info">
+                    <div class="module-title">Code Execution</div>
+                    <div class="module-desc">File Creation (Excel, PPT, PDF)</div>
+                </div>
+                <svg class="module-arrow" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M7 5l5 5-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </a>
+            <a href="Module%2012%20-%20Future%20Frontiers/index.html" class="module-card">
+                <div class="module-number">12</div>
+                <div class="module-info">
+                    <div class="module-title">Future Frontiers</div>
+                    <div class="module-desc">Agents and MCP</div>
+                </div>
+                <svg class="module-arrow" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M7 5l5 5-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </a>
+        </div>
+
+        <div class="section-label">Capstone</div>
+        <div class="module-grid">
+            <a href="Module%2013%20-%20Capstone%20%26%20Governance/index.html" class="module-card">
+                <div class="module-number">13</div>
+                <div class="module-info">
+                    <div class="module-title">Capstone and Governance</div>
+                    <div class="module-desc">Accountability and Certification</div>
+                </div>
+                <svg class="module-arrow" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M7 5l5 5-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </a>
+        </div>
+    </div>
+
+    <div class="footer">
+        ActivTrak &middot; Solo Pilot to Squadron Leader &middot; GenAI Training Program
+    </div>
+</body>
+</html>
