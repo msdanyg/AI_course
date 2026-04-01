@@ -1,0 +1,2094 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module 4: Personal Projects & Folders | Solo Pilot to Squadron Leader</title>
+    <script src="scorm_api.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <style>
+        :root {
+            /* ActivTrak Brand Colors */
+            --dark-navy: #14203F;
+            --medium-navy: #19316A;
+            --blue: #1657A0;
+            --teal: #2ED4B5;
+            --yellow: #FFC83B;
+            --white: #FFFFFF;
+
+            /* Legacy aliases for compatibility */
+            --primary-blue: #19316A;
+            --pelorous: #1657A0;
+            --dark-base: #14203F;
+            --light-gray: #D9D9D9;
+            --bg-light: #F8F9FA;
+            --success: #2ED4B5;
+            --error: #EE2C82;
+            --warning: #F5A623;
+
+            /* Module-specific colors */
+            --module-accent: #8B5CF6;
+            --module-accent-light: #EDE9FE;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Century Gothic', 'CenturyGothic', AppleGothic, sans-serif;
+            background: var(--bg-light);
+            color: var(--dark-base);
+            line-height: 1.6;
+        }
+
+        /* Header */
+        .course-header {
+            background: linear-gradient(135deg, var(--dark-navy) 0%, var(--medium-navy) 100%);
+            color: white;
+            padding: 1rem 2rem;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .course-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .course-subtitle {
+            font-size: 0.85rem;
+            opacity: 0.9;
+        }
+
+        .progress-container {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .progress-bar {
+            width: 200px;
+            height: 8px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--module-accent);
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        .progress-text {
+            font-size: 0.85rem;
+        }
+
+        /* Main Layout */
+        .main-container {
+            display: flex;
+            margin-top: 60px;
+            min-height: calc(100vh - 60px);
+        }
+
+        /* Sidebar Navigation */
+        .sidebar {
+            width: 280px;
+            background: var(--white);
+            border-right: 1px solid var(--light-gray);
+            padding: 1.5rem;
+            position: fixed;
+            top: 60px;
+            left: 0;
+            bottom: 0;
+            overflow-y: auto;
+        }
+
+        .module-badge {
+            background: linear-gradient(135deg, var(--module-accent), #7C3AED);
+            color: white;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+        }
+
+        .module-badge h2 {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.9;
+        }
+
+        .module-badge h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .nav-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .nav-section-title {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #666;
+            margin-bottom: 0.75rem;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-item:hover {
+            background: var(--module-accent-light);
+        }
+
+        .nav-item.active {
+            background: var(--module-accent);
+            color: white;
+        }
+
+        .nav-icon {
+            font-size: 1.2rem;
+        }
+
+        .nav-label {
+            font-size: 0.95rem;
+        }
+
+        /* Content Area */
+        .content-area {
+            flex: 1;
+            margin-left: 280px;
+            padding: 2rem;
+            max-width: 1200px;
+        }
+
+        .content-section {
+            display: none;
+        }
+
+        .content-section.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .lesson-header {
+            margin-bottom: 2rem;
+        }
+
+        .lesson-header h1 {
+            font-size: 2.5rem;
+            color: var(--dark-navy);
+            margin-bottom: 0.5rem;
+        }
+
+        .lesson-meta {
+            font-size: 1.1rem;
+            color: #666;
+        }
+
+        .lesson-content {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            line-height: 1.8;
+        }
+
+        .lesson-content h2 {
+            color: var(--dark-navy);
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            font-size: 1.8rem;
+        }
+
+        .lesson-content h3 {
+            color: var(--medium-navy);
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+            font-size: 1.3rem;
+        }
+
+        .lesson-content p {
+            margin-bottom: 1rem;
+        }
+
+        .lesson-content ul, .lesson-content ol {
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .lesson-content li {
+            margin-bottom: 0.5rem;
+        }
+
+        .lesson-content strong {
+            color: var(--dark-navy);
+        }
+
+        .lesson-content code {
+            background: var(--module-accent-light);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.9em;
+        }
+
+        .lesson-content pre {
+            background: var(--dark-navy);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+        }
+
+        .lesson-content pre code {
+            background: transparent;
+            color: inherit;
+            padding: 0;
+            border-radius: 0;
+            font-size: 1em;
+        }
+
+        .lesson-content table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+        }
+
+        .lesson-content th {
+            background: var(--module-accent);
+            color: white;
+            padding: 0.75rem;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .lesson-content td {
+            padding: 0.75rem;
+            border: 1px solid var(--light-gray);
+        }
+
+        .lesson-content tr:nth-child(even) {
+            background: var(--bg-light);
+        }
+
+        .callout {
+            background: var(--module-accent-light);
+            border-left: 4px solid var(--module-accent);
+            padding: 1rem 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 4px;
+        }
+
+        .callout-title {
+            font-weight: 600;
+            color: var(--module-accent);
+            margin-bottom: 0.5rem;
+        }
+
+        /* Flashcards */
+        .flashcard-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2rem;
+            padding: 2rem;
+        }
+
+        .flashcard {
+            width: 100%;
+            max-width: 600px;
+            height: 400px;
+            perspective: 1000px;
+            cursor: pointer;
+        }
+
+        .flashcard-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+
+        .flashcard.flipped .flashcard-inner {
+            transform: rotateY(180deg);
+        }
+
+        .flashcard-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+            text-align: center;
+            font-size: 1.3rem;
+            line-height: 1.6;
+        }
+
+        .flashcard-front {
+            background: white;
+            color: var(--dark-navy);
+        }
+
+        .flashcard-back {
+            background: var(--module-accent);
+            color: white;
+            transform: rotateY(180deg);
+        }
+
+        .flashcard-controls {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .flashcard-btn {
+            background: var(--module-accent);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.2s;
+        }
+
+        .flashcard-btn:hover {
+            background: #7C3AED;
+            transform: translateY(-2px);
+        }
+
+        .flashcard-counter {
+            font-size: 1.1rem;
+            color: #666;
+        }
+
+        /* Quiz */
+        .quiz-question {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .quiz-question h3 {
+            color: var(--dark-navy);
+            margin-bottom: 1.5rem;
+            font-size: 1.3rem;
+        }
+
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .quiz-option {
+            padding: 1rem 1.5rem;
+            border: 2px solid var(--light-gray);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .quiz-option:hover {
+            border-color: var(--module-accent);
+            background: var(--module-accent-light);
+        }
+
+        .quiz-option.selected {
+            border-color: var(--module-accent);
+            background: var(--module-accent-light);
+        }
+
+        .quiz-option.correct {
+            border-color: var(--success);
+            background: #D1FAE5;
+        }
+
+        .quiz-option.incorrect {
+            border-color: var(--error);
+            background: #FEE2E2;
+        }
+
+        .quiz-feedback {
+            display: none;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+        }
+
+        .quiz-feedback.show {
+            display: block;
+        }
+
+        .quiz-feedback.correct {
+            background: #D1FAE5;
+            border-left: 4px solid var(--success);
+        }
+
+        .quiz-feedback.incorrect {
+            background: #FEE2E2;
+            border-left: 4px solid var(--error);
+        }
+
+        .check-answer-btn {
+            background: var(--module-accent);
+            color: white;
+            border: none;
+            padding: 0.75rem 2rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.2s;
+        }
+
+        .check-answer-btn:hover:not(:disabled) {
+            background: #7C3AED;
+        }
+
+        .check-answer-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .submit-quiz-btn {
+            background: var(--teal);
+            color: white;
+            border: none;
+            padding: 1rem 3rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-top: 2rem;
+            transition: all 0.2s;
+        }
+
+        .submit-quiz-btn:hover {
+            background: #26B9A0;
+            transform: translateY(-2px);
+        }
+
+        /* Lab Exercise */
+        .lab-step {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .lab-step h3 {
+            color: var(--module-accent);
+            margin-bottom: 1rem;
+        }
+
+        .checkpoint {
+            background: var(--medium-navy);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            font-weight: 600;
+        }
+
+        .checkpoint::before {
+            content: '✅ ';
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .sidebar {
+                width: 240px;
+            }
+            .content-area {
+                margin-left: 240px;
+                padding: 1.5rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                display: none;
+            }
+            .content-area {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="course-header">
+        <div>
+            <div class="course-title">Solo Pilot to Squadron Leader</div>
+            <div class="course-subtitle">ActivTrak AI Certification</div>
+        </div>
+        <div class="progress-container">
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 0%"></div>
+            </div>
+            <span class="progress-text">0% Complete</span>
+        </div>
+    </header>
+
+    <div class="main-container">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="module-badge">
+                <h2>Module 4</h2>
+                <h3>Personal Projects & Folders</h3>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Learn</div>
+                <div class="nav-item active" data-section="video">
+                    <div class="nav-icon">🎥</div>
+                    <span class="nav-label">RAG Concept</span>
+                </div>
+                <div class="nav-item" data-section="projects-demo">
+                    <div class="nav-icon">🎬</div>
+                    <span class="nav-label">Projects Demo</span>
+                </div>
+                <div class="nav-item" data-section="lesson">
+                    <div class="nav-icon">📖</div>
+                    <span class="nav-label">Full Lesson</span>
+                </div>
+                <div class="nav-item" data-section="flashcards">
+                    <div class="nav-icon">🎴</div>
+                    <span class="nav-label">Flashcards</span>
+                </div>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Practice</div>
+                <div class="nav-item" data-section="lab">
+                    <div class="nav-icon">🧪</div>
+                    <span class="nav-label">Lab Exercise</span>
+                </div>
+                <div class="nav-item" data-section="quiz">
+                    <div class="nav-icon">✓</div>
+                    <span class="nav-label">Knowledge Check</span>
+                </div>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Reference</div>
+                <div class="nav-item" data-section="study-guide">
+                    <div class="nav-icon">📋</div>
+                    <span class="nav-label">Study Guide</span>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="content-area">
+            <!-- Lesson Section -->
+            <section id="lesson" class="content-section">
+                <div class="lesson-header">
+                    <h1>Personal Projects & Folders</h1>
+                    <p class="lesson-meta">Eliminate the Context Rebuild Tax with persistent Mission Headquarters</p>
+                </div>
+
+                <div class="lesson-content">
+                    <!-- Hero Comparison: Solo Pilot vs Squadron Leader -->
+                    <div style="display: flex; gap: 2rem; margin: 2rem 0 3rem 0; padding: 2rem; background: linear-gradient(to bottom, #f8f9fa 0%, #ffffff 100%); border-radius: 12px; border: 1px solid #e0e0e0;">
+                        <!-- Solo Pilot side -->
+                        <div style="flex: 1; text-align: center; padding: 1.5rem; background: white; border-radius: 8px; border: 2px solid #e0e0e0; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+                            <div style="font-size: 1.5rem; font-weight: bold; color: var(--dark-navy); margin-bottom: 1rem; letter-spacing: 0.5px;">SOLO PILOT</div>
+                            <div style="font-size: 3rem; margin: 1rem 0; line-height: 1;">📋❓🔄</div>
+                            <div style="background: #FFC83B; color: var(--dark-navy); padding: 0.5rem 1rem; border-radius: 4px; font-weight: 600; display: inline-block; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">CONTEXT LOST !</div>
+                            <p style="margin-top: 1.5rem; color: #666; line-height: 1.5;">Rebuilding context every session.<br>Wasting 5-10 minutes each time.</p>
+                        </div>
+
+                        <div style="align-self: center; font-size: 2rem; color: var(--teal); font-weight: bold;">→</div>
+
+                        <!-- Squadron Leader side -->
+                        <div style="flex: 1; text-align: center; padding: 1.5rem; background: linear-gradient(135deg, #e3f2fd 0%, #f0f9ff 100%); border-radius: 8px; border: 2px solid var(--teal); box-shadow: 0 4px 12px rgba(46, 212, 181, 0.15);">
+                            <div style="font-size: 1.5rem; font-weight: bold; color: var(--dark-navy); margin-bottom: 1rem; letter-spacing: 0.5px;">SQUADRON LEADER</div>
+                            <div style="font-size: 3rem; margin: 1rem 0; line-height: 1;">✅📊🎯</div>
+                            <div style="background: var(--teal); color: white; padding: 0.5rem 1rem; border-radius: 4px; font-weight: 600; display: inline-block; box-shadow: 0 2px 4px rgba(0,0,0,0.15);">MISSION READY</div>
+                            <p style="margin-top: 1.5rem; color: #555; line-height: 1.5;">Persistent Mission Headquarters.<br>Instant briefing. Zero rebuild tax.</p>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; margin-top: 1.5rem;">
+                        <div style="width: 48px; height: 48px; background: linear-gradient(135deg, var(--teal) 0%, #1DB89A 100%); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: white; flex-shrink: 0;">
+                            💡
+                        </div>
+                        <h2 style="margin: 0; color: var(--dark-navy);">Introduction: The Context Rebuild Tax</h2>
+                    </div>
+                    <p>You've spent the last three modules mastering how to <strong>talk</strong> to AI. You've learned that Claude is a reasoning engine, not a search engine. You've learned when to invoke Extended Thinking for complex problems. You've learned how to structure prompts with XML tags and clear labels.</p>
+
+                    <p>But here's the uncomfortable truth: <strong>You're still starting from zero every time you open a new chat.</strong></p>
+
+                    <p>Every morning, you open Claude to draft a competitive analysis. And every morning, you type the same preamble:</p>
+
+                    <div style="background-color: #FFF8E1; padding: 1.5rem; border-left: 4px solid #FFC83B; border-radius: 8px; margin: 1.5rem 0;">
+                        <div style="font-weight: 700; color: var(--dark-navy); margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem;">
+                            <span style="font-size: 1.25rem;">⚠️</span>
+                            <span>EXAMPLE CONTEXT REBUILD:</span>
+                        </div>
+                        <p style="color: var(--dark-navy); margin: 0; font-style: italic;">"I work at ActivTrak. We're a workforce analytics company. Our main competitors are Teramind, Hubstaff, and Insightful. I need to analyze..."</p>
+                    </div>
+
+                    <p>Every week, you ask ChatGPT to help with customer success emails. And every week, you remind it:</p>
+
+                    <div style="background-color: #FFF8E1; padding: 1.5rem; border-left: 4px solid #FFC83B; border-radius: 8px; margin: 1.5rem 0;">
+                        <div style="font-weight: 700; color: var(--dark-navy); margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem;">
+                            <span style="font-size: 1.25rem;">⚠️</span>
+                            <span>EXAMPLE CONTEXT REBUILD:</span>
+                        </div>
+                        <p style="color: var(--dark-navy); margin: 0; font-style: italic;">"I'm a CSM. Use a warm but professional tone. Never mention 'tracking' or 'monitoring'—use 'insights' instead. Keep it under 200 words..."</p>
+                    </div>
+
+                    <!-- The Cost, Definition, and Impact Boxes -->
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin: 2.5rem 0;">
+                        <!-- Cost Box -->
+                        <div style="background-color: #FFF8E1; padding: 1.5rem; border-left: 4px solid #FFC83B; border-radius: 8px;">
+                            <div style="font-weight: 700; color: var(--dark-navy); margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem;">
+                                <span style="font-size: 1.25rem;">💰</span>
+                                <span>THE COST:</span>
+                            </div>
+                            <p style="color: var(--dark-navy); margin: 0;">5-10 minutes per session rebuilding context.</p>
+                        </div>
+
+                        <!-- Definition Box -->
+                        <div style="background-color: #F0F7FA; padding: 1.5rem; border-left: 4px solid var(--teal); border-radius: 8px;">
+                            <div style="font-weight: 700; color: var(--dark-navy); margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem;">
+                                <span style="font-size: 1.25rem;">ℹ️</span>
+                                <span>THE DEFINITION:</span>
+                            </div>
+                            <p style="color: var(--dark-navy); margin: 0;">The Context Rebuild Tax.</p>
+                        </div>
+
+                        <!-- Impact Box -->
+                        <div style="background-color: #E3F2FD; padding: 1.5rem; border-left: 4px solid var(--blue); border-radius: 8px;">
+                            <div style="font-weight: 700; color: var(--dark-navy); margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem;">
+                                <span style="font-size: 1.25rem;">🎯</span>
+                                <span>IMPACT:</span>
+                            </div>
+                            <p style="color: var(--dark-navy); margin: 0;">Friction preventing deep work.</p>
+                        </div>
+                    </div>
+
+                    <p>Module 4 eliminates that tax by teaching you how to build <strong>persistent Mission Headquarters</strong>—workspaces where the AI is <strong>pre-briefed</strong> and ready to fly the moment you arrive.</p>
+
+                    <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; margin-top: 2.5rem;">
+                        <div style="width: 48px; height: 48px; background: linear-gradient(135deg, #FFC83B 0%, #FFB300 100%); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: white; flex-shrink: 0;">
+                            ⚠️
+                        </div>
+                        <h2 style="margin: 0; color: var(--dark-navy);">The Problem: Contextual Amnesia</h2>
+                    </div>
+                    <p>Every standard chat with Claude or ChatGPT is like hiring a brilliant consultant who has <strong>amnesia</strong>. They wake up with no memory of your company, your role, your preferences, or your past conversations.</p>
+
+                    <p>This creates three compounding problems:</p>
+
+                    <h3>1. Repetition Fatigue</h3>
+                    <p>You spend the first 2-3 exchanges of every conversation re-establishing basic context. "I work at ActivTrak. We sell workforce analytics. Our target market is mid-market enterprises..."</p>
+
+                    <h3>2. Consistency Drift</h3>
+                    <p>Without persistent instructions, outputs vary wildly based on how you happened to phrase things that particular day. Monday's competitive brief sounds nothing like Friday's because you forgot to mention tone preferences.</p>
+
+                    <h3>3. The Knowledge Ceiling</h3>
+                    <p>You can't build on previous work because every conversation starts at square one. That nuanced analysis you refined over three sessions last week? Gone. You're starting over.</p>
+
+                    <!-- Visual Separator with Squadron Metaphor Quote -->
+                    <div style="margin: 3rem 0 2rem 0; position: relative;">
+                        <div style="height: 2px; background: linear-gradient(to right, transparent 0%, #FFC83B 50%, transparent 100%); position: relative;">
+                            <div style="position: absolute; left: 50%; transform: translateX(-50%) translateY(-50%); background: white; padding: 0 1rem; color: var(--teal); font-weight: 700; font-size: 0.75rem; letter-spacing: 1px;">
+                                SQUADRON METAPHOR
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="background: linear-gradient(135deg, #FFF8E1 0%, #FFF3CD 100%); border-left: 4px solid #FFC83B; padding: 1.75rem; border-radius: 8px; margin: 2rem 0; font-style: italic; color: var(--dark-navy); box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+                        <div style="font-size: 1.5rem; margin-bottom: 1rem; opacity: 0.3;">✈️</div>
+                        <p style="margin: 0; line-height: 1.7; font-size: 1.05rem;">
+                            "Imagine if every time you launched a mission, your <span style="color: #FFC83B; font-weight: 600;">co-pilot had to re-learn the aircraft controls</span>, the radio frequencies, and the mission objective. That's what standard chat feels like."
+                        </p>
+                    </div>
+
+                    <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; margin-top: 2.5rem;">
+                        <div style="width: 48px; height: 48px; background: linear-gradient(135deg, var(--blue) 0%, #0E4270 100%); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: white; flex-shrink: 0;">
+                            🛠️
+                        </div>
+                        <h2 style="margin: 0; color: var(--dark-navy);">The Solution: Persistent Mission Headquarters</h2>
+                    </div>
+                    <p>Both Claude and ChatGPT offer solutions to contextual amnesia, but they work in fundamentally different ways.</p>
+
+                    <h3>Claude Projects: Hard Walls (Isolated Fortresses)</h3>
+                    <p><strong>What it is:</strong> A Claude Project is a <strong>walled workspace</strong> where you can:</p>
+                    <ul>
+                        <li>Upload up to 200 files (PDFs, docs, spreadsheets, code)</li>
+                        <li>Set custom instructions that apply to every chat in that Project</li>
+                        <li>Maintain separate chat histories that <strong>never</strong> leak into other Projects</li>
+                    </ul>
+
+                    <p><strong>The "Hard Wall" Analogy:</strong> Think of Claude Projects like classified military bases. What happens in Project A <strong>stays</strong> in Project A. The model has <strong>zero awareness</strong> of your other Projects. This isolation is a feature, not a bug—it prevents context pollution and maintains focus.</p>
+
+                    <p><strong>When Claude Projects Excel:</strong></p>
+                    <ul>
+                        <li><strong>Long-term strategic work</strong>: Competitive intelligence tracking across quarters</li>
+                        <li><strong>Document-heavy tasks</strong>: Analyzing 50+ product specs, brand guidelines, or contract templates</li>
+                        <li><strong>Sensitive work</strong>: PII-heavy analysis where you need <strong>guaranteed isolation</strong> from other work</li>
+                        <li><strong>Complex custom instructions</strong>: Scenarios where you need 500+ words of behavioral guidance</li>
+                    </ul>
+
+                    <h3>ChatGPT Projects & Folders: Soft Boundaries (Flexible Command Centers)</h3>
+                    <p><strong>What it is:</strong> ChatGPT offers two organizational layers:</p>
+                    <ol>
+                        <li><strong>Folders</strong> (all tiers): Simple categorization for grouping related chats</li>
+                        <li><strong>Projects</strong> (Plus/Team/Enterprise): Workspaces with file uploads and custom instructions</li>
+                    </ol>
+
+                    <p><strong>The "Soft Boundary" Analogy:</strong> ChatGPT Projects are more like open-plan offices with flexible dividers. The model has <strong>cross-conversation memory</strong> enabled by default, meaning insights from one chat can inform another (unless you explicitly disable memory).</p>
+
+                    <p><strong>When ChatGPT Projects Excel:</strong></p>
+                    <ul>
+                        <li><strong>Iterative creative work</strong>: Content drafts that evolve over multiple sessions</li>
+                        <li><strong>Team collaboration</strong> (Enterprise): Shared Projects where teammates pick up where you left off</li>
+                        <li><strong>Memory-driven personalization</strong>: Scenarios where you <strong>want</strong> the AI to remember your writing style across all chats</li>
+                        <li><strong>Research aggregation</strong>: Pulling insights from multiple web searches into a unified knowledge base</li>
+                    </ul>
+
+                    <h2 style="text-align: center; color: var(--dark-navy); margin-bottom: 2rem;">Two Architectures: The Fortress vs. The Open Office</h2>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin: 2rem 0; max-width: 100%;">
+                        <!-- Claude Projects Card -->
+                        <div style="border: 2px solid var(--blue); border-radius: 12px; padding: 2rem; background: white; box-shadow: 0 4px 12px rgba(0,0,0,0.08);">
+                            <div style="text-align: center; padding: 1.5rem; background: linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 100%); border-radius: 8px; margin-bottom: 1.5rem;">
+                                <div style="font-size: 3.5rem; margin-bottom: 0.5rem; line-height: 1;">🏰</div>
+                                <h3 style="color: var(--dark-navy); margin: 0; font-size: 1.25rem;">CLAUDE PROJECTS</h3>
+                            </div>
+
+                            <div style="margin-bottom: 1.5rem;">
+                                <div style="display: flex; align-items: start; gap: 0.75rem; margin-bottom: 1rem; padding: 0.75rem; background: #f8f9fa; border-radius: 6px;">
+                                    <span style="color: var(--blue); font-size: 1.5rem; flex-shrink: 0;">🔒</span>
+                                    <div>
+                                        <strong style="color: var(--dark-navy);">The Fortress</strong>
+                                        <p style="margin: 0.25rem 0 0 0; color: #666; font-size: 0.9rem;">Hard Walls: 100% Isolated</p>
+                                    </div>
+                                </div>
+
+                                <div style="display: flex; align-items: start; gap: 0.75rem; margin-bottom: 1rem; padding: 0.75rem; background: #f8f9fa; border-radius: 6px;">
+                                    <span style="color: var(--blue); font-size: 1.5rem; flex-shrink: 0;">🚫</span>
+                                    <div>
+                                        <strong style="color: var(--dark-navy);">Zero awareness of other chats</strong>
+                                    </div>
+                                </div>
+
+                                <div style="display: flex; align-items: start; gap: 0.75rem; padding: 0.75rem; background: #f8f9fa; border-radius: 6px;">
+                                    <span style="color: var(--blue); font-size: 1.5rem; flex-shrink: 0;">📁</span>
+                                    <div>
+                                        <strong style="color: var(--dark-navy);">Capacity: Up to 200 files</strong>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div style="background: var(--blue); color: white; padding: 0.75rem 1.5rem; border-radius: 8px; text-align: center; font-weight: 600;">
+                                Best For: Strategic Work & Sensitive Data
+                            </div>
+                        </div>
+
+                        <!-- ChatGPT Projects Card -->
+                        <div style="border: 2px solid var(--teal); border-radius: 12px; padding: 2rem; background: white; box-shadow: 0 4px 12px rgba(0,0,0,0.08);">
+                            <div style="text-align: center; padding: 1.5rem; background: linear-gradient(135deg, #E0F2F1 0%, #B2DFDB 100%); border-radius: 8px; margin-bottom: 1.5rem;">
+                                <div style="font-size: 3.5rem; margin-bottom: 0.5rem; line-height: 1;">🏢</div>
+                                <h3 style="color: var(--dark-navy); margin: 0; font-size: 1.25rem;">CHATGPT PROJECTS</h3>
+                            </div>
+
+                            <div style="margin-bottom: 1.5rem;">
+                                <div style="display: flex; align-items: start; gap: 0.75rem; margin-bottom: 1rem; padding: 0.75rem; background: #f8f9fa; border-radius: 6px;">
+                                    <span style="color: var(--teal); font-size: 1.5rem; flex-shrink: 0;">🚪</span>
+                                    <div>
+                                        <strong style="color: var(--dark-navy);">The Open Office</strong>
+                                        <p style="margin: 0.25rem 0 0 0; color: #666; font-size: 0.9rem;">Soft Boundaries: Flexible Dividers</p>
+                                    </div>
+                                </div>
+
+                                <div style="display: flex; align-items: start; gap: 0.75rem; margin-bottom: 1rem; padding: 0.75rem; background: #f8f9fa; border-radius: 6px;">
+                                    <span style="color: var(--teal); font-size: 1.5rem; flex-shrink: 0;">🧠</span>
+                                    <div>
+                                        <strong style="color: var(--dark-navy);">Cross-conversation memory enabled</strong>
+                                    </div>
+                                </div>
+
+                                <div style="display: flex; align-items: start; gap: 0.75rem; padding: 0.75rem; background: #f8f9fa; border-radius: 6px;">
+                                    <span style="color: var(--teal); font-size: 1.5rem; flex-shrink: 0;">💬</span>
+                                    <div>
+                                        <strong style="color: var(--dark-navy);">Shared insights across chats</strong>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div style="background: var(--teal); color: white; padding: 0.75rem 1.5rem; border-radius: 8px; text-align: center; font-weight: 600;">
+                                Best For: Creative Iteration & Style Learning
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Responsive stacking note -->
+                    <style>
+                        @media (max-width: 768px) {
+                            div[style*="grid-template-columns: 1fr 1fr"] {
+                                grid-template-columns: 1fr !important;
+                            }
+                        }
+                    </style>
+
+                    <h2 style="text-align: center; color: var(--dark-navy); margin-bottom: 2.5rem;">Decision Framework: When to use which HQ</h2>
+
+                    <div style="background: linear-gradient(to bottom, #f8f9fa 0%, #ffffff 100%); padding: 2.5rem 2rem; border-radius: 12px; margin: 2rem 0; border: 1px solid #e0e0e0;">
+                        <!-- First Row -->
+                        <div style="display: flex; align-items: center; justify-content: center; gap: 1.5rem; flex-wrap: wrap; margin-bottom: 2rem;">
+                            <!-- Decision Diamond 1 -->
+                            <div style="position: relative; width: 160px; height: 160px; background: var(--blue); transform: rotate(45deg); border-radius: 8px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 8px rgba(0,0,0,0.15);">
+                                <div style="transform: rotate(-45deg); text-align: center; color: white; font-weight: 600; padding: 1rem; font-size: 0.85rem; line-height: 1.3;">
+                                    Need Files /<br>Persistent<br>Instructions?
+                                </div>
+                            </div>
+
+                            <div style="display: flex; flex-direction: column; align-items: center; gap: 0.5rem;">
+                                <div style="font-size: 1.25rem; font-weight: bold; color: var(--blue);">YES →</div>
+                                <div style="font-size: 1.25rem; font-weight: bold; color: #999;">NO ↓</div>
+                            </div>
+
+                            <!-- Decision Diamond 2 -->
+                            <div style="position: relative; width: 160px; height: 160px; background: var(--blue); transform: rotate(45deg); border-radius: 8px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 8px rgba(0,0,0,0.15);">
+                                <div style="transform: rotate(-45deg); text-align: center; color: white; font-weight: 600; padding: 1rem; font-size: 0.85rem; line-height: 1.3;">
+                                    Is data<br>Sensitive /<br>Classified?
+                                </div>
+                            </div>
+
+                            <div style="display: flex; flex-direction: column; align-items: center; gap: 0.5rem;">
+                                <div style="font-size: 1.25rem; font-weight: bold; color: var(--blue);">YES →</div>
+                                <div style="font-size: 1.25rem; font-weight: bold; color: #999;">NO ↓</div>
+                            </div>
+
+                            <!-- Result Box 1: Claude Projects (Fortress) -->
+                            <div style="background: var(--blue); color: white; padding: 1.25rem 1.75rem; border-radius: 12px; font-weight: 600; text-align: center; min-width: 200px; box-shadow: 0 4px 12px rgba(22, 87, 160, 0.25);">
+                                <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">🏰</div>
+                                CLAUDE PROJECTS<br>
+                                <span style="font-size: 0.85rem; opacity: 0.9;">(The Fortress)</span>
+                            </div>
+                        </div>
+
+                        <!-- Second Row -->
+                        <div style="display: flex; align-items: center; justify-content: center; gap: 4rem; flex-wrap: wrap; margin-top: 2rem;">
+                            <!-- Result Box 2: Standard Chat -->
+                            <div style="background: #9e9e9e; color: white; padding: 1.25rem 1.75rem; border-radius: 12px; font-weight: 600; text-align: center; min-width: 200px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+                                <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">💬</div>
+                                STANDARD CHAT<br>
+                                <span style="font-size: 0.85rem; opacity: 0.9;">(One-time tasks)</span>
+                            </div>
+
+                            <!-- Result Box 3: ChatGPT Projects -->
+                            <div style="background: var(--teal); color: white; padding: 1.25rem 1.75rem; border-radius: 12px; font-weight: 600; text-align: center; min-width: 200px; box-shadow: 0 4px 12px rgba(46, 212, 181, 0.25);">
+                                <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">🏢</div>
+                                CHATGPT PROJECTS<br>
+                                <span style="font-size: 0.85rem; opacity: 0.9;">(The Open Office)</span>
+                            </div>
+                        </div>
+
+                        <!-- Decision guidance text -->
+                        <div style="margin-top: 2.5rem; padding: 1.25rem; background: white; border-radius: 8px; border-left: 4px solid var(--teal);">
+                            <p style="margin: 0; color: var(--dark-navy); font-weight: 600; margin-bottom: 0.75rem;">💡 Quick Decision Guide:</p>
+                            <ul style="margin: 0; padding-left: 1.5rem; color: #666;">
+                                <li><strong>Claude Projects:</strong> Hard walls guarantee no leakage. Best for sensitive data/PII work.</li>
+                                <li><strong>ChatGPT Projects:</strong> Memory learns your voice. Best for creative iteration & style learning.</li>
+                                <li><strong>Standard Chat:</strong> Use for one-time tasks where context doesn't matter.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Visual Separator with Squadron Metaphor Quote -->
+                    <div style="margin: 3rem 0 2rem 0; position: relative;">
+                        <div style="height: 2px; background: linear-gradient(to right, transparent 0%, var(--blue) 50%, transparent 100%); position: relative;">
+                            <div style="position: absolute; left: 50%; transform: translateX(-50%) translateY(-50%); background: white; padding: 0 1rem; color: var(--blue); font-weight: 700; font-size: 0.75rem; letter-spacing: 1px;">
+                                SQUADRON METAPHOR
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="background: linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 100%); border-left: 4px solid var(--blue); padding: 1.75rem; border-radius: 8px; margin: 2rem 0; font-style: italic; color: var(--dark-navy); box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+                        <div style="font-size: 1.5rem; margin-bottom: 1rem; opacity: 0.3;">🎯</div>
+                        <p style="margin: 0; line-height: 1.7; font-size: 1.05rem;">
+                            "A Squadron Leader doesn't fly every mission in the same aircraft. You choose <span style="color: var(--blue); font-weight: 600;">the right craft for the mission profile</span>—the fortress for classified operations, the open hangar for creative collaboration."
+                        </p>
+                    </div>
+
+                    <!-- ROI: Before/After Transformation -->
+                    <div style="background: linear-gradient(to bottom, #f8f9fa 0%, #e3f2fd 100%); padding: 2.5rem 2rem; border-radius: 12px; margin: 3rem 0; border: 1px solid #e0e0e0;">
+                        <h2 style="text-align: center; color: var(--dark-navy); margin-bottom: 2.5rem; font-size: 1.75rem;">The ROI: Why Squadron Leaders Win</h2>
+
+                        <!-- BEFORE Section -->
+                        <div style="background: linear-gradient(135deg, #ffe0e0 0%, #ffcccb 100%); padding: 2rem; border-radius: 8px; margin-bottom: 1.5rem; border: 2px solid #ffb3b3;">
+                            <div style="font-weight: 700; color: var(--dark-navy); margin-bottom: 1.5rem; font-size: 0.875rem; letter-spacing: 1px;">BEFORE: SOLO PILOT MODE</div>
+
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem;">
+                                <div style="text-align: center;">
+                                    <div style="font-size: 2.5rem; margin-bottom: 0.75rem;">⌨️</div>
+                                    <div style="font-weight: 600; color: var(--dark-navy); margin-bottom: 0.5rem;">Re-typing Context</div>
+                                    <div style="color: #666; font-size: 0.9rem;">5-10 minutes per session wasted rebuilding what Claude already knew yesterday</div>
+                                </div>
+                                <div style="text-align: center;">
+                                    <div style="font-size: 2.5rem; margin-bottom: 0.75rem;">⚙️</div>
+                                    <div style="font-weight: 600; color: var(--dark-navy); margin-bottom: 0.5rem;">Inconsistent Results</div>
+                                    <div style="color: #666; font-size: 0.9rem;">Every chat starts from zero—no brand voice consistency or learned preferences</div>
+                                </div>
+                                <div style="text-align: center;">
+                                    <div style="font-size: 2.5rem; margin-bottom: 0.75rem;">📋</div>
+                                    <div style="font-weight: 600; color: var(--dark-navy); margin-bottom: 0.5rem;">Manual File Uploads</div>
+                                    <div style="color: #666; font-size: 0.9rem;">Dragging the same competitive brief into 20 different chats</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Arrow Transition -->
+                        <div style="text-align: center; margin: 1.5rem 0;">
+                            <div style="font-size: 3rem; color: var(--teal); line-height: 1;">↓</div>
+                            <div style="font-weight: 600; color: var(--teal); margin-top: 0.5rem; letter-spacing: 0.5px;">TRANSFORMATION</div>
+                        </div>
+
+                        <!-- AFTER Section -->
+                        <div style="background: var(--blue); color: white; padding: 2.5rem 2rem; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+                            <div style="font-weight: 700; margin-bottom: 2rem; font-size: 0.875rem; letter-spacing: 1px; opacity: 0.95;">AFTER: SQUADRON LEADER MODE</div>
+
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 2rem;">
+                                <div style="text-align: center;">
+                                    <div style="font-size: 3rem; margin-bottom: 0.75rem; line-height: 1;">⏱️</div>
+                                    <div style="font-weight: 700; font-size: 1.25rem; margin-bottom: 0.5rem; letter-spacing: 0.5px;">TIME SAVED</div>
+                                    <div style="font-size: 1.5rem; font-weight: 600; margin-bottom: 0.25rem;">5 Hours / Month</div>
+                                    <div style="font-size: 0.85rem; opacity: 0.9;">Zero context rebuild tax—instant mission readiness</div>
+                                </div>
+                                <div style="text-align: center;">
+                                    <div style="font-size: 3rem; margin-bottom: 0.75rem; line-height: 1;">🏆</div>
+                                    <div style="font-weight: 700; font-size: 1.25rem; margin-bottom: 0.5rem; letter-spacing: 0.5px;">QUALITY BOOST</div>
+                                    <div style="font-size: 1.5rem; font-weight: 600; margin-bottom: 0.25rem;">Automated Brand Voice</div>
+                                    <div style="font-size: 0.85rem; opacity: 0.9;">Every response matches your style guide without reminders</div>
+                                </div>
+                                <div style="text-align: center;">
+                                    <div style="font-size: 3rem; margin-bottom: 0.75rem; line-height: 1;">🚀</div>
+                                    <div style="font-weight: 700; font-size: 1.25rem; margin-bottom: 0.5rem; letter-spacing: 0.5px;">SPEED MULTIPLIER</div>
+                                    <div style="font-size: 1.5rem; font-weight: 600; margin-bottom: 0.25rem;">Instant Briefing</div>
+                                    <div style="font-size: 0.85rem; opacity: 0.9;">Claude knows your files, knows your rules, starts at full velocity</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Bottom Impact Statement -->
+                        <div style="margin-top: 2rem; padding: 1.5rem; background: white; border-radius: 8px; text-align: center; border-left: 4px solid var(--teal);">
+                            <p style="margin: 0; font-size: 1.1rem; color: var(--dark-navy); font-weight: 600;">
+                                <span style="color: var(--teal);">That's 60 hours per year</span> freed up for strategic work—not context explaining.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Responsive Grid Adjustment -->
+                    <style>
+                        @media (max-width: 768px) {
+                            div[style*="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr))"],
+                            div[style*="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr))"] {
+                                grid-template-columns: 1fr !important;
+                            }
+                        }
+                    </style>
+
+                    <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; margin-top: 2.5rem;">
+                        <div style="width: 48px; height: 48px; background: linear-gradient(135deg, var(--medium-navy) 0%, var(--dark-navy) 100%); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: white; flex-shrink: 0;">
+                            🎓
+                        </div>
+                        <h2 style="margin: 0; color: var(--dark-navy);">Key Takeaways</h2>
+                    </div>
+                    <ol>
+                        <li><strong>Projects eliminate the Context Rebuild Tax</strong> by providing persistent workspaces with pre-loaded files and instructions.</li>
+                        <li><strong>Claude Projects = Hard Walls</strong> (isolated, high-capacity, doc-heavy). <strong>ChatGPT Projects = Soft Boundaries</strong> (flexible memory, team-friendly).</li>
+                        <li><strong>The 80/20 Rule:</strong> Only create Projects for recurring work. One-time tasks belong in standard chat.</li>
+                        <li><strong>Custom Instructions are Standing Orders</strong>—they apply to every chat in that Project. Start small (200 words) and iterate.</li>
+                        <li><strong>Prune ruthlessly.</strong> Outdated files and over-instruction degrade AI performance. Monthly audits keep Projects sharp.</li>
+                        <li><strong>Test immediately.</strong> Assume your instructions didn't work until proven otherwise. Run 3 test prompts after setup.</li>
+                    </ol>
+
+                    <div class="callout">
+                        <div class="callout-title">What's Next</div>
+                        <p>Complete the Lab Exercise to build your first Claude Project and organize your ChatGPT conversations. Then test your understanding with the Knowledge Check quiz.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Video Lesson Section -->
+            <section id="video" class="content-section active">
+                <div class="lesson-header">
+                    <h1>Understanding RAG</h1>
+                    <p class="lesson-meta">6-minute explanation of Retrieval-Augmented Generation</p>
+                </div>
+
+                <div class="lesson-content">
+                    <h2 style="color: var(--dark-navy); margin-bottom: 1rem;">How RAG Solves the "Out of Date" Problem</h2>
+                    <p style="margin-bottom: 1.5rem;">Before learning about Claude Projects, watch this 6-minute explanation of how RAG solves the "out of date" and "no source" problems with large language models.</p>
+
+                    <a href="https://www.youtube.com/watch?v=T-D1OfcDW1M" target="_blank" rel="noopener noreferrer" style="display: block; text-decoration: none; margin: 2rem 0;">
+                        <div style="background: linear-gradient(135deg, #2ED4B5 0%, #1DB89A 100%); padding: 3rem 2rem; border-radius: 12px; text-align: center; color: white; box-shadow: 0 4px 12px rgba(0,0,0,0.15); transition: transform 0.2s, box-shadow 0.2s; cursor: pointer;">
+                            <div style="font-size: 4rem; margin-bottom: 1rem;">▶️</div>
+                            <h3 style="color: white; margin-bottom: 1rem; font-size: 1.5rem;">What is Retrieval-Augmented Generation (RAG)?</h3>
+                            <p style="font-size: 1rem; margin-bottom: 1.5rem; opacity: 0.9;">
+                                IBM Tech explains how RAG solves the "out of date" and "no source" problems
+                            </p>
+                            <div style="display: inline-block; background: rgba(255, 255, 255, 0.2); padding: 0.75rem 2rem; border-radius: 8px; font-weight: 600;">
+                                <span style="font-size: 1.1rem;">Watch on YouTube (6 minutes)</span>
+                            </div>
+                        </div>
+                    </a>
+                    <style>
+                        a[href*="youtube.com"]:hover > div {
+                            transform: translateY(-4px);
+                            box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+                        }
+                    </style>
+
+                    <div style="background-color: #F0F7FA; padding: 1.5rem; border-left: 4px solid var(--blue); border-radius: 4px; margin: 2rem 0;">
+                        <h4 style="margin-top: 0; color: var(--dark-navy);">Key Takeaways:</h4>
+                        <ul>
+                            <li><strong>The Problem:</strong> LLMs have "out of date" training data and give answers with "no source"</li>
+                            <li><strong>The Solution:</strong> RAG adds a searchable knowledge base that Claude retrieves from before answering</li>
+                            <li><strong>How It Works:</strong> Documents are converted to "embeddings" (numerical fingerprints) for semantic search</li>
+                            <li><strong>The Benefit:</strong> Claude can answer accurately from YOUR current documentation without retraining</li>
+                        </ul>
+                    </div>
+
+                    <div class="callout" style="margin-top: 2rem;">
+                        <div class="callout-title">What's Next</div>
+                        <p>Continue to <strong>Projects Demo</strong> to see how to build your first Claude Project and harness RAG for your work.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Projects Demo Section -->
+            <section id="projects-demo" class="content-section">
+                <div class="lesson-header">
+                    <h1>Building Your First Project</h1>
+                    <p class="lesson-meta">Step-by-step walkthrough with ActivTrak examples</p>
+                </div>
+
+                <div class="lesson-content">
+                    <h2 style="color: var(--dark-navy); margin-bottom: 1rem;">Watch: Creating and Configuring Claude Projects</h2>
+                    <p style="margin-bottom: 1.5rem;">Now that you understand RAG, watch this walkthrough demonstrating how to create and configure Claude Projects to harness this technology for your work at ActivTrak.</p>
+
+                    <div style="background-color: #f5f5f5; padding: 2rem; border-radius: 8px; margin: 2rem 0;">
+                        <video controls style="width: 100%; max-width: 100%; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+                            <source src="module4_video.mp4" type="video/mp4">
+                            Your browser does not support the video tag. Please use a modern browser like Chrome, Firefox, Safari, or Edge.
+                        </video>
+                    </div>
+
+                    <div style="background-color: #F0F7FA; padding: 1.5rem; border-left: 4px solid var(--teal); border-radius: 4px; margin: 2rem 0;">
+                        <h4 style="margin-top: 0; color: var(--dark-navy);">What You Just Learned:</h4>
+                        <ul>
+                            <li><strong>Creating Projects:</strong> How to set up Claude Projects and ChatGPT Projects from scratch</li>
+                            <li><strong>Custom Instructions:</strong> Writing "standing orders" that apply to every conversation</li>
+                            <li><strong>Knowledge Base:</strong> Uploading and organizing files for RAG-powered retrieval</li>
+                            <li><strong>Testing:</strong> Verifying your Project works correctly before deploying to real tasks</li>
+                        </ul>
+                    </div>
+
+                    <div class="callout" style="margin-top: 2rem;">
+                        <div class="callout-title">Ready to Practice?</div>
+                        <p>Head to the <strong>Lab Exercise</strong> to build your own Claude Project with hands-on guidance.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Flashcards Section -->
+            <section id="flashcards" class="content-section">
+                <div class="lesson-header">
+                    <h1>Flashcards</h1>
+                    <p class="lesson-meta">Test your recall of key concepts</p>
+                </div>
+
+                <div class="flashcard-container">
+                    <div id="flashcard" class="flashcard">
+                        <div class="flashcard-inner">
+                            <div class="flashcard-face flashcard-front">
+                                <div id="flashcard-front-content"></div>
+                            </div>
+                            <div class="flashcard-face flashcard-back">
+                                <div id="flashcard-back-content"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flashcard-controls">
+                        <button class="flashcard-btn" onclick="prevCard()">← Previous</button>
+                        <div class="flashcard-counter">
+                            <span id="currentCard">1</span> / <span id="totalCards">11</span>
+                        </div>
+                        <button class="flashcard-btn" onclick="nextCard()">Next →</button>
+                    </div>
+
+                    <p style="color: #666; text-align: center; margin-top: 2rem;">
+                        Click the card to flip it
+                    </p>
+                </div>
+            </section>
+
+            <!-- Lab Exercise Section -->
+            <section id="lab" class="content-section">
+                <div class="lesson-header">
+                    <h1>Lab Exercise</h1>
+                    <p class="lesson-meta">Build your first Claude Project (10-15 minutes)</p>
+                </div>
+
+                <div class="lesson-content">
+                    <h2>Objective</h2>
+                    <p>Build your first Claude Project for creating LinkedIn posts and configure it with custom instructions.</p>
+
+                    <p>By the end of this lab, you will have:</p>
+                    <ul>
+                        <li>✅ A functional Claude Project for LinkedIn content creation</li>
+                        <li>✅ Custom instructions that guide Claude's output</li>
+                        <li>✅ Tested the Project with a real LinkedIn post</li>
+                    </ul>
+
+                    <div style="margin: 1.5rem 0; padding: 1.5rem; background-color: #F0F7FA; border-left: 4px solid var(--blue); border-radius: 4px;">
+                        <p><strong>📝 Note for ChatGPT Users:</strong> If you prefer to use ChatGPT, you can complete this lab using ChatGPT Projects instead. The steps are nearly identical—create a Project, write custom instructions, and test with the same prompt. Both platforms follow the same principles covered in this module.</p>
+                    </div>
+
+                    <div class="lab-step">
+                        <h3>Step 1: Create the Project (2 minutes)</h3>
+                        <ol>
+                            <li>Open <a href="https://claude.ai" target="_blank">claude.ai</a> in your browser</li>
+                            <li>Click <strong>"Projects"</strong> in the left sidebar</li>
+                            <li>Click <strong>"New Project"</strong></li>
+                            <li>Name your Project: <strong>"LinkedIn Content Studio"</strong></li>
+                            <li>Click <strong>"Create Project"</strong></li>
+                        </ol>
+
+                        <div class="checkpoint">
+                            CHECKPOINT: You should now see your new Project in the sidebar. Click into it to continue.
+                        </div>
+
+                        <h3>Step 2: Write Custom Instructions (5-7 minutes)</h3>
+                        <p><strong>Your mission:</strong> Write "Standing Orders" that apply to every LinkedIn post drafted in this Project.</p>
+
+                        <ol>
+                            <li>In your new Project, scroll down to the <strong>"Instructions"</strong> section</li>
+                            <li>Write instructions that tell Claude how to help you create LinkedIn posts</li>
+                        </ol>
+
+                        <h4>💡 Tips for Writing Effective Custom Instructions</h4>
+
+                        <p><strong>Start with 4 key sections:</strong></p>
+                        <ol>
+                            <li><strong>ROLE:</strong> Who are you? What's your job title and company?</li>
+                            <li><strong>CONTEXT:</strong> What does your company do? What's your positioning or philosophy?</li>
+                            <li><strong>OUTPUT RULES:</strong> How should posts be structured? (length, format, tone)</li>
+                            <li><strong>NEVER:</strong> What should Claude absolutely avoid? (forbidden language, bad patterns)</li>
+                        </ol>
+
+                        <p><strong>Best practices:</strong></p>
+                        <ul>
+                            <li>✅ <strong>Be specific:</strong> "150-250 words, 3-5 short paragraphs" beats "keep it short"</li>
+                            <li>✅ <strong>Use examples:</strong> "Say 'reduced conflicts by 40%' not 'improved efficiency'"</li>
+                            <li>✅ <strong>List forbidden terms explicitly:</strong> "NEVER use 'synergy,' 'leverage,' 'disrupt'"</li>
+                            <li>✅ <strong>Start with 200 words</strong>—you can always add more later</li>
+                            <li>✅ <strong>Put critical rules at the END</strong>—Claude pays more attention to instructions at the bottom</li>
+                            <li>❌ <strong>Don't write 2,000 words</strong> covering every edge case (Claude ignores over-instruction)</li>
+                        </ul>
+
+                        <button onclick="toggleExample('example1')" style="margin-top: 30px; padding: 12px 24px; background-color: #2ED4B5; color: #14203F; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); transition: all 0.3s;">
+                            💡 Show me an example structure
+                        </button>
+                        <div id="example1" style="display: none; margin-top: 15px; padding: 20px; background-color: #f5f5f5; border-left: 4px solid #2ED4B5; border-radius: 4px;">
+                            <pre style="margin: 0; white-space: pre-wrap; font-family: 'Courier New', monospace; font-size: 13px;"><code>ROLE: You are my LinkedIn content assistant. I'm a [Your Job Title] at ActivTrak, a workforce analytics company.
+
+YOUR MISSION:
+- Draft engaging LinkedIn posts that sound like me, not corporate marketing
+- Highlight real business problems and how we solve them
+- Use storytelling and examples, not just product features
+- Keep posts authentic, conversational, and value-focused
+
+POST STRUCTURE:
+1. Hook (1-2 sentences that grab attention)
+2. Body (problem, insight, or story)
+3. CTA (comment prompt or link)
+
+LENGTH & FORMAT:
+- Target 150-250 words (3-5 short paragraphs)
+- Use line breaks for readability (1-2 sentences per paragraph)
+- No emojis unless I specifically request them
+- End with a question or CTA to drive engagement
+
+VOICE & TONE:
+- Professional but approachable—like explaining to a colleague over coffee
+- Avoid buzzwords ("synergy," "leverage," "disrupt")
+- Use "we" when talking about ActivTrak, "I" when sharing my perspective
+- Be specific with data: "reduced scheduling conflicts by 40%" beats "improved efficiency"
+
+NEVER:
+- Use surveillance language ("monitor employees," "track workers")
+- Write generic LinkedIn fluff ("Excited to share," "Thrilled to announce")
+- Include hashtags unless I ask for them</code></pre>
+                        </div>
+
+                        <button onclick="toggleExample('example2')" style="margin-top: 20px; padding: 12px 24px; background-color: #2ED4B5; color: #14203F; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); transition: all 0.3s;">
+                            🚀 Show me an advanced example
+                        </button>
+                        <div id="example2" style="display: none; margin-top: 15px; padding: 20px; background-color: #f5f5f5; border-left: 4px solid #2ED4B5; border-radius: 4px;">
+                            <pre style="margin: 0; white-space: pre-wrap; font-family: 'Courier New', monospace; font-size: 13px;"><code># LinkedIn Post Creation Instructions
+
+## Core Directive
+Generate authentic, data-driven LinkedIn content that establishes Daniel as a thought leader in workplace analytics, employee monitoring ethics, and HR technology. Posts should drive professional discussion while avoiding formulaic AI-generated patterns.
+
+---
+
+## Pre-Creation Requirements
+
+### Input Specification
+Before generating any post, confirm:
+- **Topic/angle**: Specific workplace trend, research finding, or industry insight
+- **Key data points**: Concrete statistics, percentages, or company examples to include
+- **Tone preference**: Standard conversational, provocative/contrarian, or educational
+- **Visual inclusion**: Will post include carousel, single infographic, or text-only?
+- **Call-to-action preference**: Discussion question, follow request, or engagement prompt
+
+If any element is unclear or missing, ask for clarification before proceeding.
+
+---
+
+## Writing Standards
+
+### Voice & Tone
+- Conversational, authentic, and human-first (contractions, informal transitions)
+- Authoritative without being corporate or preachy
+- Express genuine perspective while remaining professionally appropriate
+- Vary sentence length dramatically (one-word declarations to multi-clause explanations)
+- Use natural paragraph breaks to mirror spoken rhythm
+
+### Structural Approach
+- **Opening (lines 1-2)**: Bold, attention-grabbing statement or question that creates immediate value promise
+- **Body (lines 3-10)**: Progressive disclosure of information in digestible chunks; concrete examples with specific company names and real statistics
+- **Conclusion (final 2-3 lines)**: Clear synthesis or call-to-action; never end abruptly
+
+### Formatting Elements
+- Use arrow symbols (→, ➡️) for progression or connection
+- Use numbered lists for step-by-step insights (5-7 items maximum)
+- Strategic bolding for key statistics or insights (not overused)
+- Line breaks between major ideas to create visual breathing room
+- Emojis as visual anchors (1-2 maximum, placed strategically)
+
+### Language Patterns
+- **Active voice primary**: Use passive voice only where it sounds natural
+- **Avoid jargon unless context-specific**: Replace formal/complex words with simpler alternatives
+- **Specific over general**: Use actual company names, percentages, real-world examples
+- **Action verbs**: Focus on verbs that create energy or urgency
+
+---
+
+## Content Themes to Leverage
+
+### High-Performing Angles
+- Failed or controversial workplace tech implementations (AT&T's "freeloader finder," etc.)
+- Gaps between RTO mandates and actual compliance
+- AI fairness and bias in HR systems
+- Trust-building vs. surveillance in workplace monitoring
+- Research-backed insights (Stanford WFH Research, SWAA dataset, etc.)
+- Contrarian takes on workplace trends
+
+### Data Sources to Reference
+- Stanford Working from Home Research (wfhresearch.com)
+- Survey of Working Arrangements and Attitudes (SWAA) dataset
+- Forbes Technology Council, HR Reporter
+- ActivTrak proprietary data where appropriate
+- Industry reports with clear attribution
+
+### Messaging Framework
+- **Technology should enable trust, not replace it** (core principle)
+- Measuring outcomes/impact is more effective than measuring visibility
+- Transparency and consent matter in employee monitoring
+- Context-dependent work requires flexible policy, not rigid surveillance
+
+---
+
+## Visual Content Standards
+
+### Carousel Specifications (When Applicable)
+- **Dimensions**: 1080 x 1350 pixels per slide
+- **Font**: Century Gothic
+- **Background**: White by default
+- **Design elements**: Use ActivTrak brand colors (primary palette: #147bd1, #2ED4B5, #19316A, #14293F)
+- **Typography**: Large, readable fonts (minimum 24px body text, 36px+ headers)
+- **Layout**: Professional hierarchy with ample white space
+- **Avoid**: ActivTrak logo, cluttered designs, unreadable small text
+
+### Single Infographic Specifications
+- **Dimensions**: 1080 x 1350 pixels
+- **Design approach**: Tell a complete story through data visualization
+- **Font**: Century Gothic
+- **Readability first**: Optimize for mobile viewing at small sizes
+- **Color palette**: Primary ActivTrak colors with complementary gradients
+- **Avoid**: ActivTrak logo
+
+### Quality Checklist
+- All text readable at mobile size
+- Color contrast meets accessibility standards
+- Design avoids generic template appearance
+- Data visualizations are clear and properly labeled
+- Professional finish without unnecessary decoration
+
+---
+
+## Engagement Strategy
+
+### Call-to-Action Approach
+- End with thought-provoking question that invites genuine discussion
+- Use phrases like "What's your take on...?" or "Am I off base here...?"
+- Consider industry-specific CTAs that position Daniel as seeking expert input
+- Avoid generic "Like and follow" language
+
+### Engagement Triggers
+- Share unique or contrarian perspectives backed by data
+- Reference timely workplace trends or current events
+- Provide actionable insight readers can apply immediately
+- Create conversation starters that invite multiple viewpoints
+
+---
+
+## Quality Control Checklist
+
+### Before Output
+- [ ] No formulaic AI patterns (parallel sentence structures, robot-like transitions)
+- [ ] Specific examples with real company names included
+- [ ] Data points are accurate and properly attributed
+- [ ] Contractions used naturally throughout
+- [ ] Varied sentence length and structure
+- [ ] Clear visual hierarchy with strategic line breaks
+- [ ] Call-to-action is specific and invites engagement
+- [ ] No Oxford commas used
+- [ ] Em-dashes avoided unless absolutely necessary
+- [ ] Terminology accurate (users/accounts, not customers; flexible hours schedules, not flex work)
+
+### Visual Content Validation
+- [ ] Dimensions correct (1080 x 1350)
+- [ ] Font is Century Gothic
+- [ ] Text readable at mobile size
+- [ ] Background is white unless specifically designed otherwise
+- [ ] No ActivTrak logo included
+- [ ] Professional appearance without generic template feel
+
+---
+
+## Output Format
+
+**Post deliverable**: Text only, placed in artifact with no additional explanation
+**Visual deliverable**: HTML/code version optimized for copy-paste into LinkedIn, placed in artifact
+
+Do not include commentary, process explanation, or meta-discussion of the post in the main response.
+
+---
+
+## Exception Handling
+
+### When to Pause & Ask
+- Topic lacks sufficient data or research to support claims
+- Required context missing (audience segment, campaign timing, etc.)
+- Request conflicts with brand positioning or accuracy standards
+- Visual specifications unclear or require clarification
+
+### Confidence Thresholds
+- Only include claims you're 90%+ confident in
+- Flag uncertain information with [TBD] or request clarification
+- Use recent/current information (search if topic may have updated since January 2025)</code></pre>
+                        </div>
+
+                        <ol start="3">
+                            <li>Click <strong>"Save"</strong> or confirm changes</li>
+                        </ol>
+
+                        <div class="checkpoint">
+                            CHECKPOINT: Your custom instructions are saved. You should see them displayed in the Project settings.
+                        </div>
+
+                        <h3>Step 3 (Optional): Add Reference Documents (3-5 minutes)</h3>
+                        <p>If you have past LinkedIn posts or brand voice guidelines, you can upload them to help Claude match your style:</p>
+
+                        <p><strong>Good candidates:</strong></p>
+                        <ul>
+                            <li>Past LinkedIn posts that performed well (export as PDF or text)</li>
+                            <li>LinkedIn-specific brand voice guidelines (tone, terminology, what to avoid)</li>
+                            <li>Key messaging documents</li>
+                        </ul>
+
+                        <p><strong>How to upload:</strong></p>
+                        <ol>
+                            <li>Click <strong>"Add Content"</strong> in the Project interface</li>
+                            <li>Click <strong>"Upload Files"</strong></li>
+                            <li>Select 1-3 documents from your local files</li>
+                            <li>Wait for the processing indicator</li>
+                        </ol>
+
+                        <div class="pro-tip">
+                            <strong>💡 PRO TIP:</strong> Use Markdown (.md) or plain text (.txt) files when possible—they work better than PDFs for Claude's retrieval system.
+                        </div>
+
+                        <h3>Step 4: Test Your Project (3-5 minutes)</h3>
+                        <p><strong>Your mission:</strong> Verify the Project works by creating a real LinkedIn post.</p>
+
+                        <ol>
+                            <li>Click <strong>"Start a new chat"</strong> within your Project</li>
+                            <li>Type a prompt like this:
+                                <blockquote style="margin: 1rem 0; padding: 1rem; background-color: #F5F5F5; border-left: 4px solid var(--blue);">
+                                    "Draft a LinkedIn post about [a topic you find interesting related to ActivTrak—flexible work schedules, hybrid teams, productivity coaching, schedule adherence, etc.]"
+                                </blockquote>
+                            </li>
+                            <li><strong>Review Claude's output:</strong>
+                                <ul>
+                                    <li>✅ Does it remember your role and company without you stating it?</li>
+                                    <li>✅ Is the post 150-250 words with short paragraphs?</li>
+                                    <li>✅ Does it avoid buzzwords and generic LinkedIn fluff?</li>
+                                    <li>✅ Does it sound conversational and authentic?</li>
+                                    <li>✅ Does it end with a question or CTA?</li>
+                                </ul>
+                            </li>
+                            <li>If something doesn't match your instructions, go back and make them more explicit</li>
+                        </ol>
+
+                        <div class="checkpoint">
+                            CHECKPOINT: Your Claude Project successfully created a LinkedIn post that follows your instructions.
+                        </div>
+                    </div>
+
+                    <h2>Completion Criteria</h2>
+                    <p>You've successfully completed this lab when:</p>
+                    <ul>
+                        <li>✅ You have a functional Claude Project for LinkedIn content creation</li>
+                        <li>✅ Custom instructions are saved (200+ words recommended)</li>
+                        <li>✅ You've tested the Project and created at least one LinkedIn post</li>
+                    </ul>
+
+                    <div style="margin: 2rem 0; padding: 1.5rem; background-color: #F0F7FA; border-left: 4px solid var(--teal); border-radius: 4px;">
+                        <h3 style="margin-top: 0; color: var(--dark-navy);">Lab Completion Confirmation</h3>
+                        <p>Before proceeding to the quiz, confirm your lab status:</p>
+
+                        <label style="display: block; margin: 1rem 0; cursor: pointer;">
+                            <input type="checkbox" id="lab-completed" style="margin-right: 0.5rem; transform: scale(1.2);">
+                            <strong>I have completed this lab to my satisfaction</strong> OR I have equivalent experience and am confident I can perform these tasks in the future.
+                        </label>
+
+                        <p style="font-size: 0.9em; color: #666; margin-top: 1rem;">
+                            <em>This self-assessment helps you confirm you're ready to move forward with the course material.</em>
+                        </p>
+                    </div>
+
+                    <h2>Reflection Questions</h2>
+                    <p>Before moving to the quiz, take 2 minutes to reflect:</p>
+                    <ol>
+                        <li><strong>What surprised you?</strong> Did Claude follow your instructions better or worse than expected?</li>
+                        <li><strong>What would you change?</strong> If you had to rewrite your custom instructions, what would you add or remove?</li>
+                        <li><strong>Where will you use this?</strong> Name 2-3 recurring tasks at ActivTrak where a Project would save you time every week.</li>
+                    </ol>
+                </div>
+            </section>
+
+            <!-- Quiz Section -->
+            <section id="quiz" class="content-section">
+                <div class="lesson-header">
+                    <h1>Knowledge Check</h1>
+                    <p class="lesson-meta">Test your understanding (passing score: 70%)</p>
+                </div>
+
+                <div class="quiz-question" data-correct="B">
+                    <h3>Question 1: What is the "Context Rebuild Tax"?</h3>
+                    <div class="quiz-options">
+                        <div class="quiz-option" data-value="A">A) The cost of upgrading from Claude Free to Claude Pro</div>
+                        <div class="quiz-option" data-value="B">B) The time wasted re-explaining your role, company, and preferences at the start of every new chat</div>
+                        <div class="quiz-option" data-value="C">C) The computational resources Claude uses to rebuild its neural network</div>
+                        <div class="quiz-option" data-value="D">D) The memory overhead from storing too many files in a Project</div>
+                    </div>
+                    <button class="check-answer-btn">Check Answer</button>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-correct="B">
+                    <h3>Question 2: Your team needs to analyze quarterly customer contracts containing PII every month. Which platform should you use?</h3>
+                    <div class="quiz-options">
+                        <div class="quiz-option" data-value="A">A) Standard ChatGPT chats with files uploaded inline each time</div>
+                        <div class="quiz-option" data-value="B">B) Claude Projects with hard-wall isolation</div>
+                        <div class="quiz-option" data-value="C">C) ChatGPT Projects with cross-conversation memory enabled</div>
+                        <div class="quiz-option" data-value="D">D) Standard Claude chats, deleting the conversation after each analysis</div>
+                    </div>
+                    <button class="check-answer-btn">Check Answer</button>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-correct="False">
+                    <h3>Question 3: True or False - You should create a Project for every task you perform, even one-time questions.</h3>
+                    <div class="quiz-options">
+                        <div class="quiz-option" data-value="True">True</div>
+                        <div class="quiz-option" data-value="False">False</div>
+                    </div>
+                    <button class="check-answer-btn">Check Answer</button>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-correct="C">
+                    <h3>Question 4: What is the primary difference between Claude Projects (hard walls) and ChatGPT Projects (soft boundaries)?</h3>
+                    <div class="quiz-options">
+                        <div class="quiz-option" data-value="A">A) Claude Projects support more file types than ChatGPT Projects</div>
+                        <div class="quiz-option" data-value="B">B) ChatGPT Projects cost more than Claude Projects</div>
+                        <div class="quiz-option" data-value="C">C) Claude Projects have complete isolation between Projects; ChatGPT Projects have cross-conversation memory that can bleed between chats</div>
+                        <div class="quiz-option" data-value="D">D) Claude Projects only work on desktop; ChatGPT Projects work on mobile</div>
+                    </div>
+                    <button class="check-answer-btn">Check Answer</button>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-correct="B">
+                    <h3>Question 5: You write 2,000 words of custom instructions covering every edge case. Claude's outputs are inconsistent. What went wrong?</h3>
+                    <div class="quiz-options">
+                        <div class="quiz-option" data-value="A">A) Claude Projects have a strict 500-word limit for custom instructions</div>
+                        <div class="quiz-option" data-value="B">B) You over-instructed—Claude ignores instructions that drown in noise</div>
+                        <div class="quiz-option" data-value="C">C) You need to upgrade to Claude Pro for custom instructions to work</div>
+                        <div class="quiz-option" data-value="D">D) Claude can't process complex data analysis due to technical limitations</div>
+                    </div>
+                    <button class="check-answer-btn">Check Answer</button>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-correct="C">
+                    <h3>Question 6: You've created a Claude Project with 5 uploaded files and custom instructions. Your first test prompt doesn't follow your instructions. What should you do FIRST?</h3>
+                    <div class="quiz-options">
+                        <div class="quiz-option" data-value="A">A) Delete the Project and start over from scratch</div>
+                        <div class="quiz-option" data-value="B">B) Upgrade to Claude Pro—custom instructions only work on paid tiers</div>
+                        <div class="quiz-option" data-value="C">C) Run 2-3 more test prompts to verify whether this is a one-time issue or a pattern</div>
+                        <div class="quiz-option" data-value="D">D) Add more detailed instructions to fix the problem</div>
+                    </div>
+                    <button class="check-answer-btn">Check Answer</button>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-correct="False">
+                    <h3>Question 7: True or False - Once you set up a Claude Project with custom instructions, you should never modify those instructions.</h3>
+                    <div class="quiz-options">
+                        <div class="quiz-option" data-value="True">True</div>
+                        <div class="quiz-option" data-value="False">False</div>
+                    </div>
+                    <button class="check-answer-btn">Check Answer</button>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-correct="B">
+                    <h3>Question 8: You've uploaded 80 files (~1.5 million tokens) to a Claude Project. Claude's responses reference your documents accurately. What technology is Claude using?</h3>
+                    <div class="quiz-options">
+                        <div class="quiz-option" data-value="A">A) Full Context Mode—Claude is reading all 80 files into its context window simultaneously</div>
+                        <div class="quiz-option" data-value="B">B) RAG (Retrieval-Augmented Generation)—Claude is searching and retrieving relevant chunks from indexed documents</div>
+                        <div class="quiz-option" data-value="C">C) Compressed Context Mode—Claude is summarizing files to fit them into the context window</div>
+                        <div class="quiz-option" data-value="D">D) Cached Memory—Claude is storing your files in long-term memory across sessions</div>
+                    </div>
+                    <button class="check-answer-btn">Check Answer</button>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-correct="C">
+                    <h3>Question 9: You're creating two ChatGPT Projects: "Creative Writing Coach" (personal) and "Client Legal Briefs" (sensitive). How should you configure memory?</h3>
+                    <div class="quiz-options">
+                        <div class="quiz-option" data-value="A">A) Both should use Cross-Conversation Memory to maximize learning</div>
+                        <div class="quiz-option" data-value="B">B) Both should use Project-Only Memory to prevent data leakage</div>
+                        <div class="quiz-option" data-value="C">C) Creative Writing = Cross-Conversation Memory; Legal Briefs = Project-Only Memory</div>
+                        <div class="quiz-option" data-value="D">D) Creative Writing = Project-Only Memory; Legal Briefs = Cross-Conversation Memory</div>
+                    </div>
+                    <button class="check-answer-btn">Check Answer</button>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <button class="submit-quiz-btn" onclick="submitQuiz()">Submit Quiz</button>
+            </section>
+
+            <!-- Study Guide Section -->
+            <section id="study-guide" class="content-section">
+                <div class="lesson-header">
+                    <h1>Study Guide</h1>
+                    <p class="lesson-meta">One-page quick reference</p>
+                </div>
+
+                <div class="lesson-content">
+                    <h2>The Problem: Context Rebuild Tax</h2>
+                    <p><strong>What it is:</strong> The 5-10 minutes wasted at the start of every chat re-explaining your role, company, preferences, and context</p>
+                    <p><strong>Cost:</strong> Hours per month of repeated explanations</p>
+                    <p><strong>Solution:</strong> Claude Projects and ChatGPT Projects/Folders maintain persistent context</p>
+
+                    <h2>Platform Comparison</h2>
+                    <table>
+                        <tr>
+                            <th>Feature</th>
+                            <th>Claude Projects</th>
+                            <th>ChatGPT Projects</th>
+                        </tr>
+                        <tr>
+                            <td><strong>Memory Model</strong></td>
+                            <td>Hard Walls (100% isolated)</td>
+                            <td>Soft Boundaries (cross-conversation memory)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>File Capacity</strong></td>
+                            <td>200 files (~10MB each)</td>
+                            <td>25-40 files (tier-dependent)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Best For</strong></td>
+                            <td>PII work, sensitive data, compartmentalized tasks</td>
+                            <td>Creative work, team Projects, iterative drafts</td>
+                        </tr>
+                    </table>
+
+                    <h2>Decision Tree: When to Create a Project</h2>
+                    <ol>
+                        <li><strong>Do you need persistent files or custom instructions?</strong> → No: Use standard chat</li>
+                        <li><strong>Is this work recurring (weekly/monthly)?</strong> → One-time: Standard chat is fine</li>
+                        <li><strong>Does it involve sensitive PII?</strong> → Yes: Use Claude Projects</li>
+                        <li><strong>Want AI to learn your style across all chats?</strong> → Yes: Use ChatGPT Projects</li>
+                    </ol>
+
+                    <p><strong>The 5-Minute Test:</strong> "Would I spend 5+ minutes re-briefing the AI on this context?" If no, skip the Project.</p>
+
+                    <h2>Building a Claude Project (Quick Steps)</h2>
+                    <ol>
+                        <li><strong>Create:</strong> Click "Projects" → "New Project" → Name it</li>
+                        <li><strong>Upload:</strong> Add 3-5 core documents</li>
+                        <li><strong>Instruct:</strong> Write 200-word custom instructions (Role, Context, Output Rules, Never Do)</li>
+                        <li><strong>Test:</strong> Run 3 test prompts (role memory, file usage, terminology compliance)</li>
+                        <li><strong>Refine:</strong> Adjust instructions based on what Claude forgets</li>
+                    </ol>
+
+                    <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem;">
+                        <div style="width: 48px; height: 48px; background: linear-gradient(135deg, #FFC83B 0%, #FFB300 100%); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: white;">
+                            ⚠️
+                        </div>
+                        <h2 style="margin: 0; color: var(--dark-navy);">Common Mistakes to Avoid</h2>
+                    </div>
+
+                    <!-- Mistake 1: The Junk Drawer -->
+                    <div style="display: flex; gap: 1rem; padding: 1.5rem; background: white; border: 2px solid #FFC83B; border-radius: 8px; margin-bottom: 1rem; box-shadow: 0 2px 6px rgba(0,0,0,0.05);">
+                        <div style="flex-shrink: 0;">
+                            <div style="width: 48px; height: 48px; background: #FFC83B; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">📁</div>
+                        </div>
+                        <div style="flex: 1;">
+                            <div style="font-weight: 700; color: var(--dark-navy); margin-bottom: 0.5rem; font-size: 1.1rem;">The Junk Drawer</div>
+                            <div style="margin-bottom: 0.5rem;">
+                                <strong style="color: #D32F2F;">Problem:</strong> <span style="color: #666;">Dumping 200 random files into one Project.</span>
+                            </div>
+                            <div>
+                                <strong style="color: var(--teal);">Fix:</strong> <span style="color: #666;">Create focused Projects with 5-15 signal-rich files max.</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Mistake 2: Over-Instructing -->
+                    <div style="display: flex; gap: 1rem; padding: 1.5rem; background: white; border: 2px solid #FFC83B; border-radius: 8px; margin-bottom: 1rem; box-shadow: 0 2px 6px rgba(0,0,0,0.05);">
+                        <div style="flex-shrink: 0;">
+                            <div style="width: 48px; height: 48px; background: #FFC83B; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">📝</div>
+                        </div>
+                        <div style="flex: 1;">
+                            <div style="font-weight: 700; color: var(--dark-navy); margin-bottom: 0.5rem; font-size: 1.1rem;">Over-Instructing</div>
+                            <div style="margin-bottom: 0.5rem;">
+                                <strong style="color: #D32F2F;">Problem:</strong> <span style="color: #666;">Writing 2,000-word custom instructions trying to anticipate everything.</span>
+                            </div>
+                            <div>
+                                <strong style="color: var(--teal);">Fix:</strong> <span style="color: #666;">Start with 200 words; add instructions sparingly based on actual problems.</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Mistake 3: Never Pruning -->
+                    <div style="display: flex; gap: 1rem; padding: 1.5rem; background: white; border: 2px solid #FFC83B; border-radius: 8px; margin-bottom: 1rem; box-shadow: 0 2px 6px rgba(0,0,0,0.05);">
+                        <div style="flex-shrink: 0;">
+                            <div style="width: 48px; height: 48px; background: #FFC83B; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">🗑️</div>
+                        </div>
+                        <div style="flex: 1;">
+                            <div style="font-weight: 700; color: var(--dark-navy); margin-bottom: 0.5rem; font-size: 1.1rem;">Never Pruning</div>
+                            <div style="margin-bottom: 0.5rem;">
+                                <strong style="color: #D32F2F;">Problem:</strong> <span style="color: #666;">Outdated files accumulate, diluting retrieval quality with stale information.</span>
+                            </div>
+                            <div>
+                                <strong style="color: var(--teal);">Fix:</strong> <span style="color: #666;">Monthly audit—archive or remove files older than 90 days.</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Mistake 4: Forgetting to Test -->
+                    <div style="display: flex; gap: 1rem; padding: 1.5rem; background: white; border: 2px solid #FFC83B; border-radius: 8px; margin-bottom: 1rem; box-shadow: 0 2px 6px rgba(0,0,0,0.05);">
+                        <div style="flex-shrink: 0;">
+                            <div style="width: 48px; height: 48px; background: #FFC83B; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">🧪</div>
+                        </div>
+                        <div style="flex: 1;">
+                            <div style="font-weight: 700; color: var(--dark-navy); margin-bottom: 0.5rem; font-size: 1.1rem;">Forgetting to Test</div>
+                            <div style="margin-bottom: 0.5rem;">
+                                <strong style="color: #D32F2F;">Problem:</strong> <span style="color: #666;">Assuming custom instructions work without verification.</span>
+                            </div>
+                            <div>
+                                <strong style="color: var(--teal);">Fix:</strong> <span style="color: #666;">Run 3 test prompts immediately after setup to validate behavior.</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Mistake 5: One-Time Projects -->
+                    <div style="display: flex; gap: 1rem; padding: 1.5rem; background: white; border: 2px solid #FFC83B; border-radius: 8px; margin-bottom: 1rem; box-shadow: 0 2px 6px rgba(0,0,0,0.05);">
+                        <div style="flex-shrink: 0;">
+                            <div style="width: 48px; height: 48px; background: #FFC83B; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">🎯</div>
+                        </div>
+                        <div style="flex: 1;">
+                            <div style="font-weight: 700; color: var(--dark-navy); margin-bottom: 0.5rem; font-size: 1.1rem;">One-Time Projects</div>
+                            <div style="margin-bottom: 0.5rem;">
+                                <strong style="color: #D32F2F;">Problem:</strong> <span style="color: #666;">Creating Projects for one-off tasks like vacation planning or homework.</span>
+                            </div>
+                            <div>
+                                <strong style="color: var(--teal);">Fix:</strong> <span style="color: #666;">Projects are for recurring, systematic work only. Use standard chat for one-offs.</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h2>Understanding RAG in Claude Projects</h2>
+                    <p><strong>What It Is:</strong> Retrieval-Augmented Generation—Claude's "research assistant" that searches your files semantically</p>
+                    <table class="comparison-table">
+                        <tr>
+                            <th>Mode</th>
+                            <th>Threshold</th>
+                            <th>How It Works</th>
+                        </tr>
+                        <tr>
+                            <td><strong>Full Context</strong></td>
+                            <td>&lt;200K tokens (~150 pages)</td>
+                            <td>Claude reads ALL files into memory</td>
+                        </tr>
+                        <tr>
+                            <td><strong>RAG Mode</strong></td>
+                            <td>&gt;200K tokens</td>
+                            <td>Claude searches indexed documents for relevant chunks</td>
+                        </tr>
+                    </table>
+                    <p><strong>Why It Matters:</strong> Enables 10x capacity expansion (200 files instead of 20)</p>
+                    <p><strong>Optimization Tips:</strong> Use Markdown format, structure documents with clear headers, remove redundant content, keep file names descriptive, don't over-upload</p>
+
+                    <h2>ChatGPT Memory Settings</h2>
+                    <ul>
+                        <li><strong>Cross-Conversation Memory:</strong> ChatGPT remembers facts/preferences across ALL chats. Best for personal creative work.</li>
+                        <li><strong>Project-Only Memory:</strong> Information stays siloed within that Project. Best for sensitive client work.</li>
+                        <li><strong>Decision Rule:</strong> Sensitive data/clients → Project-only memory. Personal creative work → Cross-conversation memory.</li>
+                        <li><strong>Important:</strong> Shared Projects (Business/Enterprise) automatically use project-only memory to prevent team data leakage</li>
+                    </ul>
+
+                    <h2>Key Terminology</h2>
+                    <ul>
+                        <li><strong>Context Rebuild Tax:</strong> Time wasted re-explaining context every chat (5-10 min per session)</li>
+                        <li><strong>Hard Walls (Claude):</strong> 100% isolation between Projects—what happens in Project A stays in Project A</li>
+                        <li><strong>Soft Boundaries (ChatGPT):</strong> Cross-conversation memory bleeds between chats (unless project-only mode)</li>
+                        <li><strong>Custom Instructions:</strong> Persistent "Standing Orders" for every chat in a Project (start with 200 words)</li>
+                        <li><strong>RAG (Retrieval-Augmented Generation):</strong> Technology that lets Claude search large file sets semantically; auto-activates at 200K tokens</li>
+                        <li><strong>Full Context Mode:</strong> Claude reads all files into memory (&lt;200K tokens)</li>
+                        <li><strong>Vectorization/Embeddings:</strong> Converting documents into "numerical fingerprints" for semantic search</li>
+                        <li><strong>Cross-Conversation Memory:</strong> ChatGPT remembers facts across all chats (global)</li>
+                        <li><strong>Project-Only Memory:</strong> Information stays siloed within one Project (for sensitive data)</li>
+                        <li><strong>Squadron Metaphor:</strong> Projects = Mission Headquarters with pre-briefed AI; RAG = Intelligence Archive</li>
+                    </ul>
+
+                    <div class="callout">
+                        <div class="callout-title">Next Steps</div>
+                        <ol>
+                            <li>Build your first Claude Project for a recurring ActivTrak task</li>
+                            <li>Organize your ChatGPT sidebar with 3-5 folders</li>
+                            <li>Use Projects in real work this week—iterate on instructions as you learn</li>
+                            <li>Conduct monthly audits: prune files, refine instructions, archive old chats</li>
+                        </ol>
+                        <p><strong>Remember:</strong> Projects are living systems. Expect to refine over 2-3 weeks. That's normal.</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // Toggle example sections
+        function toggleExample(id) {
+            const element = document.getElementById(id);
+            if (element.style.display === 'none') {
+                element.style.display = 'block';
+            } else {
+                element.style.display = 'none';
+            }
+        }
+
+        // Navigation
+        function navigateTo(section) {
+            document.querySelectorAll('.content-section').forEach(sec => sec.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+
+            document.getElementById(section).classList.add('active');
+            document.querySelector(`[data-section="${section}"]`).classList.add('active');
+
+            updateProgress();
+        }
+
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', () => {
+                navigateTo(item.dataset.section);
+            });
+        });
+
+        function updateProgress() {
+            const sections = ['lesson', 'flashcards', 'lab', 'quiz', 'study-guide'];
+            const activeIndex = sections.findIndex(s =>
+                document.getElementById(s).classList.contains('active')
+            );
+            const progress = Math.round(((activeIndex + 1) / sections.length) * 100);
+            document.querySelector('.progress-fill').style.width = progress + '%';
+            document.querySelector('.progress-text').textContent = progress + '% Complete';
+        }
+
+        // Flashcards
+        const flashcards = [
+            {
+                front: 'What is the "Context Rebuild Tax" and how much time does it cost?',
+                back: 'The time wasted re-explaining your role, company, preferences, and context to the AI at the start of every new chat. Typically costs 5-10 minutes per session, adding up to hours per month. Projects eliminate this by maintaining persistent context.'
+            },
+            {
+                front: 'What does "hard walls" mean for Claude Projects?',
+                back: 'Complete isolation between Projects. What happens in Project A stays in Project A—Claude has zero awareness of your other Projects. This prevents context pollution and is ideal for sensitive data, document-heavy analysis, or work that must stay compartmentalized.<br><br><strong>Squadron Metaphor:</strong> Classified military bases with restricted access.'
+            },
+            {
+                front: 'How do ChatGPT Projects differ from Claude Projects in terms of memory?',
+                back: 'ChatGPT Projects have "soft boundaries" with cross-conversation memory enabled by default. Insights from one chat can inform another, even outside Projects. Best for iterative creative work and scenarios where you want the AI to learn your style over time.<br><br><strong>Squadron Metaphor:</strong> Open-plan offices with flexible dividers.'
+            },
+            {
+                front: 'You need to analyze customer contracts containing PII monthly. Which platform should you use?',
+                back: '<strong>Claude Projects.</strong> The hard walls guarantee complete isolation, making it ideal for sensitive PII work. The 200-file capacity handles document-heavy analysis well, and persistent custom instructions ensure consistent output every month.'
+            },
+            {
+                front: 'What are Custom Instructions and how should you approach writing them?',
+                back: 'Custom Instructions are your "Standing Orders"—rules that apply to every chat in a Project. Start with 200 words focused on role, context, output format, and never-do rules. Add instructions only when the AI consistently makes the same mistake. Prune ruthlessly—over-instruction causes the AI to ignore everything.<br><br><strong>Squadron Metaphor:</strong> Mission briefing that applies to every sortie from this base.'
+            },
+            {
+                front: 'When should you create a Project vs. using standard chat?',
+                back: 'Create a Project for recurring work (weekly/monthly tasks), document-heavy analysis, or when you\'d spend 5+ minutes re-briefing the AI. Use standard chat for one-time research, quick questions, or low-stakes tasks. Projects have setup overhead—only use them for work you\'ll revisit in 30 days.'
+            },
+            {
+                front: 'What\'s the "Junk Drawer" mistake and how do you avoid it?',
+                back: 'Creating one giant Project with 200 random files dumped in. The AI can\'t distinguish signal from noise, wasting context on irrelevant documents. <strong>Fix:</strong> Create focused Projects with 5-15 files max. Separate "LinkedIn Content" from "Customer Success" from "Product Docs." Each Project should serve one clear purpose.'
+            },
+            {
+                front: 'Why must you test a new Project immediately after setup?',
+                back: 'Custom instructions are notoriously hard to get right on the first try. Run 3 test prompts to verify the AI remembers your role, follows output formatting, applies terminology rules, and avoids forbidden patterns. If any requirement fails, refine instructions and test again before using the Project for real work.'
+            },
+            {
+                front: 'What is RAG and how does it relate to Claude Projects?',
+                back: 'RAG gives Claude Projects a "research assistant" that searches your files semantically instead of keeping everything in working memory. When your knowledge base exceeds 200K tokens, Claude automatically switches from Full Context Mode (reading all files) to RAG Mode (searching and retrieving relevant chunks). This enables 10x capacity expansion—up to 200 files instead of 20.<br><br><strong>Squadron Metaphor:</strong> Intelligence Archive with rapid retrieval system.'
+            },
+            {
+                front: 'When does Claude Projects switch between Full Context Mode and RAG Mode?',
+                back: 'Claude automatically switches at 200K tokens (~150 pages). Below that threshold, it reads all files into memory. Above it, RAG activates—Claude indexes documents and retrieves relevant chunks on demand. The transition is invisible and enables 10x capacity expansion.'
+            },
+            {
+                front: 'What\'s the difference between Cross-Conversation Memory and Project-Only Memory in ChatGPT?',
+                back: '<strong>Cross-Conversation:</strong> ChatGPT remembers across all chats. Use for personal creative work.<br><br><strong>Project-Only:</strong> Information stays siloed within that Project. Use for sensitive client work.<br><br>Shared Projects automatically enforce project-only memory to prevent team data leakage.'
+            }
+        ];
+
+        let currentCardIndex = 0;
+
+        function updateFlashcard() {
+            const card = flashcards[currentCardIndex];
+            document.getElementById('flashcard-front-content').innerHTML = card.front;
+            document.getElementById('flashcard-back-content').innerHTML = card.back;
+            document.getElementById('currentCard').textContent = currentCardIndex + 1;
+            document.getElementById('flashcard').classList.remove('flipped');
+        }
+
+        document.getElementById('flashcard').addEventListener('click', function() {
+            this.classList.toggle('flipped');
+        });
+
+        function nextCard() {
+            currentCardIndex = (currentCardIndex + 1) % flashcards.length;
+            updateFlashcard();
+        }
+
+        function prevCard() {
+            currentCardIndex = (currentCardIndex - 1 + flashcards.length) % flashcards.length;
+            updateFlashcard();
+        }
+
+        // Quiz
+        const quizFeedback = {
+            1: '<strong>Correct Answer: B</strong><br><br>The Context Rebuild Tax refers to the 5-10 minutes you spend at the beginning of every standard chat re-establishing basic context the AI has already heard dozens of times. Projects eliminate this by maintaining persistent context.',
+            2: '<strong>Correct Answer: B</strong><br><br>Claude Projects with hard-wall isolation are ideal for recurring work involving sensitive PII. The 100% isolation ensures customer data never leaks into other Projects or standard chats.',
+            3: '<strong>Correct Answer: False</strong><br><br>Projects have setup overhead and are designed for recurring work (weekly/monthly tasks). For one-time questions or low-stakes tasks, standard chat is faster and more appropriate. The 80/20 rule applies: only create Projects for work you\'ll revisit in 30 days.',
+            4: '<strong>Correct Answer: C</strong><br><br>The fundamental difference is memory isolation. Claude Projects have "hard walls"—100% isolation with zero cross-Project awareness. ChatGPT Projects have "soft boundaries"—cross-conversation memory enabled by default, meaning insights can bleed between chats.',
+            5: '<strong>Correct Answer: B</strong><br><br>This is the classic over-instruction mistake. When custom instructions exceed 500-1,000 words, the AI treats everything as low-priority noise. Best practice: start with 200 words focused on critical rules, add only when Claude consistently makes the same mistake, prune ruthlessly.',
+            6: '<strong>Correct Answer: C</strong><br><br>Custom instructions are notoriously hard to get right on the first try. Before making changes, run 2-3 more test prompts to determine whether Claude consistently ignores certain instructions or if this was a one-time anomaly. After testing, refine only the rules that were consistently violated—don\'t add more instructions speculatively.',
+            7: '<strong>Correct Answer: False</strong><br><br>Claude Projects are living systems that require ongoing maintenance and iteration. You should expect to refine your custom instructions over the first 2-3 weeks of use based on what Claude consistently forgets or misinterprets. Add instructions only when Claude makes the same mistake 2-3 times. Remove instructions for behaviors Claude does naturally.',
+            8: '<strong>Correct Answer: B</strong><br><br>At 1.5 million tokens, Claude has automatically switched from Full Context Mode to RAG (Retrieval-Augmented Generation) Mode. This transition happens automatically when your knowledge base exceeds ~200K tokens. RAG works by indexing documents as searchable "numerical fingerprints" (embeddings) and retrieving relevant chunks on demand. This is why Claude Projects can handle 200 files instead of just 20—RAG enables 10x capacity expansion.',
+            9: '<strong>Correct Answer: C</strong><br><br>This scenario requires strategic memory configuration. Creative Writing Coach should use Cross-Conversation Memory—you WANT ChatGPT to remember your writing style and creative preferences across all chats. Client Legal Briefs should use Project-Only Memory—attorney-client privilege requires strict compartmentalization to prevent information from one case bleeding into another. Decision rule: Sensitive client/PII work = Project-only memory. Personal creative work where you want style learning = Cross-conversation memory.'
+        };
+
+        document.querySelectorAll('.quiz-option').forEach(option => {
+            option.addEventListener('click', function() {
+                const question = this.closest('.quiz-question');
+                question.querySelectorAll('.quiz-option').forEach(opt => {
+                    opt.classList.remove('selected');
+                });
+                this.classList.add('selected');
+            });
+        });
+
+        document.querySelectorAll('.check-answer-btn').forEach((btn, index) => {
+            btn.addEventListener('click', function() {
+                const question = this.closest('.quiz-question');
+                const selected = question.querySelector('.quiz-option.selected');
+                const feedback = question.querySelector('.quiz-feedback');
+                const correctAnswer = question.dataset.correct;
+
+                if (!selected) {
+                    alert('Please select an answer');
+                    return;
+                }
+
+                const selectedValue = selected.dataset.value;
+                const isCorrect = selectedValue === correctAnswer;
+
+                question.querySelectorAll('.quiz-option').forEach(opt => {
+                    opt.classList.remove('correct', 'incorrect');
+                    if (opt.dataset.value === correctAnswer) {
+                        opt.classList.add('correct');
+                    } else if (opt === selected && !isCorrect) {
+                        opt.classList.add('incorrect');
+                    }
+                });
+
+                feedback.className = 'quiz-feedback show ' + (isCorrect ? 'correct' : 'incorrect');
+                feedback.innerHTML = quizFeedback[index + 1] || '';
+
+                this.disabled = true;
+                this.textContent = isCorrect ? '✓ Correct' : 'See Feedback';
+            });
+        });
+
+        function submitQuiz() {
+            const questions = document.querySelectorAll('.quiz-question');
+            let correct = 0;
+            let total = questions.length;
+            let answered = 0;
+
+            questions.forEach(question => {
+                const correctAnswer = question.dataset.correct;
+                const selected = question.querySelector('.quiz-option.selected');
+                if (selected) {
+                    answered++;
+                    if (selected.dataset.value === correctAnswer) {
+                        correct++;
+                    }
+                }
+            });
+
+            if (answered < total) {
+                alert('Please answer all ' + total + ' questions before submitting.');
+                return;
+            }
+
+            const score = Math.round((correct / total) * 100);
+            const passed = score >= 70;
+
+            if (typeof setSCORMScore === 'function') {
+                setSCORMScore(score);
+            }
+            if (typeof setSCORMStatus === 'function') {
+                setSCORMStatus(passed ? 'passed' : 'failed');
+            // Celebration confetti for passing
+            const passed = scorePercent >= 70;
+            if (passed && typeof confetti === 'function') {
+                // Initial burst
+                confetti({
+                    particleCount: 100,
+                    spread: 70,
+                    origin: { y: 0.6 },
+                    colors: ['#2ED4B5', '#1657A0', '#FFC83B', '#19316A']
+                });
+
+                // Follow-up bursts
+                setTimeout(() => {
+                    confetti({
+                        particleCount: 50,
+                        angle: 60,
+                        spread: 55,
+                        origin: { x: 0 },
+                        colors: ['#2ED4B5', '#1657A0', '#FFC83B']
+                    });
+                }, 250);
+
+                setTimeout(() => {
+                    confetti({
+                        particleCount: 50,
+                        angle: 120,
+                        spread: 55,
+                        origin: { x: 1 },
+                        colors: ['#2ED4B5', '#1657A0', '#FFC83B']
+                    });
+                }, 400);
+            }
+
+            // Close popup window after completion
+            if (window.opener !== null) {
+                setTimeout(() => {
+                    const shouldClose = confirm('Module completed! Close this window?');
+                    if (shouldClose) {
+                        window.close();
+                    }
+                }, 3000);
+            }
+            }
+
+            alert(`Quiz Complete!\n\nScore: ${score}%\nCorrect: ${correct}/${total}\nStatus: ${passed ? 'PASSED ✓' : 'Please review and retry'}\n\n${passed ? 'Congratulations! You can now move to the next module.' : 'Review the incorrect answers and the lesson material, then retake the quiz.'}`);
+        }
+
+        // Initialize
+        document.getElementById('totalCards').textContent = flashcards.length;
+        updateFlashcard();
+        updateProgress();
+    </script>
+</body>
+</html>

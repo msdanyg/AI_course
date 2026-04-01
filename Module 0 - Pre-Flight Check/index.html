@@ -1,0 +1,2168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module 0: Pre-Flight Check | Solo Pilot to Squadron Leader</title>
+    <script src="scorm_api.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sofia+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* ActivTrak Official Brand Colors */
+            --dark-navy: #14203F;
+            --medium-navy: #19316A;
+            --blue: #1657A0;
+            --teal: #2ED4B5;
+            --yellow: #FFC83B;
+            --white: #FFFFFF;
+            --light-gray: #E5E7EB;
+            --bg-light: #F8FAFC;
+
+            /* Semantic mappings */
+            --primary-blue: #19316A;
+            --pelorous: #1657A0;
+            --dark-base: #14203F;
+            --success: #2ED4B5;
+            --error: #DC2626;
+            --warning: #F59E0B;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Sofia Sans', sans-serif;
+            background: var(--bg-light);
+            color: var(--dark-base);
+            line-height: 1.6;
+        }
+
+        /* Header */
+        .course-header {
+            background: linear-gradient(135deg, var(--dark-navy) 0%, var(--medium-navy) 100%);
+            color: white;
+            padding: 1rem 2rem;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .course-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .course-subtitle {
+            font-size: 0.85rem;
+            opacity: 0.9;
+        }
+
+        .progress-container {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .progress-bar {
+            width: 200px;
+            height: 8px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--teal);
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        .progress-text {
+            font-size: 0.85rem;
+        }
+
+        /* Main Layout */
+        .main-container {
+            display: flex;
+            margin-top: 60px;
+            min-height: calc(100vh - 60px);
+        }
+
+        /* Sidebar Navigation */
+        .sidebar {
+            width: 280px;
+            background: var(--white);
+            border-right: 1px solid var(--light-gray);
+            position: fixed;
+            top: 60px;
+            bottom: 0;
+            left: 0;
+            overflow-y: auto;
+            padding: 1.5rem 0;
+        }
+
+        .nav-section {
+            padding: 0 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .nav-section-title {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #6B7280;
+            margin-bottom: 0.75rem;
+            padding: 0 0.75rem;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 0.25rem;
+        }
+
+        .nav-item:hover {
+            background: var(--bg-light);
+        }
+
+        .nav-item.active {
+            background: rgba(0, 66, 243, 0.1);
+            color: var(--primary-blue);
+        }
+
+        .nav-item.completed .nav-icon {
+            background: var(--success);
+            color: white;
+        }
+
+        .nav-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: var(--light-gray);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .nav-item.active .nav-icon {
+            background: var(--primary-blue);
+            color: white;
+        }
+
+        .nav-label {
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .nav-duration {
+            font-size: 0.75rem;
+            color: #6B7280;
+            margin-left: auto;
+        }
+
+        /* Content Area */
+        .content-area {
+            flex: 1;
+            margin-left: 280px;
+            padding: 2rem 3rem;
+            max-width: 1000px;
+        }
+
+        /* Screen Sections */
+        .screen {
+            display: none;
+        }
+
+        .screen.active {
+            display: block;
+            animation: fadeIn 0.4s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Welcome Screen */
+        .welcome-hero {
+            text-align: center;
+            padding: 3rem 0;
+            margin-bottom: 2rem;
+        }
+
+        .module-tag {
+            display: inline-block;
+            background: var(--pelorous);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin-bottom: 1rem;
+        }
+
+        .welcome-hero h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--dark-base);
+        }
+
+        .welcome-hero p {
+            font-size: 1.2rem;
+            color: #6B7280;
+        }
+
+        /* Objectives Card */
+        .objectives-card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .objectives-card h2 {
+            font-size: 1.3rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .objective-item {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            padding: 1rem;
+            background: var(--bg-light);
+            border-radius: 8px;
+        }
+
+        .objective-level {
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            flex-shrink: 0;
+        }
+
+        .level-retrieval { background: #E0F2FE; color: #0369A1; }
+        .level-comprehension { background: #FEF3C7; color: #B45309; }
+        .level-analysis { background: #DCFCE7; color: #166534; }
+        .level-utilization { background: #F3E8FF; color: #7C3AED; }
+
+        /* Content Cards */
+        .content-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .content-card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            transition: transform 0.2s, box-shadow 0.2s;
+            cursor: pointer;
+        }
+
+        .content-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+        }
+
+        .card-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .card-icon.video { background: linear-gradient(135deg, #EE2C82 0%, #FF6B9D 100%); }
+        .card-icon.lesson { background: linear-gradient(135deg, #19316A 0%, #5B8DEF 100%); }
+        .card-icon.flashcards { background: linear-gradient(135deg, #1657A0 0%, #5BC4CF 100%); }
+        .card-icon.lab { background: linear-gradient(135deg, #2ED4B5 0%, #5EEBD1 100%); }
+        .card-icon.quiz { background: linear-gradient(135deg, #F5A623 0%, #FFD166 100%); }
+
+        .content-card h3 {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .content-card p {
+            font-size: 0.9rem;
+            color: #6B7280;
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: var(--primary-blue);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #0035C7;
+        }
+
+        .btn-secondary {
+            background: var(--white);
+            color: var(--dark-base);
+            border: 1px solid var(--light-gray);
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg-light);
+        }
+
+        /* Lesson Content */
+        .lesson-content {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 2.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .lesson-content h1 {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .lesson-content h2 {
+            font-size: 1.5rem;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            color: var(--primary-blue);
+        }
+
+        .lesson-content h3 {
+            font-size: 1.2rem;
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .lesson-content p {
+            margin-bottom: 1rem;
+        }
+
+        .lesson-content ul, .lesson-content ol {
+            margin-bottom: 1rem;
+            padding-left: 1.5rem;
+        }
+
+        .lesson-content li {
+            margin-bottom: 0.5rem;
+        }
+
+        /* Concept Cards */
+        .concept-card {
+            background: var(--bg-light);
+            border-left: 4px solid var(--pelorous);
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .concept-card h4 {
+            color: var(--pelorous);
+            margin-bottom: 0.5rem;
+        }
+
+        /* Traffic Light */
+        .traffic-light {
+            display: flex;
+            gap: 1rem;
+            margin: 1.5rem 0;
+            flex-wrap: wrap;
+        }
+
+        .traffic-zone {
+            flex: 1;
+            min-width: 200px;
+            padding: 1.5rem;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .traffic-zone.green {
+            background: linear-gradient(135deg, #DCFCE7 0%, #BBF7D0 100%);
+            border: 2px solid #22C55E;
+        }
+
+        .traffic-zone.yellow {
+            background: linear-gradient(135deg, #FEF9C3 0%, #FEF08A 100%);
+            border: 2px solid #F59E0B;
+        }
+
+        .traffic-zone.red {
+            background: linear-gradient(135deg, #FEE2E2 0%, #FECACA 100%);
+            border: 2px solid #EF4444;
+        }
+
+        .traffic-zone h4 {
+            font-size: 1.2rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .traffic-zone.green h4 { color: #166534; }
+        .traffic-zone.yellow h4 { color: #B45309; }
+        .traffic-zone.red h4 { color: #DC2626; }
+
+        .traffic-zone ul {
+            text-align: left;
+            list-style: none;
+            padding: 0;
+        }
+
+        .traffic-zone li {
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            padding-left: 1.25rem;
+            position: relative;
+        }
+
+        .traffic-zone li::before {
+            content: "•";
+            position: absolute;
+            left: 0;
+        }
+
+        /* Tables */
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            background: var(--white);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .comparison-table th {
+            background: var(--primary-blue);
+            color: white;
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .comparison-table td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--light-gray);
+        }
+
+        .comparison-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .comparison-table tr:hover {
+            background: var(--bg-light);
+        }
+
+        /* Flashcards */
+        .flashcard-container {
+            perspective: 1000px;
+            margin: 2rem 0;
+        }
+
+        .flashcard {
+            width: 100%;
+            min-height: 300px;
+            position: relative;
+            cursor: pointer;
+            transform-style: preserve-3d;
+            transition: transform 0.6s;
+        }
+
+        .flashcard.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .flashcard-face {
+            position: absolute;
+            width: 100%;
+            min-height: 300px;
+            backface-visibility: hidden;
+            border-radius: 16px;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+
+        .flashcard-front {
+            background: linear-gradient(135deg, var(--dark-navy) 0%, var(--medium-navy) 100%);
+            color: white;
+        }
+
+        .flashcard-back {
+            background: var(--white);
+            transform: rotateY(180deg);
+        }
+
+        .flashcard-front h3 {
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+        }
+
+        .flashcard-back h4 {
+            color: var(--primary-blue);
+            margin-bottom: 1rem;
+        }
+
+        .flashcard-hint {
+            font-size: 0.85rem;
+            opacity: 0.8;
+            margin-top: 1rem;
+        }
+
+        .flashcard-nav {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .flashcard-counter {
+            font-size: 0.9rem;
+            color: #6B7280;
+        }
+
+        /* Lab Exercises */
+        .lab-step {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .lab-step.active {
+            border-left: 4px solid var(--primary-blue);
+        }
+
+        .lab-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .step-number {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--primary-blue);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .lab-step h3 {
+            font-size: 1.1rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            background: var(--bg-light);
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .checklist-item:hover {
+            background: #E5E7EB;
+        }
+
+        .checklist-item.checked {
+            background: #DCFCE7;
+        }
+
+        .checklist-checkbox {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--light-gray);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .checklist-item.checked .checklist-checkbox {
+            background: var(--success);
+            border-color: var(--success);
+            color: white;
+        }
+
+        /* Quiz */
+        .quiz-question {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .question-number {
+            font-size: 0.85rem;
+            color: var(--primary-blue);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .quiz-question h3 {
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .quiz-option {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: var(--bg-light);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 2px solid transparent;
+        }
+
+        .quiz-option:hover {
+            background: #E5E7EB;
+        }
+
+        .quiz-option.selected {
+            border-color: var(--primary-blue);
+            background: rgba(0, 66, 243, 0.05);
+        }
+
+        .quiz-option.correct {
+            border-color: var(--success);
+            background: #DCFCE7;
+        }
+
+        .quiz-option.incorrect {
+            border-color: var(--error);
+            background: #FEE2E2;
+        }
+
+        .option-letter {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            flex-shrink: 0;
+            border: 2px solid var(--light-gray);
+        }
+
+        .quiz-option.selected .option-letter {
+            background: var(--primary-blue);
+            color: white;
+            border-color: var(--primary-blue);
+        }
+
+        .quiz-feedback {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .quiz-feedback.show {
+            display: block;
+        }
+
+        .quiz-feedback.correct {
+            background: #DCFCE7;
+            border-left: 4px solid var(--success);
+        }
+
+        .quiz-feedback.incorrect {
+            background: #FEE2E2;
+            border-left: 4px solid var(--error);
+        }
+
+        .quiz-score {
+            text-align: center;
+            padding: 2rem;
+            background: var(--white);
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .score-circle {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--dark-navy) 0%, var(--medium-navy) 100%);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+        }
+
+        .score-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+        }
+
+        .score-label {
+            font-size: 0.85rem;
+            opacity: 0.9;
+        }
+
+        /* Content Navigation */
+        .content-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--light-gray);
+        }
+
+        /* Copy Block */
+        .copy-block {
+            background: #1E293B;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+            position: relative;
+        }
+
+        .copy-block pre {
+            color: #E2E8F0;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 0.85rem;
+            white-space: pre-wrap;
+            margin: 0;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background: #334155;
+            color: #E2E8F0;
+            border: none;
+            padding: 0.4rem 0.8rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            cursor: pointer;
+        }
+
+        .copy-btn:hover {
+            background: #475569;
+        }
+
+        /* Tool Cards */
+        .tool-cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .tool-card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .tool-card .tool-icon {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            margin: 0 auto 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+        }
+
+        .tool-card.claude .tool-icon {
+            background: linear-gradient(135deg, #19316A 0%, #5B8DEF 100%);
+        }
+
+        .tool-card.gemini .tool-icon {
+            background: linear-gradient(135deg, #4285F4 0%, #EA4335 50%, #FBBC05 100%);
+        }
+
+        .tool-card.granola .tool-icon {
+            background: linear-gradient(135deg, #1657A0 0%, #5BC4CF 100%);
+        }
+
+        .tool-card h4 {
+            font-size: 1.1rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .tool-card .role {
+            color: var(--pelorous);
+            font-weight: 600;
+            font-size: 0.85rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .tool-card p {
+            font-size: 0.9rem;
+            color: #6B7280;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .sidebar {
+                width: 240px;
+            }
+            .content-area {
+                margin-left: 240px;
+            }
+            .tool-cards {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                display: none;
+            }
+            .content-area {
+                margin-left: 0;
+                padding: 1.5rem;
+            }
+            .traffic-light {
+                flex-direction: column;
+            }
+        }
+
+        /* Video tab styling */
+        .video-tab-btn {
+            flex: 1;
+            padding: 1rem 1.5rem;
+            background: transparent;
+            border: none;
+            border-radius: 8px;
+            color: #94A3B8;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            white-space: nowrap;
+        }
+
+        .video-tab-btn:hover {
+            background: rgba(46, 212, 181, 0.1);
+            color: #FFFFFF;
+        }
+
+        .video-tab-btn.active {
+            background: linear-gradient(135deg, #2ED4B5 0%, #1AB69D 100%);
+            color: #14203F;
+            font-weight: 700;
+            box-shadow: 0 2px 8px rgba(46, 212, 181, 0.3);
+        }
+
+        .video-tab-btn.active:hover {
+            background: linear-gradient(135deg, #1AB69D 0%, #2ED4B5 100%);
+            color: #14203F;
+        }
+
+        /* Video container responsive */
+        video {
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="course-header">
+        <div>
+            <div class="course-title">Solo Pilot to Squadron Leader</div>
+            <div class="course-subtitle">Module 0: Pre-Flight Check</div>
+        </div>
+        <div class="progress-container">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+            </div>
+            <span class="progress-text" id="progressText">0% Complete</span>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <div class="main-container">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="nav-section">
+                <div class="nav-section-title">Getting Started</div>
+                <div class="nav-item active" data-screen="welcome" onclick="navigateTo('welcome')">
+                    <div class="nav-icon">1</div>
+                    <span class="nav-label">Welcome</span>
+                    <span class="nav-duration">2 min</span>
+                </div>
+                <div class="nav-item" data-screen="video" onclick="navigateTo('video')">
+                    <div class="nav-icon">2</div>
+                    <span class="nav-label">Video</span>
+                    <span class="nav-duration">15 min</span>
+                </div>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Lesson Content</div>
+                <div class="nav-item" data-screen="lesson-1" onclick="navigateTo('lesson-1')">
+                    <div class="nav-icon">3</div>
+                    <span class="nav-label">The Squadron Framework</span>
+                    <span class="nav-duration">5 min</span>
+                </div>
+                <div class="nav-item" data-screen="lesson-2" onclick="navigateTo('lesson-2')">
+                    <div class="nav-icon">4</div>
+                    <span class="nav-label">Traffic Light Protocol</span>
+                    <span class="nav-duration">8 min</span>
+                </div>
+                <div class="nav-item" data-screen="lesson-3" onclick="navigateTo('lesson-3')">
+                    <div class="nav-icon">5</div>
+                    <span class="nav-label">Cockpit Setup</span>
+                    <span class="nav-duration">5 min</span>
+                </div>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Practice & Assessment</div>
+                <div class="nav-item" data-screen="flashcards" onclick="navigateTo('flashcards')">
+                    <div class="nav-icon">6</div>
+                    <span class="nav-label">Flashcards</span>
+                    <span class="nav-duration">5 min</span>
+                </div>
+                <div class="nav-item" data-screen="lab" onclick="navigateTo('lab')">
+                    <div class="nav-icon">7</div>
+                    <span class="nav-label">Lab Exercise</span>
+                    <span class="nav-duration">25 min</span>
+                </div>
+                <div class="nav-item" data-screen="quiz" onclick="navigateTo('quiz')">
+                    <div class="nav-icon">8</div>
+                    <span class="nav-label">Quiz</span>
+                    <span class="nav-duration">10 min</span>
+                </div>
+                <div class="nav-item" data-screen="study-guide" onclick="navigateTo('study-guide')">
+                    <div class="nav-icon">9</div>
+                    <span class="nav-label">Study Guide</span>
+                    <span class="nav-duration">5 min</span>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Content Area -->
+        <main class="content-area">
+            <!-- Welcome Screen -->
+            <section id="welcome" class="screen active">
+                <div class="welcome-hero">
+                    <span class="module-tag">Module 0 of 11</span>
+                    <h1>Pre-Flight Check</h1>
+                    <p>Setup, Policy & Boundaries</p>
+                </div>
+
+                <div class="objectives-card">
+                    <h2>Learning Objectives</h2>
+                    <div class="objective-item">
+                        <span class="objective-level level-retrieval">Retrieval</span>
+                        <span>Identify the four Squadron roles and which tools you have for each</span>
+                    </div>
+                    <div class="objective-item">
+                        <span class="objective-level level-comprehension">Comprehension</span>
+                        <span>Explain the Traffic Light Protocol and classify data into Green/Yellow/Red zones</span>
+                    </div>
+                    <div class="objective-item">
+                        <span class="objective-level level-utilization">Utilization</span>
+                        <span>Inventory and configure your available AI tools by Squadron role</span>
+                    </div>
+                    <div class="objective-item">
+                        <span class="objective-level level-comprehension">Comprehension</span>
+                        <span>Articulate the "AI drafts, humans send" principle and its implications</span>
+                    </div>
+                </div>
+
+                <div class="content-grid">
+                    <div class="content-card" onclick="navigateTo('video')">
+                        <div class="card-icon video">🎬</div>
+                        <h3>Watch Video</h3>
+                        <p>11-minute overview of tools and data safety</p>
+                    </div>
+                    <div class="content-card" onclick="navigateTo('lesson-1')">
+                        <div class="card-icon lesson">📚</div>
+                        <h3>Read Lesson</h3>
+                        <p>Complete written guide with examples</p>
+                    </div>
+                    <div class="content-card" onclick="navigateTo('lab')">
+                        <div class="card-icon lab">🔧</div>
+                        <h3>Complete Lab</h3>
+                        <p>Configure your cockpit step-by-step</p>
+                    </div>
+                </div>
+
+                <div class="content-nav">
+                    <div></div>
+                    <button class="btn btn-primary" onclick="navigateTo('video')">Start Learning →</button>
+                </div>
+            </section>
+
+            <!-- Video Screen -->
+            <section id="video" class="screen">
+                <h1 style="margin-bottom: 1rem;">Module Videos</h1>
+
+                <!-- Video Tabs -->
+                <div class="video-tabs" style="display: flex; gap: 1rem; margin-bottom: 2.5rem; background: #1E293B; padding: 0.5rem; border-radius: 12px;">
+                    <button class="video-tab-btn active" onclick="switchVideo('video1')" data-video="video1">
+                        <span style="font-size: 1.2rem; margin-right: 0.5rem;">📽️</span>
+                        <span>Squadron Leader Presentation</span>
+                    </button>
+                    <button class="video-tab-btn" onclick="switchVideo('video2')" data-video="video2">
+                        <span style="font-size: 1.2rem; margin-right: 0.5rem;">🛠️</span>
+                        <span>Setting Up Your Tools</span>
+                    </button>
+                </div>
+
+                <!-- Video 1: Squadron Leader Presentation -->
+                <div id="video1" class="video-content active-video">
+                    <p style="color: #6B7280; margin-bottom: 1.5rem;">
+                        Meet Clarissa, your AI Teaching Assistant, as she introduces the Squadron Leader concept.
+                    </p>
+
+                    <div style="background: #000; border-radius: 12px; overflow: hidden; margin-bottom: 2rem;">
+                        <video controls style="width: 100%; display: block; max-height: 600px;">
+                            <source src="Squadron_Leader_Presentation.mp4" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
+
+                    <div class="concept-card">
+                        <h4>Video Highlights</h4>
+                        <ul>
+                            <li><strong>Squadron metaphor:</strong> Transform from solo pilot (F-35) to squadron leader (F-45)</li>
+                            <li><strong>Breaking down tasks:</strong> Use discrete AI agents for specialized tasks</li>
+                            <li><strong>Your squad roles:</strong> Mission Control (Claude), Recon (Gemini), Flight Recorder (Granola)</li>
+                            <li><strong>Key skill:</strong> Master the handoff between tasks and agents</li>
+                            <li><strong>Example workflow:</strong> Research → Strategy → Writing → Brand Compliance</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Video 2: Setting Up Your Tools -->
+                <div id="video2" class="video-content" style="display: none;">
+                    <p style="color: #6B7280; margin-bottom: 1.5rem;">
+                        Step-by-step guide to configuring Claude, ChatGPT, and Gemini for optimal performance.
+                    </p>
+
+                    <div style="background: #000; border-radius: 12px; overflow: hidden; margin-bottom: 2rem;">
+                        <video controls style="width: 100%; display: block; max-height: 600px;">
+                            <source src="Setting_Up_Tools.mp4" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
+
+                    <div class="concept-card">
+                        <h4>Setup Checklist</h4>
+                        <ul>
+                            <li><strong>Claude:</strong> Personal preferences, connectors (Google Drive, Slack, Jira), memory management</li>
+                            <li><strong>ChatGPT:</strong> Custom instructions, apps/plugins, tone settings</li>
+                            <li><strong>Gemini:</strong> Connected apps (Google Workspace), minimal configuration needed</li>
+                            <li><strong>Key tips:</strong> Turn off unused connectors, start with approval mode for actions</li>
+                            <li><strong>Brand compliance:</strong> Add "no Oxford comma" and other style rules to preferences</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="content-nav">
+                    <button class="btn btn-secondary" onclick="navigateTo('welcome')">← Back</button>
+                    <button class="btn btn-primary" onclick="navigateTo('lesson-1')">Continue to Lesson →</button>
+                </div>
+            </section>
+
+            <!-- Lesson 1: The Squadron Framework -->
+            <section id="lesson-1" class="screen">
+                <div class="lesson-content">
+                    <h1>The Squadron Framework</h1>
+
+                    <p>Different employees have access to different AI tools. Rather than prescribing specific tools, think in terms of <strong>Squadron roles</strong>—functional capabilities that various tools can fill.</p>
+
+                    <div class="tool-cards" style="grid-template-columns: repeat(4, 1fr);">
+                        <div class="tool-card claude">
+                            <div class="tool-icon">🧠</div>
+                            <h4>Mission Control</h4>
+                            <div class="role">Reasoning & Synthesis</div>
+                            <p>Claude, ChatGPT, Claude Code, Cursor</p>
+                        </div>
+                        <div class="tool-card gemini">
+                            <div class="tool-icon">🔍</div>
+                            <h4>Recon & Radar</h4>
+                            <div class="role">Research & Grounding</div>
+                            <p>Gemini, Perplexity, NotebookLM</p>
+                        </div>
+                        <div class="tool-card granola">
+                            <div class="tool-icon">🎙️</div>
+                            <h4>Flight Recorder</h4>
+                            <div class="role">Capture & Memory</div>
+                            <p>Granola, Chorus.ai, Zoom AI</p>
+                        </div>
+                        <div class="tool-card" style="background: var(--white);">
+                            <div class="tool-icon" style="background: linear-gradient(135deg, #7C3AED 0%, #A78BFA 100%);">⚡</div>
+                            <h4>Specialized Units</h4>
+                            <div class="role">Domain-Specific</div>
+                            <p>Figma AI, Zendesk AI, ChurnZero</p>
+                        </div>
+                    </div>
+
+                    <h2>Why Think in Roles?</h2>
+                    <p>Your Squadron depends on what tools you have access to. You don't need every tool—you need to understand what roles your tools fill and how to orchestrate them effectively.</p>
+
+                    <table class="comparison-table">
+                        <thead>
+                            <tr>
+                                <th>Scenario</th>
+                                <th>Squadron Role</th>
+                                <th>Example Tools</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Draft a competitive positioning email</td>
+                                <td><strong>Mission Control</strong></td>
+                                <td>Claude, ChatGPT</td>
+                            </tr>
+                            <tr>
+                                <td>Check competitor's current pricing</td>
+                                <td><strong>Recon & Radar</strong></td>
+                                <td>Gemini, Perplexity</td>
+                            </tr>
+                            <tr>
+                                <td>Summarize yesterday's client call</td>
+                                <td><strong>Flight Recorder → Mission Control</strong></td>
+                                <td>Granola/Chorus → Claude</td>
+                            </tr>
+                            <tr>
+                                <td>Analyze a spreadsheet of account data</td>
+                                <td><strong>Mission Control</strong></td>
+                                <td>Claude, ChatGPT</td>
+                            </tr>
+                            <tr>
+                                <td>Find a document in Google Drive</td>
+                                <td><strong>Recon & Radar</strong></td>
+                                <td>Gemini</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="concept-card">
+                        <h4>The Squadron Leader Difference</h4>
+                        <p>The Squadron Leader thinks in roles and matches tasks to capabilities. The Solo Pilot uses whatever's in front of them without considering fit.</p>
+                    </div>
+
+                    <div class="concept-card" style="border-left-color: var(--error); margin-top: 1rem;">
+                        <h4>Restricted Tools</h4>
+                        <p>Some AI tools are not approved for ActivTrak use due to security concerns: <strong>DeepSeek AI</strong> and <strong>RedNote AI</strong> apps. When in doubt about a tool, check with IT.</p>
+                    </div>
+                </div>
+
+                <div class="content-nav">
+                    <button class="btn btn-secondary" onclick="navigateTo('video')">← Back to Video</button>
+                    <button class="btn btn-primary" onclick="navigateTo('lesson-2')">Continue →</button>
+                </div>
+            </section>
+
+            <!-- Lesson 2: Traffic Light Protocol -->
+            <section id="lesson-2" class="screen">
+                <div class="lesson-content">
+                    <h1>The Traffic Light Protocol</h1>
+
+                    <p>The most important concept in this module: <strong>what you can share with AI tools.</strong></p>
+
+                    <div class="concept-card">
+                        <h4>The Key Insight: Input vs. Output</h4>
+                        <p>The risk is rarely in <em>analyzing</em> data. The risk is in <em>sharing</em> unreviewed AI output.</p>
+                        <p style="margin-top: 1rem; font-weight: 600; font-size: 1.1rem;">"AI drafts. Humans send."</p>
+                        <p style="margin-top: 0.5rem;">You clear missions for takeoff. You own what leaves the runway.</p>
+                    </div>
+
+                    <h2>The Three Zones</h2>
+
+                    <div class="traffic-light">
+                        <div class="traffic-zone green">
+                            <h4>🟢 Green: Go Freely</h4>
+                            <ul>
+                                <li>Customer/Account information</li>
+                                <li>Internal documents</li>
+                                <li>Usage data and analytics</li>
+                                <li>Business communications</li>
+                            </ul>
+                            <p style="margin-top: 1rem; font-size: 0.85rem;"><em>Use freely for analysis. Review outputs before external sharing.</em></p>
+                        </div>
+                        <div class="traffic-zone yellow">
+                            <h4>🟡 Yellow: Review Required</h4>
+                            <ul>
+                                <li>Marketing with customer PII</li>
+                                <li>Competitive intel with sources</li>
+                                <li>Third-party NDA data</li>
+                            </ul>
+                            <p style="margin-top: 1rem; font-size: 0.85rem;"><em>Can analyze, but outputs may need PR/Legal review.</em></p>
+                        </div>
+                        <div class="traffic-zone red">
+                            <h4>🔴 Red: Never Share</h4>
+                            <ul>
+                                <li>API keys and passwords</li>
+                                <li>Admin credentials</li>
+                                <li>Security configurations</li>
+                            </ul>
+                            <p style="margin-top: 1rem; font-size: 0.85rem;"><em>Never enter into any AI tool.</em></p>
+                        </div>
+                    </div>
+
+                    <h2>Decision Framework</h2>
+                    <p>When you're about to paste something into an AI tool, ask:</p>
+                    <ol>
+                        <li><strong>What is this data?</strong> (Customer info? Internal doc? Credential?)</li>
+                        <li><strong>What zone is it in?</strong> (Green/Yellow/Red)</li>
+                        <li><strong>What will I do with the output?</strong> (Internal analysis? External communication?)</li>
+                        <li><strong>Have I reviewed before sending?</strong> (Never auto-send AI outputs externally)</li>
+                    </ol>
+
+                    <div class="concept-card" style="border-left-color: var(--success);">
+                        <h4>If it's Green and you're reviewing outputs:</h4>
+                        <p>Proceed confidently. This is exactly how you should use AI to accelerate your work.</p>
+                    </div>
+                </div>
+
+                <div class="content-nav">
+                    <button class="btn btn-secondary" onclick="navigateTo('lesson-1')">← Back</button>
+                    <button class="btn btn-primary" onclick="navigateTo('lesson-3')">Continue →</button>
+                </div>
+            </section>
+
+            <!-- Lesson 3: Cockpit Setup -->
+            <section id="lesson-3" class="screen">
+                <div class="lesson-content">
+                    <h1>Setting Up Your Cockpit</h1>
+
+                    <p>Your cockpit will look different from your colleagues'—that's expected. Let's identify what you have and verify it's working.</p>
+
+                    <h2>Step 1: Inventory Your Tools</h2>
+                    <p>First, identify what tools you have for each Squadron role:</p>
+
+                    <table class="comparison-table">
+                        <thead>
+                            <tr>
+                                <th>Squadron Role</th>
+                                <th>Do You Have?</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Mission Control</strong> (Reasoning)</td>
+                                <td>Claude? ChatGPT? Claude Code? Cursor?</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Recon & Radar</strong> (Research)</td>
+                                <td>Gemini? Perplexity? NotebookLM?</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Flight Recorder</strong> (Capture)</td>
+                                <td>Granola? Chorus.ai? Zoom AI?</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Specialized Units</strong></td>
+                                <td>Figma AI? Zendesk AI? Others?</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h2>Step 2: Configure Your Tools</h2>
+                    <p>For each tool you identified, verify it's working:</p>
+                    <ol>
+                        <li>Log in to the tool</li>
+                        <li>Verify your account is active (look for enterprise features)</li>
+                        <li>Test with a simple prompt</li>
+                        <li>Test file upload if available</li>
+                    </ol>
+
+                    <div class="concept-card">
+                        <h4>Common Setup</h4>
+                        <p><strong>Gemini</strong> is available company-wide at <a href="https://gemini.google.com" target="_blank">gemini.google.com</a>. Sign in with your ActivTrak Google Workspace account.</p>
+                        <p style="margin-top: 0.5rem;"><strong>Zoom AI summaries</strong> are available for all meetings automatically.</p>
+                    </div>
+
+                    <h2>Verification Checklist</h2>
+                    <div class="checklist-item" onclick="toggleCheck(this)">
+                        <div class="checklist-checkbox">✓</div>
+                        <span>I have at least one Mission Control tool working</span>
+                    </div>
+                    <div class="checklist-item" onclick="toggleCheck(this)">
+                        <div class="checklist-checkbox">✓</div>
+                        <span>I have at least one Recon & Radar tool working</span>
+                    </div>
+                    <div class="checklist-item" onclick="toggleCheck(this)">
+                        <div class="checklist-checkbox">✓</div>
+                        <span>I know which Flight Recorder my team uses</span>
+                    </div>
+                    <div class="checklist-item" onclick="toggleCheck(this)">
+                        <div class="checklist-checkbox">✓</div>
+                        <span>I've tested my primary tools with a simple prompt</span>
+                    </div>
+
+                    <div class="concept-card" style="margin-top: 2rem;">
+                        <h4>Solo Pilot vs. Squadron Leader Mindset</h4>
+                        <table class="comparison-table">
+                            <thead>
+                                <tr>
+                                    <th>Solo Pilot</th>
+                                    <th>Squadron Leader</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Minimal context</td>
+                                    <td>Rich background, goals, constraints</td>
+                                </tr>
+                                <tr>
+                                    <td>Freeform questions</td>
+                                    <td>Structured requests, clear outputs</td>
+                                </tr>
+                                <tr>
+                                    <td>New chat every time</td>
+                                    <td>Projects and persistent knowledge</td>
+                                </tr>
+                                <tr>
+                                    <td>Copy-paste directly</td>
+                                    <td>Verify, refine, then use</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="content-nav">
+                    <button class="btn btn-secondary" onclick="navigateTo('lesson-2')">← Back</button>
+                    <button class="btn btn-primary" onclick="navigateTo('flashcards')">Continue to Flashcards →</button>
+                </div>
+            </section>
+
+            <!-- Flashcards -->
+            <section id="flashcards" class="screen">
+                <h1 style="margin-bottom: 0.5rem;">Flashcards</h1>
+                <p style="color: #6B7280; margin-bottom: 2rem;">Click the card to flip it. Review all 7 cards.</p>
+
+                <div class="flashcard-container">
+                    <div class="flashcard" id="flashcard" onclick="flipCard()">
+                        <div class="flashcard-face flashcard-front">
+                            <h3 id="cardFront">What are the three AI tools in your Squadron and their purposes?</h3>
+                            <p class="flashcard-hint">Click to reveal answer</p>
+                        </div>
+                        <div class="flashcard-face flashcard-back">
+                            <h4>Answer</h4>
+                            <div id="cardBack" style="text-align: left; white-space: pre-line;">1. Claude (Mission Control): Reasoning, strategy, writing, coding, synthesis
+2. Gemini (Recon & Radar): Real-time web search, fact verification, Workspace integration
+3. Granola (Flight Recorder): Meeting transcription, structured notes
+
+Each tool has distinct strengths. Squadron Leaders orchestrate all three.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flashcard-nav">
+                    <button class="btn btn-secondary" onclick="prevCard()">← Previous</button>
+                    <span class="flashcard-counter">Card <span id="cardNum">1</span> of 7</span>
+                    <button class="btn btn-primary" onclick="nextCard()">Next →</button>
+                </div>
+
+                <div class="content-nav">
+                    <button class="btn btn-secondary" onclick="navigateTo('lesson-3')">← Back to Lesson</button>
+                    <button class="btn btn-primary" onclick="navigateTo('lab')">Continue to Lab →</button>
+                </div>
+            </section>
+
+            <!-- Lab Exercise -->
+            <section id="lab" class="screen">
+                <h1 style="margin-bottom: 0.5rem;">Lab Exercise</h1>
+                <p style="color: #6B7280; margin-bottom: 2rem;">Tool Inventory & Configuration (15-20 minutes)</p>
+
+                <!-- Lab Step 1 -->
+                <div class="lab-step active" id="labStep1">
+                    <div class="lab-header">
+                        <div class="step-number">1</div>
+                        <div>
+                            <h3>Tool Inventory</h3>
+                            <p style="color: #6B7280;">Identify what tools you have for each Squadron role</p>
+                        </div>
+                    </div>
+
+                    <p>Check which tools you have access to in each category:</p>
+
+                    <h4 style="margin-top: 1rem;">Mission Control (Reasoning & Writing)</h4>
+                    <div class="checklist-item" onclick="toggleCheck(this)">
+                        <div class="checklist-checkbox">✓</div>
+                        <span>Claude.ai or Claude Desktop</span>
+                    </div>
+                    <div class="checklist-item" onclick="toggleCheck(this)">
+                        <div class="checklist-checkbox">✓</div>
+                        <span>Claude Code (IDE integration)</span>
+                    </div>
+                    <div class="checklist-item" onclick="toggleCheck(this)">
+                        <div class="checklist-checkbox">✓</div>
+                        <span>ChatGPT</span>
+                    </div>
+                    <div class="checklist-item" onclick="toggleCheck(this)">
+                        <div class="checklist-checkbox">✓</div>
+                        <span>Cursor or GitHub Copilot</span>
+                    </div>
+
+                    <h4 style="margin-top: 1rem;">Recon & Radar (Research)</h4>
+                    <div class="checklist-item" onclick="toggleCheck(this)">
+                        <div class="checklist-checkbox">✓</div>
+                        <span>Gemini (company-wide)</span>
+                    </div>
+                    <div class="checklist-item" onclick="toggleCheck(this)">
+                        <div class="checklist-checkbox">✓</div>
+                        <span>Perplexity</span>
+                    </div>
+                    <div class="checklist-item" onclick="toggleCheck(this)">
+                        <div class="checklist-checkbox">✓</div>
+                        <span>Google NotebookLM</span>
+                    </div>
+
+                    <h4 style="margin-top: 1rem;">Flight Recorder (Capture)</h4>
+                    <div class="checklist-item" onclick="toggleCheck(this)">
+                        <div class="checklist-checkbox">✓</div>
+                        <span>Granola</span>
+                    </div>
+                    <div class="checklist-item" onclick="toggleCheck(this)">
+                        <div class="checklist-checkbox">✓</div>
+                        <span>Chorus.ai</span>
+                    </div>
+                    <div class="checklist-item" onclick="toggleCheck(this)">
+                        <div class="checklist-checkbox">✓</div>
+                        <span>Zoom AI summaries (all meetings)</span>
+                    </div>
+
+                    <button class="btn btn-primary" style="margin-top: 1rem;" onclick="nextLabStep()">Mark Complete & Continue →</button>
+                </div>
+
+                <!-- Lab Step 2 -->
+                <div class="lab-step" id="labStep2">
+                    <div class="lab-header">
+                        <div class="step-number">2</div>
+                        <div>
+                            <h3>Configure Your Mission Control Tool</h3>
+                            <p style="color: #6B7280;">Verify your primary reasoning tool is working</p>
+                        </div>
+                    </div>
+
+                    <ol>
+                        <li>Log in to your Mission Control tool (Typically Claude)</li>
+                        <li>Verify your account is active and you see any enterprise features</li>
+                        <li>Turn on capabilities (Artifacts, Analysis tools, etc.)</li>
+                        <li>Enable connectors (Google Drive, Slack, Jira, or others available to you)</li>
+                        <li>Write some personal preferences (e.g., "No Oxford comma", "Use Century Gothic font", "Keep responses concise")</li>
+                        <li>Test with this prompt:</li>
+                    </ol>
+
+                    <div class="copy-block">
+                        <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+                        <pre>Summarize what you can help me with in 3 bullet points.</pre>
+                    </div>
+
+                    <button class="btn btn-primary" style="margin-top: 1rem;" onclick="nextLabStep()">Mark Complete & Continue →</button>
+                </div>
+
+                <!-- Lab Step 3 -->
+                <div class="lab-step" id="labStep3">
+                    <div class="lab-header">
+                        <div class="step-number">3</div>
+                        <div>
+                            <h3>Configure Your Recon & Flight Recorder Tools</h3>
+                            <p style="color: #6B7280;">Verify research and capture tools</p>
+                        </div>
+                    </div>
+
+                    <h4>Recon & Radar (Typically Gemini)</h4>
+                    <p>Minimal configuration needed - just ensure connected apps are turned on:</p>
+                    <ol>
+                        <li>Navigate to gemini.google.com</li>
+                        <li>Sign in with your ActivTrak Google Workspace account</li>
+                        <li>Verify Google Workspace apps are connected (Drive, Gmail, Calendar)</li>
+                        <li>Test real-time search:</li>
+                    </ol>
+
+                    <div class="copy-block">
+                        <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+                        <pre>What is ActivTrak's current pricing as shown on their website?</pre>
+                    </div>
+
+                    <h4 style="margin-top: 1rem;">Flight Recorder (Typically Granola)</h4>
+                    <p>Minimal configuration needed - just ensure your meeting capture tool (Granola, Chorus, or Zoom AI) is connected to your calendar and you can access a recent meeting's transcript.</p>
+
+                    <button class="btn btn-primary" style="margin-top: 1rem;" onclick="nextLabStep()">Complete Lab →</button>
+                </div>
+
+                <div class="content-nav">
+                    <button class="btn btn-secondary" onclick="navigateTo('flashcards')">← Back to Flashcards</button>
+                    <button class="btn btn-primary" onclick="navigateTo('quiz')">Continue to Quiz →</button>
+                </div>
+            </section>
+
+            <!-- Quiz -->
+            <section id="quiz" class="screen">
+                <h1 style="margin-bottom: 0.5rem;">Module Quiz</h1>
+                <p style="color: #6B7280; margin-bottom: 2rem;">Test your understanding (6 questions)</p>
+
+                <div id="quizQuestions">
+                    <!-- Question 1 -->
+                    <div class="quiz-question" id="q1">
+                        <div class="question-number">Question 1 of 6</div>
+                        <h3>What is the "Mission Control" role in the Squadron framework?</h3>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="selectAnswer(1, 'a')">
+                                <span class="option-letter">A</span>
+                                <span>Real-time web search and fact verification</span>
+                            </div>
+                            <div class="quiz-option" onclick="selectAnswer(1, 'b')">
+                                <span class="option-letter">B</span>
+                                <span>Meeting transcription and note capture</span>
+                            </div>
+                            <div class="quiz-option" onclick="selectAnswer(1, 'c')">
+                                <span class="option-letter">C</span>
+                                <span>Reasoning, strategy, writing, and synthesis</span>
+                            </div>
+                            <div class="quiz-option" onclick="selectAnswer(1, 'd')">
+                                <span class="option-letter">D</span>
+                                <span>Google Workspace integration and document search</span>
+                            </div>
+                        </div>
+                        <div class="quiz-feedback" id="feedback1"></div>
+                    </div>
+
+                    <!-- Question 2 -->
+                    <div class="quiz-question" id="q2" style="display: none;">
+                        <div class="question-number">Question 2 of 6</div>
+                        <h3>Which data type falls into the RED zone and should NEVER be shared with AI tools?</h3>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="selectAnswer(2, 'a')">
+                                <span class="option-letter">A</span>
+                                <span>A customer's account usage data from ActivTrak analytics</span>
+                            </div>
+                            <div class="quiz-option" onclick="selectAnswer(2, 'b')">
+                                <span class="option-letter">B</span>
+                                <span>Internal meeting notes discussing competitive strategy</span>
+                            </div>
+                            <div class="quiz-option" onclick="selectAnswer(2, 'c')">
+                                <span class="option-letter">C</span>
+                                <span>An API key for a Salesforce integration</span>
+                            </div>
+                            <div class="quiz-option" onclick="selectAnswer(2, 'd')">
+                                <span class="option-letter">D</span>
+                                <span>A draft case study that includes a customer quote</span>
+                            </div>
+                        </div>
+                        <div class="quiz-feedback" id="feedback2"></div>
+                    </div>
+
+                    <!-- Question 3 -->
+                    <div class="quiz-question" id="q3" style="display: none;">
+                        <div class="question-number">Question 3 of 6</div>
+                        <h3>TRUE or FALSE: Customer names and email addresses should never be shared with AI tools because they contain PII.</h3>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="selectAnswer(3, 'a')">
+                                <span class="option-letter">A</span>
+                                <span>TRUE</span>
+                            </div>
+                            <div class="quiz-option" onclick="selectAnswer(3, 'b')">
+                                <span class="option-letter">B</span>
+                                <span>FALSE</span>
+                            </div>
+                        </div>
+                        <div class="quiz-feedback" id="feedback3"></div>
+                    </div>
+
+                    <!-- Question 4 -->
+                    <div class="quiz-question" id="q4" style="display: none;">
+                        <div class="question-number">Question 4 of 6</div>
+                        <h3>You need to draft a QBR email. You have meeting notes, want current industry news, and need to write the email. What's the optimal Squadron role workflow?</h3>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="selectAnswer(4, 'a')">
+                                <span class="option-letter">A</span>
+                                <span>Use Recon & Radar for everything</span>
+                            </div>
+                            <div class="quiz-option" onclick="selectAnswer(4, 'b')">
+                                <span class="option-letter">B</span>
+                                <span>Use Mission Control for everything</span>
+                            </div>
+                            <div class="quiz-option" onclick="selectAnswer(4, 'c')">
+                                <span class="option-letter">C</span>
+                                <span>Flight Recorder for notes → Recon & Radar for research → Mission Control for writing</span>
+                            </div>
+                            <div class="quiz-option" onclick="selectAnswer(4, 'd')">
+                                <span class="option-letter">D</span>
+                                <span>Mission Control for notes → Flight Recorder for research → Recon & Radar for writing</span>
+                            </div>
+                        </div>
+                        <div class="quiz-feedback" id="feedback4"></div>
+                    </div>
+
+                    <!-- Question 5 -->
+                    <div class="quiz-question" id="q5" style="display: none;">
+                        <div class="question-number">Question 5 of 6</div>
+                        <h3>Claude produces a good-looking competitive email. What should you do next?</h3>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="selectAnswer(5, 'a')">
+                                <span class="option-letter">A</span>
+                                <span>Copy and send immediately</span>
+                            </div>
+                            <div class="quiz-option" onclick="selectAnswer(5, 'b')">
+                                <span class="option-letter">B</span>
+                                <span>Review the output for accuracy before sending</span>
+                            </div>
+                            <div class="quiz-option" onclick="selectAnswer(5, 'c')">
+                                <span class="option-letter">C</span>
+                                <span>Ask Claude to verify its own output</span>
+                            </div>
+                            <div class="quiz-option" onclick="selectAnswer(5, 'd')">
+                                <span class="option-letter">D</span>
+                                <span>Run the same prompt in Gemini to cross-check</span>
+                            </div>
+                        </div>
+                        <div class="quiz-feedback" id="feedback5"></div>
+                    </div>
+
+                    <!-- Question 6 -->
+                    <div class="quiz-question" id="q6" style="display: none;">
+                        <div class="question-number">Question 6 of 6</div>
+                        <h3>TRUE or FALSE: The difference between a Solo Pilot and Squadron Leader is primarily about which AI tools they use.</h3>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="selectAnswer(6, 'a')">
+                                <span class="option-letter">A</span>
+                                <span>TRUE</span>
+                            </div>
+                            <div class="quiz-option" onclick="selectAnswer(6, 'b')">
+                                <span class="option-letter">B</span>
+                                <span>FALSE</span>
+                            </div>
+                        </div>
+                        <div class="quiz-feedback" id="feedback6"></div>
+                    </div>
+                </div>
+
+                <!-- Quiz Score -->
+                <div class="quiz-score" id="quizScore" style="display: none;">
+                    <div class="score-circle">
+                        <span class="score-number" id="scoreNumber">0</span>
+                        <span class="score-label">of 6</span>
+                    </div>
+                    <h2 id="scoreMessage">Quiz Complete!</h2>
+                    <p id="scoreDescription" style="color: #6B7280; margin-bottom: 1.5rem;"></p>
+                    <button class="btn btn-primary" onclick="navigateTo('study-guide')">Continue to Study Guide →</button>
+                </div>
+
+                <div class="content-nav" id="quizNav">
+                    <button class="btn btn-secondary" onclick="navigateTo('lab')">← Back to Lab</button>
+                    <button class="btn btn-primary" id="nextQuestionBtn" onclick="nextQuestion()" style="display: none;">Next Question →</button>
+                </div>
+            </section>
+
+            <!-- Study Guide -->
+            <section id="study-guide" class="screen">
+                <h1 style="margin-bottom: 0.5rem;">Study Guide</h1>
+                <p style="color: #6B7280; margin-bottom: 2rem;">One-Page Quick Reference</p>
+
+                <div class="lesson-content">
+                    <h2>The Squadron Framework</h2>
+                    <table class="comparison-table">
+                        <thead>
+                            <tr>
+                                <th>Squadron Role</th>
+                                <th>Purpose</th>
+                                <th>Example Tools</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Mission Control</strong></td>
+                                <td>Reasoning, writing, coding</td>
+                                <td>Claude, ChatGPT, Claude Code, Cursor</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Recon & Radar</strong></td>
+                                <td>Research, grounding</td>
+                                <td>Gemini, Perplexity, NotebookLM</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Flight Recorder</strong></td>
+                                <td>Meeting capture</td>
+                                <td>Granola, Chorus.ai, Zoom AI</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Specialized Units</strong></td>
+                                <td>Domain-specific</td>
+                                <td>Figma AI, Zendesk AI, ChurnZero</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h2>Traffic Light Protocol</h2>
+                    <div class="traffic-light">
+                        <div class="traffic-zone green">
+                            <h4>🟢 Green</h4>
+                            <p>Customer data, internal docs, analytics</p>
+                            <p><em>Use freely. Review before external sharing.</em></p>
+                        </div>
+                        <div class="traffic-zone yellow">
+                            <h4>🟡 Yellow</h4>
+                            <p>Marketing with PII, competitive intel</p>
+                            <p><em>May need PR/Legal review.</em></p>
+                        </div>
+                        <div class="traffic-zone red">
+                            <h4>🔴 Red</h4>
+                            <p>API keys, passwords, credentials</p>
+                            <p><em>Never share.</em></p>
+                        </div>
+                    </div>
+
+                    <div class="concept-card">
+                        <h4>Core Principle</h4>
+                        <p style="font-size: 1.2rem; font-weight: 600;">"AI drafts. Humans send."</p>
+                        <p>You clear missions for takeoff. You own what leaves the runway.</p>
+                    </div>
+
+                    <h2>Squadron Leader Mindset</h2>
+                    <table class="comparison-table">
+                        <thead>
+                            <tr>
+                                <th>Solo Pilot</th>
+                                <th>Squadron Leader</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Minimal context</td>
+                                <td>Rich background, goals, constraints</td>
+                            </tr>
+                            <tr>
+                                <td>Freeform questions</td>
+                                <td>Structured requests</td>
+                            </tr>
+                            <tr>
+                                <td>New chat every time</td>
+                                <td>Projects and persistent knowledge</td>
+                            </tr>
+                            <tr>
+                                <td>Copy-paste directly</td>
+                                <td>Verify, refine, then use</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h2>Self-Assessment</h2>
+                    <div class="checklist-item" onclick="toggleCheck(this)">
+                        <div class="checklist-checkbox">✓</div>
+                        <span>Can name the four Squadron roles and their purposes</span>
+                    </div>
+                    <div class="checklist-item" onclick="toggleCheck(this)">
+                        <div class="checklist-checkbox">✓</div>
+                        <span>Can classify data into Green/Yellow/Red zones</span>
+                    </div>
+                    <div class="checklist-item" onclick="toggleCheck(this)">
+                        <div class="checklist-checkbox">✓</div>
+                        <span>Have identified my tools for each Squadron role</span>
+                    </div>
+                    <div class="checklist-item" onclick="toggleCheck(this)">
+                        <div class="checklist-checkbox">✓</div>
+                        <span>Understand "AI drafts, humans send" principle</span>
+                    </div>
+                    <div class="checklist-item" onclick="toggleCheck(this)">
+                        <div class="checklist-checkbox">✓</div>
+                        <span>Can articulate Solo Pilot vs. Squadron Leader difference</span>
+                    </div>
+
+                    <div class="concept-card" style="margin-top: 2rem; border-left-color: var(--teal);">
+                        <h4>Next: Module 1</h4>
+                        <p><strong>The Cognitive Shift</strong> — Understanding how LLMs actually work as reasoning engines, not search engines. You'll learn why context matters so much and how to use it effectively.</p>
+                    </div>
+                </div>
+
+                <div class="content-nav">
+                    <button class="btn btn-secondary" onclick="navigateTo('quiz')">← Back to Quiz</button>
+                    <button class="btn btn-primary" onclick="alert('Module 0 Complete! Proceed to Module 1.')">Complete Module →</button>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // Navigation State
+        const screens = ['welcome', 'video', 'lesson-1', 'lesson-2', 'lesson-3', 'flashcards', 'lab', 'quiz', 'study-guide'];
+        let currentScreen = 'welcome';
+        let completedScreens = new Set();
+
+        // Flashcard State
+        const flashcards = [
+            {
+                front: "What are the four Squadron roles, and what tools might fill each?",
+                back: "1. Mission Control (Reasoning): Claude, ChatGPT, Claude Code, Cursor\n2. Recon & Radar (Research): Gemini, Perplexity, Google NotebookLM\n3. Flight Recorder (Capture): Granola, Chorus.ai, Zoom AI\n4. Specialized Units: Figma AI, Zendesk AI, ChurnZero, etc.\n\nYour Squadron depends on what tools you have access to. Think in roles, not specific tools."
+            },
+            {
+                front: "What are the three zones in the Traffic Light Protocol?",
+                back: "Green (Go Freely): Customer data, internal docs, analytics. Use freely, review outputs before external sharing.\n\nYellow (Review Required): Marketing with PII, competitive intel. May need PR/Legal review.\n\nRed (Never Share): API keys, passwords, credentials. Never enter into any AI tool."
+            },
+            {
+                front: "What is the core principle of AI data safety at ActivTrak?",
+                back: "\"AI drafts. Humans send.\"\n\nThe risk is not in analyzing data—it's in sharing unreviewed AI output externally.\n\nYou clear missions for takeoff and own what leaves the runway."
+            },
+            {
+                front: "What's the difference between Solo Pilot and Squadron Leader thinking?",
+                back: "Solo Pilot:\n• Minimal context\n• Freeform questions\n• New chat every time\n• Copy-paste directly\n\nSquadron Leader:\n• Rich context (background, goals, constraints)\n• Structured requests with clear outputs\n• Projects and persistent knowledge\n• Verify, refine, then use"
+            },
+            {
+                front: "When should you use Mission Control tools vs. Recon & Radar tools?",
+                back: "Use Mission Control (Claude, ChatGPT, etc.) for:\n• Strategic analysis and reasoning\n• Writing and editing content\n• Code execution and data analysis\n• Synthesizing information you provide\n\nUse Recon & Radar (Gemini, Perplexity, etc.) for:\n• Real-time web research\n• Current competitor information\n• Fact verification and grounding\n• Searching documents and workspaces"
+            },
+            {
+                front: "What four questions should you ask before pasting data into an AI tool?",
+                back: "1. What is this data? (Customer info? Credential?)\n2. What zone is it in? (Green/Yellow/Red)\n3. What will I do with the output? (Internal? External?)\n4. Have I reviewed before sending?\n\nIf Green + reviewing outputs = proceed confidently"
+            },
+            {
+                front: "What does 'Insights, Not Oversight' mean for your AI usage?",
+                back: "ActivTrak's philosophy is about understanding work patterns without surveillance culture.\n\nYour AI usage should:\n• Generate genuine insights, not busywork\n• Focus on understanding patterns\n• Prioritize quality over quantity\n\nSquadron Leaders use AI purposefully."
+            }
+        ];
+        let currentCard = 0;
+
+        // Lab State
+        let currentLabStep = 1;
+        const totalLabSteps = 3;
+
+        // Quiz State
+        const quizAnswers = ['c', 'c', 'b', 'c', 'b', 'b'];
+        const quizFeedback = [
+            {
+                correct: "Exactly right. Mission Control is your reasoning engine—tools like Claude, ChatGPT, or Claude Code that excel at strategic thinking, writing, coding, and synthesizing information. Different employees may have different Mission Control tools, but they all serve this same role.",
+                incorrect: "Mission Control is the reasoning role (Claude, ChatGPT, etc.). Recon & Radar handles web search (Gemini, Perplexity). Flight Recorder handles transcription (Granola, Chorus, Zoom AI)."
+            },
+            {
+                correct: "Exactly. API keys and credentials are Red zone—never share them with any AI tool. They create genuine security risks.",
+                incorrect: "API keys and credentials are Red zone—never share. Usage data and meeting notes are Green. Case studies with quotes are Yellow."
+            },
+            {
+                correct: "Correct! Customer data is Green zone. The risk isn't in analyzing data—it's in sharing unreviewed output. Use freely, review before external sharing.",
+                incorrect: "Customer data is actually Green zone. The Traffic Light Protocol doesn't prohibit PII analysis—it requires reviewing outputs before external distribution."
+            },
+            {
+                correct: "This is the Squadron Leader approach. Each role handles what it does best: Flight Recorder captures notes, Recon & Radar researches current info, Mission Control synthesizes and writes.",
+                incorrect: "The optimal workflow uses each role's strength: Flight Recorder for existing notes, Recon & Radar for current research, Mission Control for synthesis and writing."
+            },
+            {
+                correct: "This is 'AI drafts, humans send' in action. Review outputs before sending externally—you own what leaves the runway.",
+                incorrect: "Never auto-send AI outputs. The core principle is 'AI drafts, humans send'—always review before external communication."
+            },
+            {
+                correct: "Correct! The difference is mindset, not tools. Squadron Leaders provide context, structure requests, and review outputs—regardless of which tools they use.",
+                incorrect: "The difference is actually about mindset and approach. Both might use the same tools, but Squadron Leaders orchestrate with context and review."
+            }
+        ];
+        let currentQuestion = 0;
+        let userAnswers = [];
+        let quizComplete = false;
+
+        // Video Tab Switching
+        function switchVideo(videoId) {
+            // Hide all video content
+            document.querySelectorAll('.video-content').forEach(v => {
+                v.style.display = 'none';
+                v.classList.remove('active-video');
+            });
+
+            // Remove active state from all tabs
+            document.querySelectorAll('.video-tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            // Show selected video
+            const videoContent = document.getElementById(videoId);
+            if (videoContent) {
+                videoContent.style.display = 'block';
+                videoContent.classList.add('active-video');
+            }
+
+            // Activate selected tab
+            const activeTab = document.querySelector(`[data-video="${videoId}"]`);
+            if (activeTab) {
+                activeTab.classList.add('active');
+            }
+
+            // Pause any playing videos when switching
+            document.querySelectorAll('video').forEach(v => v.pause());
+        }
+
+        // Navigation Functions
+        function navigateTo(screenId) {
+            completedScreens.add(currentScreen);
+
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+
+            document.getElementById(screenId).classList.add('active');
+            document.querySelector(`[data-screen="${screenId}"]`)?.classList.add('active');
+
+            completedScreens.forEach(id => {
+                const navItem = document.querySelector(`[data-screen="${id}"]`);
+                if (navItem && id !== screenId) {
+                    navItem.classList.add('completed');
+                }
+            });
+
+            currentScreen = screenId;
+            updateProgress();
+        }
+
+        function updateProgress() {
+            const progress = (completedScreens.size / screens.length) * 100;
+            document.getElementById('progressFill').style.width = `${progress}%`;
+            document.getElementById('progressText').textContent = `${Math.round(progress)}% Complete`;
+        }
+
+        // Flashcard Functions
+        function flipCard() {
+            document.getElementById('flashcard').classList.toggle('flipped');
+        }
+
+        function nextCard() {
+            if (currentCard < flashcards.length - 1) {
+                currentCard++;
+                updateCard();
+            }
+        }
+
+        function prevCard() {
+            if (currentCard > 0) {
+                currentCard--;
+                updateCard();
+            }
+        }
+
+        function updateCard() {
+            document.getElementById('flashcard').classList.remove('flipped');
+            setTimeout(() => {
+                document.getElementById('cardFront').textContent = flashcards[currentCard].front;
+                document.getElementById('cardBack').textContent = flashcards[currentCard].back;
+                document.getElementById('cardNum').textContent = currentCard + 1;
+            }, 150);
+        }
+
+        // Lab Functions
+        function nextLabStep() {
+            if (currentLabStep < totalLabSteps) {
+                document.getElementById(`labStep${currentLabStep}`).classList.remove('active');
+                currentLabStep++;
+                document.getElementById(`labStep${currentLabStep}`).classList.add('active');
+            }
+        }
+
+        // Quiz Functions
+        function selectAnswer(questionNum, answer) {
+            if (quizComplete) return;
+
+            const question = document.getElementById(`q${questionNum}`);
+            const options = question.querySelectorAll('.quiz-option');
+            const feedback = document.getElementById(`feedback${questionNum}`);
+
+            options.forEach(opt => opt.classList.remove('selected', 'correct', 'incorrect'));
+
+            const selectedOption = [...options].find(opt =>
+                opt.querySelector('.option-letter').textContent.toLowerCase() === answer
+            );
+            selectedOption.classList.add('selected');
+
+            const isCorrect = answer === quizAnswers[questionNum - 1];
+            userAnswers[questionNum - 1] = answer;
+
+            setTimeout(() => {
+                if (isCorrect) {
+                    selectedOption.classList.add('correct');
+                    feedback.className = 'quiz-feedback show correct';
+                    feedback.textContent = quizFeedback[questionNum - 1].correct;
+                } else {
+                    selectedOption.classList.add('incorrect');
+                    const correctOption = [...options].find(opt =>
+                        opt.querySelector('.option-letter').textContent.toLowerCase() === quizAnswers[questionNum - 1]
+                    );
+                    correctOption.classList.add('correct');
+                    feedback.className = 'quiz-feedback show incorrect';
+                    feedback.textContent = quizFeedback[questionNum - 1].incorrect;
+                }
+
+                if (questionNum < 6) {
+                    document.getElementById('nextQuestionBtn').style.display = 'inline-flex';
+                } else {
+                    showQuizResults();
+                }
+            }, 300);
+        }
+
+        function nextQuestion() {
+            currentQuestion++;
+            document.getElementById(`q${currentQuestion}`).style.display = 'none';
+            document.getElementById(`q${currentQuestion + 1}`).style.display = 'block';
+            document.getElementById('nextQuestionBtn').style.display = 'none';
+        }
+
+        function showQuizResults() {
+            quizComplete = true;
+            const score = userAnswers.filter((ans, i) => ans === quizAnswers[i]).length;
+
+            document.getElementById('quizQuestions').style.display = 'none';
+            document.getElementById('quizNav').style.display = 'none';
+            document.getElementById('quizScore').style.display = 'block';
+            document.getElementById('scoreNumber').textContent = score;
+
+            if (score >= 5) {
+                document.getElementById('scoreMessage').textContent = 'Excellent! Ready to fly.';
+                document.getElementById('scoreDescription').textContent = 'You understand your tools and the governance framework.';
+            } else if (score >= 3) {
+                document.getElementById('scoreMessage').textContent = 'Good foundation!';
+                document.getElementById('scoreDescription').textContent = 'Review the Traffic Light Protocol and tool roles before proceeding.';
+            } else {
+                document.getElementById('scoreMessage').textContent = 'Review needed';
+                document.getElementById('scoreDescription').textContent = 'Re-read the lesson. Understanding these fundamentals is essential.';
+            }
+
+            // SCORM: Report score and completion
+            const scorePercent = Math.round((score / 6) * 100);
+            if (typeof setSCORMScore === 'function') {
+                setSCORMScore(scorePercent);
+            }
+            if (typeof setSCORMStatus === 'function') {
+                setSCORMStatus(scorePercent >= 70 ? 'passed' : 'failed');
+            // Celebration confetti for passing
+            const passed = scorePercent >= 70;
+            if (passed && typeof confetti === 'function') {
+                // Initial burst
+                confetti({
+                    particleCount: 100,
+                    spread: 70,
+                    origin: { y: 0.6 },
+                    colors: ['#2ED4B5', '#1657A0', '#FFC83B', '#19316A']
+                });
+
+                // Follow-up bursts
+                setTimeout(() => {
+                    confetti({
+                        particleCount: 50,
+                        angle: 60,
+                        spread: 55,
+                        origin: { x: 0 },
+                        colors: ['#2ED4B5', '#1657A0', '#FFC83B']
+                    });
+                }, 250);
+
+                setTimeout(() => {
+                    confetti({
+                        particleCount: 50,
+                        angle: 120,
+                        spread: 55,
+                        origin: { x: 1 },
+                        colors: ['#2ED4B5', '#1657A0', '#FFC83B']
+                    });
+                }, 400);
+            }
+
+            // Close popup window after completion
+            if (window.opener !== null) {
+                setTimeout(() => {
+                    const shouldClose = confirm('Module completed! Close this window?');
+                    if (shouldClose) {
+                        window.close();
+                    }
+                }, 3000);
+            }
+            }
+        }
+
+        // Utility Functions
+        function toggleCheck(element) {
+            element.classList.toggle('checked');
+        }
+
+        function copyToClipboard(button) {
+            const pre = button.parentElement.querySelector('pre');
+            navigator.clipboard.writeText(pre.textContent);
+            button.textContent = 'Copied!';
+            setTimeout(() => button.textContent = 'Copy', 2000);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,2378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module 1: The Cognitive Shift | Solo Pilot to Squadron Leader</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sofia+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-blue: #0042F3;
+            --pelorous: #33A7B5;
+            --teal: #2FD3B4;
+            --violet-red: #EE2C82;
+            --dark-base: #252D38;
+            --light-gray: #D9D9D9;
+            --bg-light: #F8F9FA;
+            --white: #FFFFFF;
+            --success: #2FD3B4;
+            --error: #EE2C82;
+            --warning: #F5A623;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Sofia Sans', sans-serif;
+            background: var(--bg-light);
+            color: var(--dark-base);
+            line-height: 1.6;
+        }
+
+        /* Header */
+        .course-header {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, #384B76 100%);
+            color: white;
+            padding: 1rem 2rem;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .course-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .course-subtitle {
+            font-size: 0.85rem;
+            opacity: 0.9;
+        }
+
+        .progress-container {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .progress-bar {
+            width: 200px;
+            height: 8px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--teal);
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        .progress-text {
+            font-size: 0.85rem;
+        }
+
+        /* Main Layout */
+        .main-container {
+            display: flex;
+            margin-top: 60px;
+            min-height: calc(100vh - 60px);
+        }
+
+        /* Sidebar Navigation */
+        .sidebar {
+            width: 280px;
+            background: var(--white);
+            border-right: 1px solid var(--light-gray);
+            position: fixed;
+            top: 60px;
+            bottom: 0;
+            left: 0;
+            overflow-y: auto;
+            padding: 1.5rem 0;
+        }
+
+        .nav-section {
+            padding: 0 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .nav-section-title {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #6B7280;
+            margin-bottom: 0.75rem;
+            padding: 0 0.75rem;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 0.25rem;
+        }
+
+        .nav-item:hover {
+            background: var(--bg-light);
+        }
+
+        .nav-item.active {
+            background: rgba(0, 66, 243, 0.1);
+            color: var(--primary-blue);
+        }
+
+        .nav-item.completed .nav-icon {
+            background: var(--success);
+            color: white;
+        }
+
+        .nav-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: var(--light-gray);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .nav-item.active .nav-icon {
+            background: var(--primary-blue);
+            color: white;
+        }
+
+        .nav-label {
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .nav-duration {
+            font-size: 0.75rem;
+            color: #6B7280;
+            margin-left: auto;
+        }
+
+        /* Content Area */
+        .content-area {
+            flex: 1;
+            margin-left: 280px;
+            padding: 2rem 3rem;
+            max-width: 1000px;
+        }
+
+        /* Screen Sections */
+        .screen {
+            display: none;
+        }
+
+        .screen.active {
+            display: block;
+            animation: fadeIn 0.4s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Welcome Screen */
+        .welcome-hero {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, #384B76 100%);
+            border-radius: 16px;
+            padding: 3rem;
+            color: white;
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .welcome-hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 400px;
+            height: 400px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+        }
+
+        .welcome-hero h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            position: relative;
+        }
+
+        .welcome-hero .module-tag {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            margin-bottom: 1rem;
+        }
+
+        .welcome-hero p {
+            font-size: 1.1rem;
+            opacity: 0.95;
+            max-width: 600px;
+            position: relative;
+        }
+
+        .objectives-card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .objectives-card h2 {
+            font-size: 1.25rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .objective-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--bg-light);
+        }
+
+        .objective-item:last-child {
+            border-bottom: none;
+        }
+
+        .objective-level {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .level-retrieval { background: #E0F2FE; color: #0369A1; }
+        .level-comprehension { background: #FEF3C7; color: #B45309; }
+        .level-analysis { background: #FCE7F3; color: #BE185D; }
+        .level-utilization { background: #D1FAE5; color: #047857; }
+
+        .time-estimate {
+            display: flex;
+            gap: 2rem;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--bg-light);
+        }
+
+        .time-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #6B7280;
+        }
+
+        .start-btn {
+            background: var(--primary-blue);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .start-btn:hover {
+            background: #0035C7;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 66, 243, 0.3);
+        }
+
+        /* Lesson Content */
+        .lesson-content {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 2.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .lesson-content h1 {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            color: var(--dark-base);
+        }
+
+        .lesson-content h2 {
+            font-size: 1.5rem;
+            margin: 2rem 0 1rem;
+            color: var(--dark-base);
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--bg-light);
+        }
+
+        .lesson-content h3 {
+            font-size: 1.2rem;
+            margin: 1.5rem 0 0.75rem;
+            color: var(--pelorous);
+        }
+
+        .lesson-content p {
+            margin-bottom: 1rem;
+            font-size: 1.05rem;
+            line-height: 1.8;
+        }
+
+        .lesson-content ul, .lesson-content ol {
+            margin: 1rem 0 1rem 1.5rem;
+        }
+
+        .lesson-content li {
+            margin-bottom: 0.5rem;
+            line-height: 1.7;
+        }
+
+        .callout {
+            padding: 1.25rem 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+            display: flex;
+            gap: 1rem;
+        }
+
+        .callout-icon {
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .callout-insight {
+            background: rgba(0, 66, 243, 0.08);
+            border-left: 4px solid var(--primary-blue);
+        }
+
+        .callout-warning {
+            background: rgba(238, 44, 130, 0.08);
+            border-left: 4px solid var(--violet-red);
+        }
+
+        .callout-tip {
+            background: rgba(47, 211, 180, 0.1);
+            border-left: 4px solid var(--teal);
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .comparison-table th {
+            background: var(--dark-base);
+            color: white;
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .comparison-table td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--bg-light);
+        }
+
+        .comparison-table tr:nth-child(even) {
+            background: var(--bg-light);
+        }
+
+        /* Interactive Elements */
+        .interactive-demo {
+            background: var(--bg-light);
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .demo-title {
+            font-weight: 600;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .prompt-box {
+            background: var(--white);
+            border: 2px solid var(--light-gray);
+            border-radius: 8px;
+            padding: 1rem;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            margin: 1rem 0;
+            position: relative;
+        }
+
+        .prompt-box.bad {
+            border-color: var(--violet-red);
+            background: rgba(238, 44, 130, 0.03);
+        }
+
+        .prompt-box.good {
+            border-color: var(--teal);
+            background: rgba(47, 211, 180, 0.03);
+        }
+
+        .prompt-label {
+            position: absolute;
+            top: -10px;
+            left: 12px;
+            background: var(--white);
+            padding: 0 0.5rem;
+            font-family: 'Sofia Sans', sans-serif;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .prompt-box.bad .prompt-label { color: var(--violet-red); }
+        .prompt-box.good .prompt-label { color: var(--teal); }
+
+        /* Video Player */
+        .video-container {
+            background: var(--dark-base);
+            border-radius: 12px;
+            aspect-ratio: 16/9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .video-placeholder {
+            text-align: center;
+            color: white;
+        }
+
+        .play-btn {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: var(--primary-blue);
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            margin-bottom: 1rem;
+        }
+
+        .play-btn:hover {
+            transform: scale(1.1);
+            background: var(--teal);
+        }
+
+        .play-btn svg {
+            width: 32px;
+            height: 32px;
+            fill: white;
+            margin-left: 4px;
+        }
+
+        /* Flashcards */
+        .flashcard-container {
+            perspective: 1000px;
+            margin: 2rem auto;
+            max-width: 600px;
+        }
+
+        .flashcard {
+            width: 100%;
+            height: 300px;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.6s;
+            cursor: pointer;
+        }
+
+        .flashcard.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .flashcard-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .flashcard-front {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, #384B76 100%);
+            color: white;
+        }
+
+        .flashcard-back {
+            background: var(--white);
+            border: 2px solid var(--primary-blue);
+            transform: rotateY(180deg);
+            color: var(--dark-base);
+        }
+
+        .flashcard-front h3 {
+            font-size: 1.4rem;
+            line-height: 1.5;
+        }
+
+        .flashcard-back p {
+            font-size: 1.1rem;
+            line-height: 1.7;
+        }
+
+        .flashcard-nav {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 2rem;
+            margin-top: 1.5rem;
+        }
+
+        .flashcard-btn {
+            background: var(--bg-light);
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .flashcard-btn:hover {
+            background: var(--primary-blue);
+            color: white;
+        }
+
+        .flashcard-counter {
+            font-weight: 600;
+            color: #6B7280;
+        }
+
+        .flip-hint {
+            text-align: center;
+            color: #6B7280;
+            font-size: 0.9rem;
+            margin-top: 1rem;
+        }
+
+        /* Lab Exercise */
+        .lab-header {
+            background: linear-gradient(135deg, var(--pelorous) 0%, #2A8A96 100%);
+            border-radius: 12px;
+            padding: 2rem;
+            color: white;
+            margin-bottom: 2rem;
+        }
+
+        .lab-header h1 {
+            font-size: 1.75rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .lab-meta {
+            display: flex;
+            gap: 2rem;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .lab-steps {
+            background: var(--white);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .lab-step {
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid var(--bg-light);
+            display: none;
+        }
+
+        .lab-step.active {
+            display: block;
+        }
+
+        .step-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .step-number {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--primary-blue);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .step-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .step-content {
+            padding-left: 52px;
+        }
+
+        .copy-block {
+            background: #1E1E1E;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+            position: relative;
+            overflow-x: auto;
+        }
+
+        .copy-block pre {
+            color: #D4D4D4;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background: #3C3C3C;
+            border: none;
+            color: white;
+            padding: 0.5rem 0.75rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .copy-btn:hover {
+            background: var(--primary-blue);
+        }
+
+        .lab-navigation {
+            display: flex;
+            justify-content: space-between;
+            padding: 1.5rem 2rem;
+            border-top: 1px solid var(--bg-light);
+        }
+
+        /* Quiz */
+        .quiz-container {
+            background: var(--white);
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            overflow: hidden;
+        }
+
+        .quiz-header {
+            background: var(--bg-light);
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .quiz-progress {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .quiz-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--light-gray);
+        }
+
+        .quiz-dot.current {
+            background: var(--primary-blue);
+        }
+
+        .quiz-dot.correct {
+            background: var(--success);
+        }
+
+        .quiz-dot.incorrect {
+            background: var(--error);
+        }
+
+        .quiz-question {
+            padding: 2rem;
+            display: none;
+        }
+
+        .quiz-question.active {
+            display: block;
+        }
+
+        .question-number {
+            font-size: 0.85rem;
+            color: #6B7280;
+            margin-bottom: 0.5rem;
+        }
+
+        .question-text {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            line-height: 1.5;
+        }
+
+        .answer-options {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .answer-option {
+            padding: 1rem 1.25rem;
+            border: 2px solid var(--light-gray);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .answer-option:hover:not(.disabled) {
+            border-color: var(--primary-blue);
+            background: rgba(0, 66, 243, 0.03);
+        }
+
+        .answer-option.selected {
+            border-color: var(--primary-blue);
+            background: rgba(0, 66, 243, 0.08);
+        }
+
+        .answer-option.correct {
+            border-color: var(--success);
+            background: rgba(47, 211, 180, 0.1);
+        }
+
+        .answer-option.incorrect {
+            border-color: var(--error);
+            background: rgba(238, 44, 130, 0.08);
+        }
+
+        .answer-option.disabled {
+            cursor: default;
+        }
+
+        .option-letter {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--bg-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .answer-option.selected .option-letter {
+            background: var(--primary-blue);
+            color: white;
+        }
+
+        .answer-option.correct .option-letter {
+            background: var(--success);
+            color: white;
+        }
+
+        .answer-option.incorrect .option-letter {
+            background: var(--error);
+            color: white;
+        }
+
+        .feedback-panel {
+            padding: 1.5rem 2rem;
+            background: var(--bg-light);
+            display: none;
+        }
+
+        .feedback-panel.show {
+            display: block;
+        }
+
+        .feedback-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+        }
+
+        .feedback-correct {
+            color: var(--success);
+        }
+
+        .feedback-incorrect {
+            color: var(--error);
+        }
+
+        .quiz-footer {
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: flex-end;
+            border-top: 1px solid var(--bg-light);
+        }
+
+        /* Study Guide */
+        .study-guide-card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .study-guide-card h2 {
+            font-size: 1.25rem;
+            margin-bottom: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--primary-blue);
+        }
+
+        .term-grid {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .term-item {
+            display: grid;
+            grid-template-columns: 180px 1fr;
+            gap: 1rem;
+            padding: 1rem;
+            background: var(--bg-light);
+            border-radius: 8px;
+        }
+
+        .term-name {
+            font-weight: 600;
+            color: var(--dark-base);
+        }
+
+        .term-def {
+            color: #4B5563;
+        }
+
+        .do-dont-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        .do-column h3 {
+            color: var(--success);
+            margin-bottom: 1rem;
+        }
+
+        .dont-column h3 {
+            color: var(--error);
+            margin-bottom: 1rem;
+        }
+
+        .do-dont-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.5rem;
+            margin-bottom: 0.75rem;
+            font-size: 0.95rem;
+        }
+
+        /* Navigation Buttons */
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            border: none;
+        }
+
+        .btn-primary {
+            background: var(--primary-blue);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #0035C7;
+        }
+
+        .btn-secondary {
+            background: var(--bg-light);
+            color: var(--dark-base);
+        }
+
+        .btn-secondary:hover {
+            background: var(--light-gray);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .content-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--bg-light);
+        }
+
+        /* Quiz Results */
+        .quiz-results {
+            text-align: center;
+            padding: 3rem 2rem;
+        }
+
+        .results-score {
+            font-size: 4rem;
+            font-weight: 700;
+            color: var(--primary-blue);
+            margin-bottom: 0.5rem;
+        }
+
+        .results-label {
+            font-size: 1.25rem;
+            color: #6B7280;
+            margin-bottom: 2rem;
+        }
+
+        .results-breakdown {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            margin-bottom: 2rem;
+        }
+
+        .breakdown-item {
+            text-align: center;
+        }
+
+        .breakdown-value {
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .breakdown-value.correct { color: var(--success); }
+        .breakdown-value.incorrect { color: var(--error); }
+
+        .breakdown-label {
+            font-size: 0.9rem;
+            color: #6B7280;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .sidebar {
+                width: 240px;
+            }
+            .content-area {
+                margin-left: 240px;
+                padding: 1.5rem 2rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                display: none;
+            }
+            .content-area {
+                margin-left: 0;
+                padding: 1rem;
+            }
+            .do-dont-grid {
+                grid-template-columns: 1fr;
+            }
+            .term-item {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Squadron Icon Styles */
+        .squadron-icon {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="course-header">
+        <div>
+            <div class="course-title">Solo Pilot → Squadron Leader</div>
+            <div class="course-subtitle">Module 1: The Cognitive Shift</div>
+        </div>
+        <div class="progress-container">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+            </div>
+            <span class="progress-text" id="progressText">0% Complete</span>
+        </div>
+    </header>
+
+    <div class="main-container">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="nav-section">
+                <div class="nav-section-title">Module Content</div>
+                <div class="nav-item active" data-screen="welcome">
+                    <div class="nav-icon">▶</div>
+                    <span class="nav-label">Welcome</span>
+                    <span class="nav-duration">2 min</span>
+                </div>
+                <div class="nav-item" data-screen="video">
+                    <div class="nav-icon">🎬</div>
+                    <span class="nav-label">Video Lesson</span>
+                    <span class="nav-duration">10 min</span>
+                </div>
+                <div class="nav-item" data-screen="lesson-1">
+                    <div class="nav-icon">1</div>
+                    <span class="nav-label">The Search Engine Trap</span>
+                    <span class="nav-duration">5 min</span>
+                </div>
+                <div class="nav-item" data-screen="lesson-2">
+                    <div class="nav-icon">2</div>
+                    <span class="nav-label">The Water Glass Effect</span>
+                    <span class="nav-duration">5 min</span>
+                </div>
+                <div class="nav-item" data-screen="lesson-3">
+                    <div class="nav-icon">3</div>
+                    <span class="nav-label">Solo Pilot vs Squadron Leader</span>
+                    <span class="nav-duration">5 min</span>
+                </div>
+                <div class="nav-item" data-screen="lesson-4">
+                    <div class="nav-icon">4</div>
+                    <span class="nav-label">Context Architecture</span>
+                    <span class="nav-duration">5 min</span>
+                </div>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Practice & Assessment</div>
+                <div class="nav-item" data-screen="flashcards">
+                    <div class="nav-icon">🗂</div>
+                    <span class="nav-label">Flashcards</span>
+                    <span class="nav-duration">5 min</span>
+                </div>
+                <div class="nav-item" data-screen="lab">
+                    <div class="nav-icon">🧪</div>
+                    <span class="nav-label">Lab Exercise</span>
+                    <span class="nav-duration">25 min</span>
+                </div>
+                <div class="nav-item" data-screen="quiz">
+                    <div class="nav-icon">✓</div>
+                    <span class="nav-label">Knowledge Check</span>
+                    <span class="nav-duration">10 min</span>
+                </div>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Reference</div>
+                <div class="nav-item" data-screen="study-guide">
+                    <div class="nav-icon">📋</div>
+                    <span class="nav-label">Study Guide</span>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Content Area -->
+        <main class="content-area">
+            <!-- Welcome Screen -->
+            <section class="screen active" id="welcome">
+                <div class="welcome-hero">
+                    <span class="module-tag">Module 1 of 11</span>
+                    <h1>The Cognitive Shift</h1>
+                    <p>Move from "search engine thinking" to "reasoning engine thinking" and understand why your AI keeps getting distracted.</p>
+                </div>
+
+                <div class="objectives-card">
+                    <h2>🎯 Learning Objectives</h2>
+                    <div class="objective-item">
+                        <span class="objective-level level-retrieval">Retrieval</span>
+                        <span>Define "probabilistic reasoning engine" and explain how it differs from a search engine</span>
+                    </div>
+                    <div class="objective-item">
+                        <span class="objective-level level-comprehension">Comprehension</span>
+                        <span>Explain the "Water Glass Effect" and its implications for prompt design</span>
+                    </div>
+                    <div class="objective-item">
+                        <span class="objective-level level-analysis">Analysis</span>
+                        <span>Compare Solo Pilot vs Squadron Leader approaches and identify effectiveness for scenarios</span>
+                    </div>
+                    <div class="objective-item">
+                        <span class="objective-level level-utilization">Utilization</span>
+                        <span>Apply context window management principles to structure prompts that minimize distraction</span>
+                    </div>
+
+                    <div class="time-estimate">
+                        <div class="time-item">
+                            <span>⏱</span>
+                            <span><strong>Total Time:</strong> ~60 minutes</span>
+                        </div>
+                        <div class="time-item">
+                            <span>🧪</span>
+                            <span><strong>Lab:</strong> 25 minutes hands-on</span>
+                        </div>
+                        <div class="time-item">
+                            <span>✓</span>
+                            <span><strong>Quiz:</strong> 7 questions</span>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="start-btn" onclick="navigateTo('video')">
+                    Begin Module
+                    <span>→</span>
+                </button>
+            </section>
+
+            <!-- Video Screen -->
+            <section class="screen" id="video">
+                <div class="video-container">
+                    <div class="video-placeholder">
+                        <button class="play-btn" aria-label="Play video">
+                            <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                        </button>
+                        <p>Video: The Cognitive Shift (9:30)</p>
+                    </div>
+                </div>
+
+                <div class="lesson-content">
+                    <h2>Video Summary</h2>
+                    <p>This video introduces the fundamental shift required to use AI effectively:</p>
+                    <ul>
+                        <li><strong>AI is a reasoning engine</strong> — It generates responses by predicting probable next words, not by retrieving existing answers</li>
+                        <li><strong>The Water Glass Effect</strong> — Irrelevant context degrades AI reasoning capability</li>
+                        <li><strong>Solo Pilot vs Squadron Leader</strong> — The difference between reactive prompting and systematic orchestration</li>
+                        <li><strong>Context as Mission Briefing</strong> — Structure your prompts with clear sections: Role, Context, Data, Task, Format</li>
+                    </ul>
+
+                    <div class="callout callout-tip">
+                        <span class="callout-icon">💡</span>
+                        <div>
+                            <strong>Pro Tip:</strong> Take notes on specific examples you want to try in the lab exercise. The comparison between "cluttered" and "structured" prompts will be hands-on practice.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="content-nav">
+                    <button class="btn btn-secondary" onclick="navigateTo('welcome')">← Back</button>
+                    <button class="btn btn-primary" onclick="navigateTo('lesson-1')">Continue to Lesson →</button>
+                </div>
+            </section>
+
+            <!-- Lesson 1: Search Engine Trap -->
+            <section class="screen" id="lesson-1">
+                <div class="lesson-content">
+                    <h1>The Search Engine Trap</h1>
+
+                    <p>Most of us grew up with Google. We learned to type keywords and scan results for the best match. This mental model—<em>query in, links out</em>—shapes how we approach AI tools without us even realizing it.</p>
+
+                    <p>But Claude and Gemini aren't search engines. They don't retrieve pre-existing answers from a database. They <strong>generate</strong> responses by predicting the most likely next word based on everything you've given them.</p>
+
+                    <div class="interactive-demo">
+                        <div class="demo-title">🔄 The Fundamental Difference</div>
+                        <table class="comparison-table">
+                            <thead>
+                                <tr>
+                                    <th>Search Engine</th>
+                                    <th>Reasoning Engine</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Retrieves existing content</td>
+                                    <td>Generates new content</td>
+                                </tr>
+                                <tr>
+                                    <td>Keyword matching</td>
+                                    <td>Pattern completion</td>
+                                </tr>
+                                <tr>
+                                    <td>More words = better results</td>
+                                    <td>More words = potential confusion</td>
+                                </tr>
+                                <tr>
+                                    <td>Speed is the goal</td>
+                                    <td>Quality is the goal</td>
+                                </tr>
+                                <tr>
+                                    <td>One right answer</td>
+                                    <td>Many possible paths</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <h3>What This Means for You</h3>
+                    <p>When you type "ActivTrak competitors" into Google, you get links to pages containing those words. When you type the same thing into Claude, it predicts what words would <em>most likely follow</em> that phrase based on patterns it learned during training.</p>
+
+                    <div class="callout callout-insight">
+                        <span class="callout-icon">🧠</span>
+                        <div>
+                            <strong>Key Insight:</strong> Claude is a <strong>probabilistic reasoning engine</strong>. It traverses a semantic space of possible responses, following the path of highest probability given your input. Your job as Squadron Leader is to constrain that space so the high-probability paths lead where you want to go.
+                        </div>
+                    </div>
+
+                    <p>This distinction matters because when you dump everything into a prompt, you're not giving the AI "more to work with." You're giving it more possible paths to wander down—most of them wrong.</p>
+                </div>
+
+                <div class="content-nav">
+                    <button class="btn btn-secondary" onclick="navigateTo('video')">← Back</button>
+                    <button class="btn btn-primary" onclick="navigateTo('lesson-2')">Continue →</button>
+                </div>
+            </section>
+
+            <!-- Lesson 2: Water Glass Effect -->
+            <section class="screen" id="lesson-2">
+                <div class="lesson-content">
+                    <h1>The Water Glass Effect</h1>
+
+                    <p>To understand why AI sometimes fails spectacularly at tasks it should nail, consider the "Water Glass" riddle—a benchmark that exposes a critical weakness in how language models process information.</p>
+
+                    <div class="interactive-demo">
+                        <div class="demo-title">🧪 The Riddle</div>
+                        <div style="background: white; padding: 1.5rem; border-radius: 8px; font-style: italic;">
+                            "Three glasses sit on a table. Glass A contains water and a paperclip. Glass B contains water and scissors. Glass C contains water and a pocket watch. Assuming all glasses appeared to have the same water level when empty objects were placed in them, which glass actually contains the most water?"
+                        </div>
+                    </div>
+
+                    <p>You probably got it instantly. The watch displaces more water, so Glass C <em>appears</em> to have the same level but actually contains less. The paperclip glass has the most water.</p>
+
+                    <p>Yet many AI models fail this—and not because they don't understand physics. They can explain Archimedes' principle perfectly when asked directly.</p>
+
+                    <div class="callout callout-warning">
+                        <span class="callout-icon">⚠️</span>
+                        <div>
+                            <strong>The Problem:</strong> Irrelevant details in the prompt—the specific objects, the scenario setup, the word "actually"—scatter the model's attention away from the core physics problem.
+                        </div>
+                    </div>
+
+                    <h3>The Corporate Version</h3>
+                    <p>In your daily work, the Water Glass Effect looks like this:</p>
+
+                    <div class="prompt-box bad">
+                        <span class="prompt-label">❌ Cluttered Prompt</span>
+                        <p>"Here's an email thread between me, Sarah, and the engineering team. We've been going back and forth about the Q3 roadmap but also there was some discussion about the holiday party and John mentioned he might be leaving. Anyway, I need you to help me figure out what we should prioritize. Also Sarah seems frustrated but I'm not sure why. What do you think?"</p>
+                    </div>
+
+                    <p>Claude's attention scatters across holiday party logistics, John's departure, Sarah's emotional state, <em>and</em> the actual roadmap priorities. The response addresses all of these poorly instead of any of them well.</p>
+
+                    <div class="prompt-box good">
+                        <span class="prompt-label">✓ Focused Prompt</span>
+                        <p>"Analyze this email thread and identify the three highest-priority roadmap items based on engineering capacity constraints. Ignore discussion of social events or personnel changes."</p>
+                    </div>
+
+                    <p>By explicitly telling Claude what to focus on <em>and what to ignore</em>, you concentrate its attention on the reasoning task that matters.</p>
+                </div>
+
+                <div class="content-nav">
+                    <button class="btn btn-secondary" onclick="navigateTo('lesson-1')">← Back</button>
+                    <button class="btn btn-primary" onclick="navigateTo('lesson-3')">Continue →</button>
+                </div>
+            </section>
+
+            <!-- Lesson 3: Solo Pilot vs Squadron Leader -->
+            <section class="screen" id="lesson-3">
+                <div class="lesson-content">
+                    <h1>Solo Pilot vs Squadron Leader</h1>
+
+                    <p>The Water Glass Effect reveals why the "Solo Pilot" approach—one person, one AI, one prompt—fails for complex work.</p>
+
+                    <h2>The Solo Pilot Pattern</h2>
+                    <p>Solo Pilots treat AI interactions as isolated events:</p>
+                    <ul>
+                        <li>Paste everything into one prompt</li>
+                        <li>Accept the first response</li>
+                        <li>Start fresh for the next task</li>
+                        <li>Hope for the best</li>
+                    </ul>
+
+                    <p>This works for simple queries ("What's the capital of France?"). It fails for knowledge work because:</p>
+
+                    <div class="callout callout-warning">
+                        <span class="callout-icon">1</span>
+                        <div><strong>Context bleeds everywhere.</strong> Instructions mix with data. Background information contaminates the task.</div>
+                    </div>
+
+                    <div class="callout callout-warning">
+                        <span class="callout-icon">2</span>
+                        <div><strong>Errors cascade unchecked.</strong> If the AI misunderstands step one, every subsequent step builds on that mistake.</div>
+                    </div>
+
+                    <div class="callout callout-warning">
+                        <span class="callout-icon">3</span>
+                        <div><strong>No specialization.</strong> The same "generalist" AI tries to research, strategize, write, and critique simultaneously—doing all poorly.</div>
+                    </div>
+
+                    <h2>The Squadron Leader Pattern</h2>
+                    <p>Squadron Leaders orchestrate AI as a system:</p>
+
+                    <div class="interactive-demo">
+                        <div class="demo-title">✈️ Your Squadron</div>
+                        <table class="comparison-table">
+                            <thead>
+                                <tr>
+                                    <th>Tool</th>
+                                    <th>Squadron Role</th>
+                                    <th>Function</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Claude</strong></td>
+                                    <td>Mission Control</td>
+                                    <td>Reasoning, strategy, synthesis, writing</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Gemini</strong></td>
+                                    <td>Recon & Radar</td>
+                                    <td>Real-time research, fact verification</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Granola</strong></td>
+                                    <td>Flight Recorder</td>
+                                    <td>Meeting capture, structured context</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <p>The metaphor comes from aviation. A Solo Pilot flies one aircraft, handling every function personally. A Squadron Leader commands multiple specialized units—each optimized for its role.</p>
+
+                    <table class="comparison-table">
+                        <thead>
+                            <tr>
+                                <th>Solo Pilot</th>
+                                <th>Squadron Leader</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>One prompt, one output</td>
+                                <td>Multiple prompts, coordinated outputs</td>
+                            </tr>
+                            <tr>
+                                <td>AI as chat partner</td>
+                                <td>AI as modular components</td>
+                            </tr>
+                            <tr>
+                                <td>Improvisation</td>
+                                <td>Systematic orchestration</td>
+                            </tr>
+                            <tr>
+                                <td>Results vary wildly</td>
+                                <td>Consistent quality</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="content-nav">
+                    <button class="btn btn-secondary" onclick="navigateTo('lesson-2')">← Back</button>
+                    <button class="btn btn-primary" onclick="navigateTo('lesson-4')">Continue →</button>
+                </div>
+            </section>
+
+            <!-- Lesson 4: Context Architecture -->
+            <section class="screen" id="lesson-4">
+                <div class="lesson-content">
+                    <h1>Context Architecture</h1>
+
+                    <p>Every AI conversation happens within a "context window"—the total amount of information the model can hold in working memory. Claude's window can hold roughly 200,000 tokens (approximately 500 pages).</p>
+
+                    <p>This sounds enormous. The trap is thinking "more context = better results."</p>
+
+                    <h2>The "Lost in the Middle" Problem</h2>
+                    <p>Research shows that information placement dramatically affects how the model uses it:</p>
+
+                    <div class="interactive-demo">
+                        <div class="demo-title">📊 Attention Distribution</div>
+                        <div style="display: flex; align-items: center; gap: 1rem; padding: 1rem; background: white; border-radius: 8px;">
+                            <div style="flex: 1; text-align: center;">
+                                <div style="height: 80px; background: linear-gradient(to bottom, var(--primary-blue), var(--primary-blue)); border-radius: 4px;"></div>
+                                <small>Beginning<br><strong>High Attention</strong></small>
+                            </div>
+                            <div style="flex: 1; text-align: center;">
+                                <div style="height: 30px; background: var(--light-gray); border-radius: 4px; margin-top: 50px;"></div>
+                                <small>Middle<br><strong>Low Attention</strong></small>
+                            </div>
+                            <div style="flex: 1; text-align: center;">
+                                <div style="height: 80px; background: linear-gradient(to bottom, var(--teal), var(--teal)); border-radius: 4px;"></div>
+                                <small>End<br><strong>High Attention</strong></small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h2>The Mission Briefing Structure</h2>
+                    <p>Structure your prompts like a military briefing:</p>
+
+                    <div class="prompt-box good">
+                        <span class="prompt-label">✓ Mission Briefing Format</span>
+<pre style="color: var(--dark-base); font-size: 0.95rem;">
+<strong>[ROLE]</strong>
+You are a workforce analytics consultant.
+
+<strong>[CONTEXT]</strong>
+Client is a healthcare provider evaluating Q3 metrics.
+
+<strong>[DATA]</strong>
+• Productive Hours: -12% QoQ
+• Focus Time: -22%
+• New system: Epic EHR (implemented last quarter)
+
+<strong>[TASK]</strong>
+Generate three hypotheses for the productivity drop
+that are NOT "employees working less hard."
+
+<strong>[FORMAT]</strong>
+For each hypothesis: title, supporting data, one
+consultative question to explore with the client.
+</pre>
+                    </div>
+
+                    <div class="callout callout-tip">
+                        <span class="callout-icon">💡</span>
+                        <div>
+                            <strong>The ActivTrak Connection:</strong> This structure aligns with "Insights, Not Oversight." You're framing analysis as supportive (finding systemic factors) rather than surveillance (finding underperformers).
+                        </div>
+                    </div>
+
+                    <h3>Key Principles</h3>
+                    <ul>
+                        <li><strong>Beginning:</strong> Role and orientation (who you are, what we're doing)</li>
+                        <li><strong>Middle:</strong> Data payload (the specific information needed)</li>
+                        <li><strong>End:</strong> Instructions and format (what to do, how to deliver it)</li>
+                    </ul>
+
+                    <p>Same information. Radically different results.</p>
+                </div>
+
+                <div class="content-nav">
+                    <button class="btn btn-secondary" onclick="navigateTo('lesson-3')">← Back</button>
+                    <button class="btn btn-primary" onclick="navigateTo('flashcards')">Practice with Flashcards →</button>
+                </div>
+            </section>
+
+            <!-- Flashcards Screen -->
+            <section class="screen" id="flashcards">
+                <h1 style="margin-bottom: 0.5rem;">Flashcards</h1>
+                <p style="color: #6B7280; margin-bottom: 2rem;">Review key concepts from this module. Click the card to flip it.</p>
+
+                <div class="flashcard-container">
+                    <div class="flashcard" id="flashcard" onclick="flipCard()">
+                        <div class="flashcard-face flashcard-front">
+                            <h3 id="cardFront">What is a "probabilistic reasoning engine"?</h3>
+                        </div>
+                        <div class="flashcard-face flashcard-back">
+                            <p id="cardBack">An AI system that generates responses by predicting the most likely next word based on patterns learned during training. Unlike a search engine (which retrieves existing content), it creates new content by traversing possible paths through a semantic space.</p>
+                        </div>
+                    </div>
+                    <p class="flip-hint">Click card to flip</p>
+                </div>
+
+                <div class="flashcard-nav">
+                    <button class="flashcard-btn" onclick="prevCard()">←</button>
+                    <span class="flashcard-counter"><span id="cardNum">1</span> / <span id="cardTotal">8</span></span>
+                    <button class="flashcard-btn" onclick="nextCard()">→</button>
+                </div>
+
+                <div class="content-nav">
+                    <button class="btn btn-secondary" onclick="navigateTo('lesson-4')">← Back to Lesson</button>
+                    <button class="btn btn-primary" onclick="navigateTo('lab')">Continue to Lab →</button>
+                </div>
+            </section>
+
+            <!-- Lab Exercise Screen -->
+            <section class="screen" id="lab">
+                <div class="lab-header">
+                    <h1>🧪 Lab Exercise: The Water Glass Challenge</h1>
+                    <p>Experience the Water Glass Effect firsthand and practice structuring prompts.</p>
+                    <div class="lab-meta">
+                        <span>⏱ 25-30 minutes</span>
+                        <span>🛠 Tools: Claude (claude.ai)</span>
+                    </div>
+                </div>
+
+                <div class="lab-steps">
+                    <div class="lab-step active" id="labStep1">
+                        <div class="step-header">
+                            <div class="step-number">1</div>
+                            <div class="step-title">The Solo Pilot Approach</div>
+                        </div>
+                        <div class="step-content">
+                            <p>Copy this cluttered prompt and paste it into a <strong>new Claude conversation</strong>:</p>
+
+                            <div class="copy-block">
+                                <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+                                <pre>Here's everything I have on the Meridian Healthcare account. They're up for renewal in Q1 and I need to prep for the QBR next week.
+
+Email thread from last month:
+---
+From: Sarah Chen
+To: Marcus Webb, Jamie Torres
+Subject: Re: Meridian check-in
+
+Marcus - did you see their numbers? Productive hours down 12% QoQ. Not great timing with renewal coming up.
+
+Jamie - can you pull the detailed breakdown by department? I want to see if it's across the board or concentrated somewhere.
+
+Also unrelated but are we doing anything for Tom's birthday next week? I was thinking we could do lunch at that new Thai place.
+
+- Sarah
+---
+From: Marcus Webb
+To: Sarah Chen, Jamie Torres
+Subject: Re: Meridian check-in
+
+Yeah I saw. Honestly might be the EHR transition - they rolled out Epic last quarter and those implementations are brutal. Remember what happened with Coastal Medical?
+
+For Tom's thing - I'm in for Thai. Thursday works best for me.
+
+The other thing I noticed is their IT team has been submitting a lot of support tickets about the agent. Might be worth flagging.
+---
+
+Usage Summary:
+Meridian Healthcare - Q3 vs Q2
+- Overall Productive Hours: -12%
+- Nursing/Clinical: -18%
+- Administrative: +3%
+- IT Department: -8%
+- Focus Time avg: -22%
+- Collaboration Time: +15%
+- Top applications: Epic (new), Cerner (declining), Teams, Outlook
+
+Notes from last call (Oct 15):
+They mentioned the Epic rollout was "rougher than expected" and training was taking longer.
+
+Anyway, what should I present at the QBR? I want to show them value but also explain the drop without making it seem like their people are slacking.</pre>
+                            </div>
+
+                            <p><strong>After you get the response, note:</strong></p>
+                            <ul>
+                                <li>Did it mention the birthday lunch?</li>
+                                <li>Did it clearly separate hypotheses from other commentary?</li>
+                                <li>Could you use this response directly in a QBR?</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="lab-step" id="labStep2">
+                        <div class="step-header">
+                            <div class="step-number">2</div>
+                            <div class="step-title">The Squadron Leader Approach</div>
+                        </div>
+                        <div class="step-content">
+                            <p>Open a <strong>fresh Claude conversation</strong> and paste this structured prompt:</p>
+
+                            <div class="copy-block">
+                                <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+                                <pre>[ROLE]
+You are a workforce analytics consultant preparing a client for a Quarterly Business Review. Your approach is consultative—you help clients understand data patterns, not judge their employees.
+
+[CONTEXT]
+Client: Meridian Healthcare (hospital network)
+Situation: Productive Hours metric dropped 12% quarter-over-quarter
+Timing: QBR next week, renewal in Q1
+Key stakeholder: VP of Operations (stressed about upcoming Joint Commission audit)
+
+[DATA]
+Productivity Changes by Department:
+- Nursing/Clinical: -18%
+- Administrative: +3%
+- IT Department: -8%
+- Focus Time average: -22%
+- Collaboration Time: +15%
+
+Relevant Context:
+- Rolled out Epic EHR system last quarter
+- Training described as "rougher than expected"
+- IT submitting increased support tickets
+- Top apps: Epic (new), Cerner (declining), Teams, Outlook
+
+[TASK]
+Generate exactly three hypotheses for the productivity drop that are NOT "employees working less hard." For each hypothesis:
+1. State the hypothesis clearly
+2. Cite specific data points that support it
+3. Provide one consultative question to explore it with the client
+
+[CONSTRAINTS]
+- Frame all analysis as supportive, not surveillance-oriented
+- Focus on systemic factors, not individual performance
+
+[FORMAT]
+### Hypothesis [1/2/3]: [Title]
+**Supporting Data:** [bullet points]
+**Consultative Question:** [one question]</pre>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="lab-step" id="labStep3">
+                        <div class="step-header">
+                            <div class="step-number">3</div>
+                            <div class="step-title">Compare & Reflect</div>
+                        </div>
+                        <div class="step-content">
+                            <p>Compare your two responses side-by-side:</p>
+
+                            <table class="comparison-table">
+                                <thead>
+                                    <tr>
+                                        <th>Criteria</th>
+                                        <th>Solo Pilot</th>
+                                        <th>Squadron Leader</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Stayed on topic</td>
+                                        <td>☐ Yes / ☐ No</td>
+                                        <td>☐ Yes / ☐ No</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Used provided data</td>
+                                        <td>☐ Yes / ☐ No</td>
+                                        <td>☐ Yes / ☐ No</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Actionable output</td>
+                                        <td>☐ Yes / ☐ No</td>
+                                        <td>☐ Yes / ☐ No</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Ready to use in QBR</td>
+                                        <td>☐ Yes / ☐ No</td>
+                                        <td>☐ Yes / ☐ No</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <div class="callout callout-insight" style="margin-top: 1.5rem;">
+                                <span class="callout-icon">🎯</span>
+                                <div>
+                                    <strong>Key Takeaway:</strong> The same AI, given the same underlying information, produces dramatically different results based on how you structure the context. Squadron Leaders don't have access to better AI—they have better prompts.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="lab-navigation">
+                        <button class="btn btn-secondary" id="labPrevBtn" onclick="prevLabStep()" style="visibility: hidden;">← Previous Step</button>
+                        <button class="btn btn-primary" id="labNextBtn" onclick="nextLabStep()">Next Step →</button>
+                    </div>
+                </div>
+
+                <div class="content-nav">
+                    <button class="btn btn-secondary" onclick="navigateTo('flashcards')">← Back</button>
+                    <button class="btn btn-primary" onclick="navigateTo('quiz')">Take the Quiz →</button>
+                </div>
+            </section>
+
+            <!-- Quiz Screen -->
+            <section class="screen" id="quiz">
+                <div class="quiz-container">
+                    <div class="quiz-header">
+                        <h2>Knowledge Check</h2>
+                        <div class="quiz-progress">
+                            <div class="quiz-dot current" data-q="0"></div>
+                            <div class="quiz-dot" data-q="1"></div>
+                            <div class="quiz-dot" data-q="2"></div>
+                            <div class="quiz-dot" data-q="3"></div>
+                            <div class="quiz-dot" data-q="4"></div>
+                            <div class="quiz-dot" data-q="5"></div>
+                            <div class="quiz-dot" data-q="6"></div>
+                        </div>
+                    </div>
+
+                    <!-- Question 1 -->
+                    <div class="quiz-question active" data-question="0">
+                        <div class="question-number">Question 1 of 7</div>
+                        <div class="question-text">What is the primary difference between a search engine and a reasoning engine?</div>
+                        <div class="answer-options">
+                            <div class="answer-option" data-answer="a" onclick="selectAnswer(this, 0)">
+                                <span class="option-letter">A</span>
+                                <span>Search engines are faster than reasoning engines</span>
+                            </div>
+                            <div class="answer-option" data-answer="b" onclick="selectAnswer(this, 0)">
+                                <span class="option-letter">B</span>
+                                <span>Search engines retrieve existing content; reasoning engines generate new content by predicting probable next words</span>
+                            </div>
+                            <div class="answer-option" data-answer="c" onclick="selectAnswer(this, 0)">
+                                <span class="option-letter">C</span>
+                                <span>Reasoning engines only work with structured data</span>
+                            </div>
+                            <div class="answer-option" data-answer="d" onclick="selectAnswer(this, 0)">
+                                <span class="option-letter">D</span>
+                                <span>Search engines require more context to produce results</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Question 2 -->
+                    <div class="quiz-question" data-question="1">
+                        <div class="question-number">Question 2 of 7</div>
+                        <div class="question-text">True or False: Pasting more information into a Claude prompt always improves the quality of the response.</div>
+                        <div class="answer-options">
+                            <div class="answer-option" data-answer="a" onclick="selectAnswer(this, 1)">
+                                <span class="option-letter">A</span>
+                                <span>True</span>
+                            </div>
+                            <div class="answer-option" data-answer="b" onclick="selectAnswer(this, 1)">
+                                <span class="option-letter">B</span>
+                                <span>False</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Question 3 -->
+                    <div class="quiz-question" data-question="2">
+                        <div class="question-number">Question 3 of 7</div>
+                        <div class="question-text">A CSM pastes a 30-message email thread into Claude and asks "what should I do about this account?" The response fixates on a mention of a team lunch instead of addressing the renewal risk. This is an example of:</div>
+                        <div class="answer-options">
+                            <div class="answer-option" data-answer="a" onclick="selectAnswer(this, 2)">
+                                <span class="option-letter">A</span>
+                                <span>The model lacking business knowledge</span>
+                            </div>
+                            <div class="answer-option" data-answer="b" onclick="selectAnswer(this, 2)">
+                                <span class="option-letter">B</span>
+                                <span>The Water Glass Effect</span>
+                            </div>
+                            <div class="answer-option" data-answer="c" onclick="selectAnswer(this, 2)">
+                                <span class="option-letter">C</span>
+                                <span>A context window limitation</span>
+                            </div>
+                            <div class="answer-option" data-answer="d" onclick="selectAnswer(this, 2)">
+                                <span class="option-letter">D</span>
+                                <span>The model being too creative</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Question 4 -->
+                    <div class="quiz-question" data-question="3">
+                        <div class="question-number">Question 4 of 7</div>
+                        <div class="question-text">Which approach best reflects the Squadron Leader model for competitive analysis?</div>
+                        <div class="answer-options">
+                            <div class="answer-option" data-answer="a" onclick="selectAnswer(this, 3)">
+                                <span class="option-letter">A</span>
+                                <span>Paste competitor website and ActivTrak features into Claude for comparison</span>
+                            </div>
+                            <div class="answer-option" data-answer="b" onclick="selectAnswer(this, 3)">
+                                <span class="option-letter">B</span>
+                                <span>Ask Claude to research, write, and critique—all in one prompt</span>
+                            </div>
+                            <div class="answer-option" data-answer="c" onclick="selectAnswer(this, 3)">
+                                <span class="option-letter">C</span>
+                                <span>Use Gemini to gather verified competitor info, then feed that to Claude for strategic synthesis</span>
+                            </div>
+                            <div class="answer-option" data-answer="d" onclick="selectAnswer(this, 3)">
+                                <span class="option-letter">D</span>
+                                <span>Use three separate Claude conversations for research, writing, and editing</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Question 5 -->
+                    <div class="quiz-question" data-question="4">
+                        <div class="question-number">Question 5 of 7</div>
+                        <div class="question-text">What is the "Lost in the Middle" phenomenon, and how should it affect your prompt structure?</div>
+                        <div class="answer-options">
+                            <div class="answer-option" data-answer="a" onclick="selectAnswer(this, 4)">
+                                <span class="option-letter">A</span>
+                                <span>AI models forget information over long conversations, so keep conversations short</span>
+                            </div>
+                            <div class="answer-option" data-answer="b" onclick="selectAnswer(this, 4)">
+                                <span class="option-letter">B</span>
+                                <span>AI models pay less attention to information in the middle of the context window, so place critical instructions at the beginning or end</span>
+                            </div>
+                            <div class="answer-option" data-answer="c" onclick="selectAnswer(this, 4)">
+                                <span class="option-letter">C</span>
+                                <span>AI models can only process middle-complexity tasks</span>
+                            </div>
+                            <div class="answer-option" data-answer="d" onclick="selectAnswer(this, 4)">
+                                <span class="option-letter">D</span>
+                                <span>Information in the middle of documents is usually less important</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Question 6 -->
+                    <div class="quiz-question" data-question="5">
+                        <div class="question-number">Question 6 of 7</div>
+                        <div class="question-text">True or False: When analyzing ActivTrak workforce data, framing your prompt as "Find who's underperforming" versus "Identify teams that might need support" will produce essentially the same output.</div>
+                        <div class="answer-options">
+                            <div class="answer-option" data-answer="a" onclick="selectAnswer(this, 5)">
+                                <span class="option-letter">A</span>
+                                <span>True</span>
+                            </div>
+                            <div class="answer-option" data-answer="b" onclick="selectAnswer(this, 5)">
+                                <span class="option-letter">B</span>
+                                <span>False</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Question 7 -->
+                    <div class="quiz-question" data-question="6">
+                        <div class="question-number">Question 7 of 7</div>
+                        <div class="question-text">In the Squadron metaphor, what role does Gemini (Recon & Radar) play?</div>
+                        <div class="answer-options">
+                            <div class="answer-option" data-answer="a" onclick="selectAnswer(this, 6)">
+                                <span class="option-letter">A</span>
+                                <span>Complex reasoning and strategic synthesis</span>
+                            </div>
+                            <div class="answer-option" data-answer="b" onclick="selectAnswer(this, 6)">
+                                <span class="option-letter">B</span>
+                                <span>Real-time research and fact verification with grounded citations</span>
+                            </div>
+                            <div class="answer-option" data-answer="c" onclick="selectAnswer(this, 6)">
+                                <span class="option-letter">C</span>
+                                <span>Meeting transcription and context capture</span>
+                            </div>
+                            <div class="answer-option" data-answer="d" onclick="selectAnswer(this, 6)">
+                                <span class="option-letter">D</span>
+                                <span>Code generation and data analysis</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Results -->
+                    <div class="quiz-question" data-question="results" style="display: none;">
+                        <div class="quiz-results">
+                            <div class="results-score" id="quizScore">0/7</div>
+                            <div class="results-label">Questions Correct</div>
+                            <div class="results-breakdown">
+                                <div class="breakdown-item">
+                                    <div class="breakdown-value correct" id="correctCount">0</div>
+                                    <div class="breakdown-label">Correct</div>
+                                </div>
+                                <div class="breakdown-item">
+                                    <div class="breakdown-value incorrect" id="incorrectCount">0</div>
+                                    <div class="breakdown-label">Incorrect</div>
+                                </div>
+                            </div>
+                            <p id="resultMessage" style="margin-bottom: 2rem; color: #6B7280;"></p>
+                            <button class="btn btn-primary" onclick="navigateTo('study-guide')">Review Study Guide →</button>
+                        </div>
+                    </div>
+
+                    <div class="feedback-panel" id="feedbackPanel">
+                        <div class="feedback-header" id="feedbackHeader">
+                            <!-- Filled by JS -->
+                        </div>
+                        <p id="feedbackText"></p>
+                    </div>
+
+                    <div class="quiz-footer">
+                        <button class="btn btn-primary" id="quizNextBtn" onclick="nextQuestion()" disabled>Next Question →</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Study Guide Screen -->
+            <section class="screen" id="study-guide">
+                <h1 style="margin-bottom: 2rem;">📋 Study Guide</h1>
+
+                <div class="study-guide-card">
+                    <h2>🎯 Core Concept</h2>
+                    <p style="font-size: 1.1rem; line-height: 1.7;"><strong>AI is a probabilistic reasoning engine, not a search engine.</strong> It generates responses by predicting the most likely next word—your job is to constrain those probabilities toward useful outputs.</p>
+                </div>
+
+                <div class="study-guide-card">
+                    <h2>📖 Key Terms</h2>
+                    <div class="term-grid">
+                        <div class="term-item">
+                            <span class="term-name">Probabilistic Reasoning Engine</span>
+                            <span class="term-def">AI system that generates content by predicting probable next tokens based on learned patterns</span>
+                        </div>
+                        <div class="term-item">
+                            <span class="term-name">Water Glass Effect</span>
+                            <span class="term-def">Irrelevant context degrades AI reasoning capability</span>
+                        </div>
+                        <div class="term-item">
+                            <span class="term-name">Lost in the Middle</span>
+                            <span class="term-def">AI pays less attention to information in the middle of context windows</span>
+                        </div>
+                        <div class="term-item">
+                            <span class="term-name">Solo Pilot</span>
+                            <span class="term-def">One person, one AI, one prompt—reactive and inconsistent</span>
+                        </div>
+                        <div class="term-item">
+                            <span class="term-name">Squadron Leader</span>
+                            <span class="term-def">Orchestrated AI agents with specialized roles—systematic and reusable</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="study-guide-card">
+                    <h2>✈️ Squadron Roles</h2>
+                    <table class="comparison-table">
+                        <thead>
+                            <tr>
+                                <th>Tool</th>
+                                <th>Role</th>
+                                <th>Function</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Claude</td>
+                                <td>Mission Control</td>
+                                <td>Reasoning, strategy, synthesis, writing</td>
+                            </tr>
+                            <tr>
+                                <td>Gemini</td>
+                                <td>Recon & Radar</td>
+                                <td>Real-time research, fact verification</td>
+                            </tr>
+                            <tr>
+                                <td>Granola</td>
+                                <td>Flight Recorder</td>
+                                <td>Meeting capture, structured context</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="study-guide-card">
+                    <h2>✓ Do's and Don'ts</h2>
+                    <div class="do-dont-grid">
+                        <div class="do-column">
+                            <h3>✓ Do</h3>
+                            <div class="do-dont-item">
+                                <span style="color: var(--success);">✓</span>
+                                <span>Structure prompts like mission briefings</span>
+                            </div>
+                            <div class="do-dont-item">
+                                <span style="color: var(--success);">✓</span>
+                                <span>Curate context ruthlessly</span>
+                            </div>
+                            <div class="do-dont-item">
+                                <span style="color: var(--success);">✓</span>
+                                <span>Tell AI what to focus on AND ignore</span>
+                            </div>
+                            <div class="do-dont-item">
+                                <span style="color: var(--success);">✓</span>
+                                <span>Use specialized tools for specialized tasks</span>
+                            </div>
+                            <div class="do-dont-item">
+                                <span style="color: var(--success);">✓</span>
+                                <span>Frame as "insight" not "oversight"</span>
+                            </div>
+                        </div>
+                        <div class="dont-column">
+                            <h3>✗ Don't</h3>
+                            <div class="do-dont-item">
+                                <span style="color: var(--error);">✗</span>
+                                <span>Dump entire documents without structure</span>
+                            </div>
+                            <div class="do-dont-item">
+                                <span style="color: var(--error);">✗</span>
+                                <span>Ask one AI to research AND write AND critique</span>
+                            </div>
+                            <div class="do-dont-item">
+                                <span style="color: var(--error);">✗</span>
+                                <span>Assume more context = better results</span>
+                            </div>
+                            <div class="do-dont-item">
+                                <span style="color: var(--error);">✗</span>
+                                <span>Use surveillance-oriented framing</span>
+                            </div>
+                            <div class="do-dont-item">
+                                <span style="color: var(--error);">✗</span>
+                                <span>Accept first response without verification</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="study-guide-card">
+                    <h2>📝 Mission Briefing Template</h2>
+                    <div class="copy-block">
+                        <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+                        <pre>[ROLE]
+Who the AI should be
+
+[CONTEXT]
+Background situation
+
+[DATA]
+Specific information needed
+
+[TASK]
+What to do (single, clear objective)
+
+[CONSTRAINTS]
+What NOT to do
+
+[FORMAT]
+Desired output structure</pre>
+                    </div>
+                </div>
+
+                <div class="study-guide-card" style="background: linear-gradient(135deg, var(--primary-blue) 0%, #384B76 100%); color: white;">
+                    <h2 style="color: white;">➡️ Next Module Preview</h2>
+                    <p><strong>Module 2: Model Selection & The "Thinking" Protocol</strong></p>
+                    <p style="opacity: 0.9;">Learn when to use Claude's different thinking modes (Haiku, Sonnet, Opus) and when Gemini is the right tool for research. Master Extended Thinking for complex reasoning tasks.</p>
+                </div>
+
+                <div class="content-nav">
+                    <button class="btn btn-secondary" onclick="navigateTo('quiz')">← Back to Quiz</button>
+                    <button class="btn btn-success">Module Complete ✓</button>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // Navigation State
+        const screens = ['welcome', 'video', 'lesson-1', 'lesson-2', 'lesson-3', 'lesson-4', 'flashcards', 'lab', 'quiz', 'study-guide'];
+        let currentScreen = 'welcome';
+        let completedScreens = new Set();
+
+        // Flashcard State
+        const flashcards = [
+            {
+                front: "What is a 'probabilistic reasoning engine'?",
+                back: "An AI system that generates responses by predicting the most likely next word based on patterns learned during training. Unlike a search engine (which retrieves existing content), it creates new content by traversing possible paths through a semantic space."
+            },
+            {
+                front: "What is the 'Water Glass Effect'?",
+                back: "The phenomenon where irrelevant context degrades AI reasoning capability. Named after a riddle where AI models fail not because they lack knowledge, but because distracting details scatter their attention away from the core problem."
+            },
+            {
+                front: "What's the difference between Solo Pilot and Squadron Leader?",
+                back: "Solo Pilot: One person, one AI, one prompt—reactive, improvised, inconsistent.\n\nSquadron Leader: Commander of specialized AI agents. Proactive, systematic, breaks complex tasks into coordinated stages."
+            },
+            {
+                front: "What is the 'Lost in the Middle' phenomenon?",
+                back: "AI models pay high attention to the beginning and end of context windows, but attention drops significantly for content in the middle. Place critical instructions at the end, orientation at the beginning, and data in between."
+            },
+            {
+                front: "What are the four components of a well-structured prompt?",
+                back: "1. Opening orientation — Who you are, what we're doing\n2. Core data payload — The specific information needed\n3. Clear instructions — What to do with that data\n4. Output specifications — Format and constraints"
+            },
+            {
+                front: "In the Squadron metaphor, what role does each tool play?",
+                back: "Mission Control (Claude): Strategy, synthesis, writing\n\nRecon & Radar (Gemini): Real-time research, fact verification\n\nFlight Recorder (Granola): Meeting capture, structured notes"
+            },
+            {
+                front: "Why does asking one AI to research, write, AND critique create an 'identity crisis'?",
+                back: "These tasks require conflicting cognitive modes. Research needs skepticism. Creative writing needs flow. Criticism needs harsh detachment. A model optimized for one will perform poorly at others when forced to do all simultaneously."
+            },
+            {
+                front: "How should ActivTrak employees frame AI prompts to align with 'Insights, Not Oversight'?",
+                back: "Frame analysis as support-oriented, not surveillance-oriented.\n\nAvoid: 'Find who's underperforming'\nUse: 'Identify teams that might need additional support'\n\nThe AI follows your framing."
+            }
+        ];
+        let currentCard = 0;
+
+        // Lab State
+        let currentLabStep = 1;
+        const totalLabSteps = 3;
+
+        // Quiz State
+        const quizAnswers = ['b', 'b', 'b', 'c', 'b', 'b', 'b'];
+        const quizFeedback = [
+            {
+                correct: "Correct! Search engines retrieve existing indexed content. Reasoning engines generate new responses by predicting the most likely next token based on patterns learned during training.",
+                incorrect: "Not quite. The key difference is that search engines retrieve existing content, while reasoning engines generate new content by predicting probable next words."
+            },
+            {
+                correct: "Correct! The Water Glass Effect shows that irrelevant context actually degrades AI reasoning. Information competes for attention—irrelevant details scatter focus away from the core task.",
+                incorrect: "Actually, this is false. More context can hurt performance due to the Water Glass Effect. Irrelevant information scatters the model's attention."
+            },
+            {
+                correct: "Correct! This is the Water Glass Effect—irrelevant details (the team lunch) distracted the model from the core business question about renewal risk.",
+                incorrect: "This is actually the Water Glass Effect. The team lunch mention was a 'distractor' that pulled attention away from the actual business question."
+            },
+            {
+                correct: "Correct! This exemplifies Squadron Leader—specialized tools for specialized tasks. Gemini handles research with grounded citations, Claude handles strategic synthesis.",
+                incorrect: "The best approach uses specialized tools: Gemini (Recon) for grounded research, then Claude (Mission Control) for strategic synthesis. Each tool does what it's optimized for."
+            },
+            {
+                correct: "Correct! Research shows attention mechanisms assign higher weights to tokens at the beginning and end of context. Structure prompts accordingly: orientation first, data middle, instructions last.",
+                incorrect: "Actually, 'Lost in the Middle' refers to attention distribution within a prompt—AI pays less attention to middle content. Place critical instructions at the end."
+            },
+            {
+                correct: "Correct! Prompt framing significantly shapes output. 'Underperformers' adopts a surveillance lens; 'needs support' adopts a consultative lens. Same data, radically different implications.",
+                incorrect: "This is false. Framing changes what patterns the model looks for. 'Underperformers' creates surveillance-style output; 'needs support' creates consultative insights."
+            },
+            {
+                correct: "Correct! Gemini serves as Recon & Radar—gathering real-time, verified information with grounded citations. Claude (Mission Control) handles the reasoning and synthesis.",
+                incorrect: "Gemini's role is Recon & Radar—real-time research and fact verification. Complex reasoning is Mission Control (Claude), and meeting capture is Flight Recorder (Granola)."
+            }
+        ];
+        let currentQuestion = 0;
+        let userAnswers = [];
+        let quizComplete = false;
+
+        // Navigation Functions
+        function navigateTo(screenId) {
+            // Mark current as completed
+            completedScreens.add(currentScreen);
+
+            // Update active states
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+
+            document.getElementById(screenId).classList.add('active');
+            document.querySelector(`[data-screen="${screenId}"]`)?.classList.add('active');
+
+            // Update completed states in nav
+            completedScreens.forEach(id => {
+                const navItem = document.querySelector(`[data-screen="${id}"]`);
+                if (navItem && id !== screenId) {
+                    navItem.classList.add('completed');
+                }
+            });
+
+            currentScreen = screenId;
+            updateProgress();
+            window.scrollTo(0, 0);
+        }
+
+        function updateProgress() {
+            const progress = Math.round((completedScreens.size / screens.length) * 100);
+            document.getElementById('progressFill').style.width = `${progress}%`;
+            document.getElementById('progressText').textContent = `${progress}% Complete`;
+        }
+
+        // Flashcard Functions
+        function flipCard() {
+            document.getElementById('flashcard').classList.toggle('flipped');
+        }
+
+        function nextCard() {
+            currentCard = (currentCard + 1) % flashcards.length;
+            updateCard();
+        }
+
+        function prevCard() {
+            currentCard = (currentCard - 1 + flashcards.length) % flashcards.length;
+            updateCard();
+        }
+
+        function updateCard() {
+            document.getElementById('flashcard').classList.remove('flipped');
+            setTimeout(() => {
+                document.getElementById('cardFront').textContent = flashcards[currentCard].front;
+                document.getElementById('cardBack').textContent = flashcards[currentCard].back;
+                document.getElementById('cardNum').textContent = currentCard + 1;
+            }, 150);
+        }
+
+        // Lab Functions
+        function nextLabStep() {
+            if (currentLabStep < totalLabSteps) {
+                document.getElementById(`labStep${currentLabStep}`).classList.remove('active');
+                currentLabStep++;
+                document.getElementById(`labStep${currentLabStep}`).classList.add('active');
+                updateLabNav();
+            }
+        }
+
+        function prevLabStep() {
+            if (currentLabStep > 1) {
+                document.getElementById(`labStep${currentLabStep}`).classList.remove('active');
+                currentLabStep--;
+                document.getElementById(`labStep${currentLabStep}`).classList.add('active');
+                updateLabNav();
+            }
+        }
+
+        function updateLabNav() {
+            document.getElementById('labPrevBtn').style.visibility = currentLabStep > 1 ? 'visible' : 'hidden';
+            document.getElementById('labNextBtn').textContent = currentLabStep < totalLabSteps ? 'Next Step →' : 'Complete Lab ✓';
+            if (currentLabStep === totalLabSteps) {
+                document.getElementById('labNextBtn').onclick = () => navigateTo('quiz');
+            } else {
+                document.getElementById('labNextBtn').onclick = nextLabStep;
+            }
+        }
+
+        // Quiz Functions
+        function selectAnswer(element, questionIndex) {
+            if (quizComplete || userAnswers[questionIndex] !== undefined) return;
+
+            const question = document.querySelector(`[data-question="${questionIndex}"]`);
+            const options = question.querySelectorAll('.answer-option');
+            const selectedAnswer = element.dataset.answer;
+            const isCorrect = selectedAnswer === quizAnswers[questionIndex];
+
+            userAnswers[questionIndex] = selectedAnswer;
+
+            // Disable all options
+            options.forEach(opt => {
+                opt.classList.add('disabled');
+                if (opt.dataset.answer === quizAnswers[questionIndex]) {
+                    opt.classList.add('correct');
+                }
+            });
+
+            if (!isCorrect) {
+                element.classList.add('incorrect');
+            }
+
+            // Update dot
+            const dot = document.querySelector(`.quiz-dot[data-q="${questionIndex}"]`);
+            dot.classList.remove('current');
+            dot.classList.add(isCorrect ? 'correct' : 'incorrect');
+
+            // Show feedback
+            const feedbackPanel = document.getElementById('feedbackPanel');
+            const feedbackHeader = document.getElementById('feedbackHeader');
+            const feedbackText = document.getElementById('feedbackText');
+
+            feedbackHeader.className = `feedback-header ${isCorrect ? 'feedback-correct' : 'feedback-incorrect'}`;
+            feedbackHeader.innerHTML = isCorrect ? '✓ Correct!' : '✗ Incorrect';
+            feedbackText.textContent = isCorrect ? quizFeedback[questionIndex].correct : quizFeedback[questionIndex].incorrect;
+            feedbackPanel.classList.add('show');
+
+            // Enable next button
+            document.getElementById('quizNextBtn').disabled = false;
+        }
+
+        function nextQuestion() {
+            if (currentQuestion < quizAnswers.length - 1) {
+                document.querySelector(`[data-question="${currentQuestion}"]`).classList.remove('active');
+                currentQuestion++;
+                document.querySelector(`[data-question="${currentQuestion}"]`).classList.add('active');
+
+                // Update current dot
+                document.querySelector(`.quiz-dot[data-q="${currentQuestion}"]`).classList.add('current');
+
+                // Reset feedback and button
+                document.getElementById('feedbackPanel').classList.remove('show');
+                document.getElementById('quizNextBtn').disabled = true;
+
+                if (currentQuestion === quizAnswers.length - 1) {
+                    document.getElementById('quizNextBtn').textContent = 'See Results →';
+                }
+            } else {
+                showResults();
+            }
+        }
+
+        function showResults() {
+            quizComplete = true;
+            const correct = userAnswers.filter((a, i) => a === quizAnswers[i]).length;
+            const incorrect = quizAnswers.length - correct;
+
+            document.querySelector(`[data-question="${currentQuestion}"]`).classList.remove('active');
+            document.querySelector('[data-question="results"]').style.display = 'block';
+            document.querySelector('[data-question="results"]').classList.add('active');
+
+            document.getElementById('quizScore').textContent = `${correct}/${quizAnswers.length}`;
+            document.getElementById('correctCount').textContent = correct;
+            document.getElementById('incorrectCount').textContent = incorrect;
+
+            let message = '';
+            if (correct === quizAnswers.length) {
+                message = "Excellent! You've mastered the cognitive shift. Ready for Module 2!";
+            } else if (correct >= 5) {
+                message = "Good foundation! Review the concepts you missed before continuing.";
+            } else if (correct >= 3) {
+                message = "Review the video and flashcards, then retake the quiz.";
+            } else {
+                message = "Schedule time to review the module content before proceeding.";
+            }
+            document.getElementById('resultMessage').textContent = message;
+
+            document.getElementById('feedbackPanel').classList.remove('show');
+            document.querySelector('.quiz-footer').style.display = 'none';
+        }
+
+        // Copy to clipboard
+        function copyToClipboard(button) {
+            const codeBlock = button.parentElement.querySelector('pre');
+            navigator.clipboard.writeText(codeBlock.textContent).then(() => {
+                button.textContent = 'Copied!';
+                setTimeout(() => button.textContent = 'Copy', 2000);
+            });
+        }
+
+        // Initialize nav click handlers
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', () => {
+                const screen = item.dataset.screen;
+                if (screen) navigateTo(screen);
+            });
+        });
+
+        // Initialize
+        document.getElementById('cardTotal').textContent = flashcards.length;
+    </script>
+</body>
+</html>

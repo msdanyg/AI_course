@@ -1,0 +1,2397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module 9: Code Execution & File Creation | Solo Pilot to Squadron Leader</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sofia+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* ActivTrak Official Brand Colors */
+            --dark-navy: #14203F;
+            --medium-navy: #19316A;
+            --blue: #1657A0;
+            --teal: #2ED4B5;
+            --yellow: #FFC83B;
+            --white: #FFFFFF;
+            --light-gray: #E5E7EB;
+            --bg-light: #F8FAFC;
+
+            /* Semantic mappings */
+            --primary-blue: #19316A;
+            --pelorous: #1657A0;
+            --dark-base: #14203F;
+            --success: #2ED4B5;
+            --error: #DC2626;
+            --warning: #F59E0B;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Sofia Sans', sans-serif;
+            background: var(--bg-light);
+            color: var(--dark-base);
+            line-height: 1.6;
+        }
+
+        /* Header */
+        .course-header {
+            background: linear-gradient(135deg, var(--dark-navy) 0%, var(--medium-navy) 100%);
+            color: white;
+            padding: 1rem 2rem;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .course-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .course-subtitle {
+            font-size: 0.85rem;
+            opacity: 0.9;
+        }
+
+        .progress-container {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .progress-bar {
+            width: 200px;
+            height: 8px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--teal);
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        .progress-text {
+            font-size: 0.85rem;
+        }
+
+        /* Main Layout */
+        .main-container {
+            display: flex;
+            margin-top: 60px;
+            min-height: calc(100vh - 60px);
+        }
+
+        /* Sidebar Navigation */
+        .sidebar {
+            width: 280px;
+            background: var(--white);
+            border-right: 1px solid var(--light-gray);
+            position: fixed;
+            top: 60px;
+            bottom: 0;
+            left: 0;
+            overflow-y: auto;
+            padding: 1.5rem 0;
+        }
+
+        .nav-section {
+            padding: 0 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .nav-section-title {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #6B7280;
+            margin-bottom: 0.75rem;
+            padding: 0 0.75rem;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 0.25rem;
+        }
+
+        .nav-item:hover {
+            background: var(--bg-light);
+        }
+
+        .nav-item.active {
+            background: rgba(0, 66, 243, 0.1);
+            color: var(--primary-blue);
+        }
+
+        .nav-item.completed .nav-icon {
+            background: var(--success);
+            color: white;
+        }
+
+        .nav-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: var(--light-gray);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .nav-item.active .nav-icon {
+            background: var(--primary-blue);
+            color: white;
+        }
+
+        .nav-label {
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .nav-duration {
+            font-size: 0.75rem;
+            color: #6B7280;
+            margin-left: auto;
+        }
+
+        /* Content Area */
+        .content-area {
+            flex: 1;
+            margin-left: 280px;
+            padding: 2rem 3rem;
+            max-width: 1000px;
+        }
+
+        /* Screen Sections */
+        .screen {
+            display: none;
+        }
+
+        .screen.active {
+            display: block;
+            animation: fadeIn 0.4s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Welcome Screen */
+        .welcome-hero {
+            background: linear-gradient(135deg, var(--dark-navy) 0%, var(--medium-navy) 100%);
+            border-radius: 16px;
+            padding: 3rem;
+            color: white;
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .welcome-hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 400px;
+            height: 400px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+        }
+
+        .welcome-hero h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            position: relative;
+        }
+
+        .welcome-hero .module-tag {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            margin-bottom: 1rem;
+        }
+
+        .welcome-hero p {
+            font-size: 1.1rem;
+            opacity: 0.95;
+            max-width: 600px;
+            position: relative;
+        }
+
+        .objectives-card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .objectives-card h2 {
+            font-size: 1.25rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .objective-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--bg-light);
+        }
+
+        .objective-item:last-child {
+            border-bottom: none;
+        }
+
+        .objective-level {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .level-retrieval { background: #E0F2FE; color: #0369A1; }
+        .level-comprehension { background: #FEF3C7; color: #B45309; }
+        .level-analysis { background: #FCE7F3; color: #BE185D; }
+        .level-utilization { background: #D1FAE5; color: #047857; }
+
+        .time-estimate {
+            display: flex;
+            gap: 2rem;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--bg-light);
+        }
+
+        .time-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #6B7280;
+        }
+
+        .start-btn {
+            background: var(--primary-blue);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .start-btn:hover {
+            background: #0035C7;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 66, 243, 0.3);
+        }
+
+        /* Lesson Content */
+        .lesson-content {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 2.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .lesson-content h1 {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            color: var(--dark-base);
+        }
+
+        .lesson-content h2 {
+            font-size: 1.5rem;
+            margin: 2rem 0 1rem;
+            color: var(--dark-base);
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--bg-light);
+        }
+
+        .lesson-content h3 {
+            font-size: 1.2rem;
+            margin: 1.5rem 0 0.75rem;
+            color: var(--pelorous);
+        }
+
+        .lesson-content p {
+            margin-bottom: 1rem;
+            font-size: 1.05rem;
+            line-height: 1.8;
+        }
+
+        .lesson-content ul, .lesson-content ol {
+            margin: 1rem 0 1rem 1.5rem;
+        }
+
+        .lesson-content li {
+            margin-bottom: 0.5rem;
+            line-height: 1.7;
+        }
+
+        .callout {
+            padding: 1.25rem 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+            display: flex;
+            gap: 1rem;
+        }
+
+        .callout-icon {
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .callout-insight {
+            background: rgba(0, 66, 243, 0.08);
+            border-left: 4px solid var(--primary-blue);
+        }
+
+        .callout-warning {
+            background: rgba(238, 44, 130, 0.08);
+            border-left: 4px solid var(--violet-red);
+        }
+
+        .callout-tip {
+            background: rgba(47, 211, 180, 0.1);
+            border-left: 4px solid var(--teal);
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .comparison-table th {
+            background: var(--dark-base);
+            color: white;
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .comparison-table td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--bg-light);
+        }
+
+        .comparison-table tr:nth-child(even) {
+            background: var(--bg-light);
+        }
+
+        /* Code/Prompt Blocks */
+        .prompt-box {
+            background: var(--white);
+            border: 2px solid var(--light-gray);
+            border-radius: 8px;
+            padding: 1rem;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            margin: 1rem 0;
+            position: relative;
+        }
+
+        .prompt-box.good {
+            border-color: var(--teal);
+            background: rgba(47, 211, 180, 0.03);
+        }
+
+        .prompt-label {
+            position: absolute;
+            top: -10px;
+            left: 12px;
+            background: var(--white);
+            padding: 0 0.5rem;
+            font-family: 'Sofia Sans', sans-serif;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: var(--teal);
+        }
+
+        .copy-block {
+            background: #1E1E1E;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+            position: relative;
+            overflow-x: auto;
+        }
+
+        .copy-block pre {
+            color: #D4D4D4;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background: #3C3C3C;
+            border: none;
+            color: white;
+            padding: 0.5rem 0.75rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .copy-btn:hover {
+            background: var(--primary-blue);
+        }
+
+        /* Video Player */
+        .video-container {
+            background: var(--dark-base);
+            border-radius: 12px;
+            aspect-ratio: 16/9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .video-placeholder {
+            text-align: center;
+            color: white;
+        }
+
+        .play-btn {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: var(--primary-blue);
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            margin-bottom: 1rem;
+        }
+
+        .play-btn:hover {
+            transform: scale(1.1);
+            background: var(--teal);
+        }
+
+        .play-btn svg {
+            width: 32px;
+            height: 32px;
+            fill: white;
+            margin-left: 4px;
+        }
+
+        /* Flashcards */
+        .flashcard-container {
+            perspective: 1000px;
+            margin: 2rem auto;
+            max-width: 600px;
+        }
+
+        .flashcard {
+            width: 100%;
+            height: 300px;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.6s;
+            cursor: pointer;
+        }
+
+        .flashcard.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .flashcard-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .flashcard-front {
+            background: linear-gradient(135deg, var(--dark-navy) 0%, var(--medium-navy) 100%);
+            color: white;
+        }
+
+        .flashcard-back {
+            background: var(--white);
+            border: 2px solid var(--primary-blue);
+            transform: rotateY(180deg);
+            color: var(--dark-base);
+        }
+
+        .flashcard-front h3 {
+            font-size: 1.4rem;
+            line-height: 1.5;
+        }
+
+        .flashcard-back p {
+            font-size: 1.1rem;
+            line-height: 1.7;
+        }
+
+        .flashcard-nav {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 2rem;
+            margin-top: 1.5rem;
+        }
+
+        .flashcard-btn {
+            background: var(--bg-light);
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .flashcard-btn:hover {
+            background: var(--primary-blue);
+            color: white;
+        }
+
+        .flashcard-counter {
+            font-weight: 600;
+            color: #6B7280;
+        }
+
+        .flip-hint {
+            text-align: center;
+            color: #6B7280;
+            font-size: 0.9rem;
+            margin-top: 1rem;
+        }
+
+        /* Lab Exercise */
+        .lab-header {
+            background: linear-gradient(135deg, var(--pelorous) 0%, #2A8A96 100%);
+            border-radius: 12px;
+            padding: 2rem;
+            color: white;
+            margin-bottom: 2rem;
+        }
+
+        .lab-header h1 {
+            font-size: 1.75rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .lab-meta {
+            display: flex;
+            gap: 2rem;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .lab-steps {
+            background: var(--white);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .lab-step {
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid var(--bg-light);
+            display: none;
+        }
+
+        .lab-step.active {
+            display: block;
+        }
+
+        .step-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .step-number {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--primary-blue);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .step-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .step-content {
+            padding-left: 52px;
+        }
+
+        .lab-navigation {
+            display: flex;
+            justify-content: space-between;
+            padding: 1.5rem 2rem;
+            border-top: 1px solid var(--bg-light);
+        }
+
+        /* Quiz */
+        .quiz-container {
+            background: var(--white);
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            overflow: hidden;
+        }
+
+        .quiz-header {
+            background: var(--bg-light);
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .quiz-progress {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .quiz-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--light-gray);
+        }
+
+        .quiz-dot.current {
+            background: var(--primary-blue);
+        }
+
+        .quiz-dot.correct {
+            background: var(--success);
+        }
+
+        .quiz-dot.incorrect {
+            background: var(--error);
+        }
+
+        .quiz-question {
+            padding: 2rem;
+            display: none;
+        }
+
+        .quiz-question.active {
+            display: block;
+        }
+
+        .question-number {
+            font-size: 0.85rem;
+            color: #6B7280;
+            margin-bottom: 0.5rem;
+        }
+
+        .question-text {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            line-height: 1.5;
+        }
+
+        .answer-options {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .answer-option {
+            padding: 1rem 1.25rem;
+            border: 2px solid var(--light-gray);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .answer-option:hover:not(.disabled) {
+            border-color: var(--primary-blue);
+            background: rgba(0, 66, 243, 0.03);
+        }
+
+        .answer-option.selected {
+            border-color: var(--primary-blue);
+            background: rgba(0, 66, 243, 0.08);
+        }
+
+        .answer-option.correct {
+            border-color: var(--success);
+            background: rgba(47, 211, 180, 0.1);
+        }
+
+        .answer-option.incorrect {
+            border-color: var(--error);
+            background: rgba(238, 44, 130, 0.08);
+        }
+
+        .answer-option.disabled {
+            cursor: default;
+        }
+
+        .option-letter {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--bg-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .answer-option.selected .option-letter {
+            background: var(--primary-blue);
+            color: white;
+        }
+
+        .answer-option.correct .option-letter {
+            background: var(--success);
+            color: white;
+        }
+
+        .answer-option.incorrect .option-letter {
+            background: var(--error);
+            color: white;
+        }
+
+        .feedback-panel {
+            padding: 1.5rem 2rem;
+            background: var(--bg-light);
+            display: none;
+        }
+
+        .feedback-panel.show {
+            display: block;
+        }
+
+        .feedback-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+        }
+
+        .feedback-correct {
+            color: var(--success);
+        }
+
+        .feedback-incorrect {
+            color: var(--error);
+        }
+
+        .quiz-footer {
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: flex-end;
+            border-top: 1px solid var(--bg-light);
+        }
+
+        /* Study Guide */
+        .study-guide-card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .study-guide-card h2 {
+            font-size: 1.25rem;
+            margin-bottom: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--primary-blue);
+        }
+
+        .term-grid {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .term-item {
+            display: grid;
+            grid-template-columns: 180px 1fr;
+            gap: 1rem;
+            padding: 1rem;
+            background: var(--bg-light);
+            border-radius: 8px;
+        }
+
+        .term-name {
+            font-weight: 600;
+            color: var(--dark-base);
+        }
+
+        .term-def {
+            color: #4B5563;
+        }
+
+        .do-dont-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        .do-column h3 {
+            color: var(--success);
+            margin-bottom: 1rem;
+        }
+
+        .dont-column h3 {
+            color: var(--error);
+            margin-bottom: 1rem;
+        }
+
+        .do-dont-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.5rem;
+            margin-bottom: 0.75rem;
+            font-size: 0.95rem;
+        }
+
+        /* File Type Cards */
+        .file-type-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .file-type-card {
+            background: var(--bg-light);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            border: 2px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .file-type-card:hover {
+            border-color: var(--primary-blue);
+            transform: translateY(-2px);
+        }
+
+        .file-icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .file-type-card h4 {
+            font-size: 1rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .file-type-card p {
+            font-size: 0.85rem;
+            color: #6B7280;
+        }
+
+        /* Navigation Buttons */
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            border: none;
+        }
+
+        .btn-primary {
+            background: var(--primary-blue);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #0035C7;
+        }
+
+        .btn-secondary {
+            background: var(--bg-light);
+            color: var(--dark-base);
+        }
+
+        .btn-secondary:hover {
+            background: var(--light-gray);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .content-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--bg-light);
+        }
+
+        /* Quiz Results */
+        .quiz-results {
+            text-align: center;
+            padding: 3rem 2rem;
+        }
+
+        .results-score {
+            font-size: 4rem;
+            font-weight: 700;
+            color: var(--primary-blue);
+            margin-bottom: 0.5rem;
+        }
+
+        .results-label {
+            font-size: 1.25rem;
+            color: #6B7280;
+            margin-bottom: 2rem;
+        }
+
+        .results-breakdown {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            margin-bottom: 2rem;
+        }
+
+        .breakdown-item {
+            text-align: center;
+        }
+
+        .breakdown-value {
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .breakdown-value.correct { color: var(--success); }
+        .breakdown-value.incorrect { color: var(--error); }
+
+        .breakdown-label {
+            font-size: 0.9rem;
+            color: #6B7280;
+        }
+
+        /* Workflow Diagram */
+        .workflow-diagram {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+        }
+
+        .workflow-step {
+            background: var(--primary-blue);
+            color: white;
+            padding: 0.75rem 1.25rem;
+            border-radius: 8px;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .workflow-arrow {
+            color: var(--light-gray);
+            font-size: 1.5rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .sidebar {
+                width: 240px;
+            }
+            .content-area {
+                margin-left: 240px;
+                padding: 1.5rem 2rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                display: none;
+            }
+            .content-area {
+                margin-left: 0;
+                padding: 1rem;
+            }
+            .do-dont-grid {
+                grid-template-columns: 1fr;
+            }
+            .term-item {
+                grid-template-columns: 1fr;
+            }
+            .file-type-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="course-header">
+        <div>
+            <div class="course-title">Solo Pilot → Squadron Leader</div>
+            <div class="course-subtitle">Module 9: Code Execution & File Creation</div>
+        </div>
+        <div class="progress-container">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+            </div>
+            <span class="progress-text" id="progressText">0% Complete</span>
+        </div>
+    </header>
+
+    <div class="main-container">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="nav-section">
+                <div class="nav-section-title">Module Content</div>
+                <div class="nav-item active" data-screen="welcome">
+                    <div class="nav-icon">▶</div>
+                    <span class="nav-label">Welcome</span>
+                    <span class="nav-duration">2 min</span>
+                </div>
+                <div class="nav-item" data-screen="video">
+                    <div class="nav-icon">🎬</div>
+                    <span class="nav-label">Video Lesson</span>
+                    <span class="nav-duration">10 min</span>
+                </div>
+                <div class="nav-item" data-screen="lesson-1">
+                    <div class="nav-icon">1</div>
+                    <span class="nav-label">How It Works</span>
+                    <span class="nav-duration">5 min</span>
+                </div>
+                <div class="nav-item" data-screen="lesson-2">
+                    <div class="nav-icon">2</div>
+                    <span class="nav-label">PowerPoint & Slides</span>
+                    <span class="nav-duration">6 min</span>
+                </div>
+                <div class="nav-item" data-screen="lesson-3">
+                    <div class="nav-icon">3</div>
+                    <span class="nav-label">CSV & Data Exports</span>
+                    <span class="nav-duration">5 min</span>
+                </div>
+                <div class="nav-item" data-screen="lesson-4">
+                    <div class="nav-icon">4</div>
+                    <span class="nav-label">Vibe Coding</span>
+                    <span class="nav-duration">4 min</span>
+                </div>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Practice & Assessment</div>
+                <div class="nav-item" data-screen="flashcards">
+                    <div class="nav-icon">🗂</div>
+                    <span class="nav-label">Flashcards</span>
+                    <span class="nav-duration">5 min</span>
+                </div>
+                <div class="nav-item" data-screen="lab">
+                    <div class="nav-icon">🧪</div>
+                    <span class="nav-label">Lab Exercise</span>
+                    <span class="nav-duration">30 min</span>
+                </div>
+                <div class="nav-item" data-screen="quiz">
+                    <div class="nav-icon">✓</div>
+                    <span class="nav-label">Knowledge Check</span>
+                    <span class="nav-duration">10 min</span>
+                </div>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Reference</div>
+                <div class="nav-item" data-screen="study-guide">
+                    <div class="nav-icon">📋</div>
+                    <span class="nav-label">Study Guide</span>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Content Area -->
+        <main class="content-area">
+            <!-- Welcome Screen -->
+            <section class="screen active" id="welcome">
+                <div class="welcome-hero">
+                    <span class="module-tag">Module 9 of 11</span>
+                    <h1>Code Execution & File Creation</h1>
+                    <p>Transform your Squadron from a reasoning engine into a file factory. Create PowerPoint presentations, CSV exports, and formatted deliverables on demand.</p>
+                </div>
+
+                <div class="objectives-card">
+                    <h2>🎯 Learning Objectives</h2>
+                    <div class="objective-item">
+                        <span class="objective-level level-retrieval">Retrieval</span>
+                        <span>Explain how Claude uses code execution to create downloadable files</span>
+                    </div>
+                    <div class="objective-item">
+                        <span class="objective-level level-comprehension">Comprehension</span>
+                        <span>Describe when to use Claude vs. Gemini for presentation creation</span>
+                    </div>
+                    <div class="objective-item">
+                        <span class="objective-level level-analysis">Analysis</span>
+                        <span>Apply vibe coding techniques combined with structural precision</span>
+                    </div>
+                    <div class="objective-item">
+                        <span class="objective-level level-utilization">Utilization</span>
+                        <span>Create presentation decks and data exports using the structural draft workflow</span>
+                    </div>
+
+                    <div class="time-estimate">
+                        <div class="time-item">
+                            <span>⏱</span>
+                            <span><strong>Total Time:</strong> ~65 minutes</span>
+                        </div>
+                        <div class="time-item">
+                            <span>🧪</span>
+                            <span><strong>Lab:</strong> 30 minutes hands-on</span>
+                        </div>
+                        <div class="time-item">
+                            <span>✓</span>
+                            <span><strong>Quiz:</strong> 7 questions</span>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="start-btn" onclick="navigateTo('video')">
+                    Begin Module
+                    <span>→</span>
+                </button>
+            </section>
+
+            <!-- Video Screen -->
+            <section class="screen" id="video">
+                <div class="video-container">
+                    <div class="video-placeholder">
+                        <button class="play-btn" aria-label="Play video">
+                            <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                        </button>
+                        <p>Video: Code Execution & File Creation (10:00)</p>
+                    </div>
+                </div>
+
+                <div class="lesson-content">
+                    <h2>Video Summary</h2>
+                    <p>This video introduces how Claude creates downloadable files through code execution:</p>
+                    <ul>
+                        <li><strong>The Architecture</strong> — Claude writes Python code, executes it in a sandbox, captures the output file</li>
+                        <li><strong>PowerPoint Generation</strong> — Using python-pptx to create structural drafts</li>
+                        <li><strong>Claude vs. Gemini</strong> — When to use each for presentations</li>
+                        <li><strong>CSV Exports</strong> — Data transformation and clean exports</li>
+                        <li><strong>Vibe Coding</strong> — Describing aesthetics naturally while maintaining precision</li>
+                    </ul>
+
+                    <div class="callout callout-tip">
+                        <span class="callout-icon">💡</span>
+                        <div>
+                            <strong>Key Concept:</strong> Claude doesn't "generate" files—it programs them. Understanding this architecture helps you prompt more effectively.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="content-nav">
+                    <button class="btn btn-secondary" onclick="navigateTo('welcome')">← Back</button>
+                    <button class="btn btn-primary" onclick="navigateTo('lesson-1')">Continue to Lesson →</button>
+                </div>
+            </section>
+
+            <!-- Lesson 1: How It Works -->
+            <section class="screen" id="lesson-1">
+                <div class="lesson-content">
+                    <h1>How File Creation Works</h1>
+
+                    <p>When you ask Claude to create a PowerPoint or CSV, something specific happens behind the scenes. Understanding this architecture helps you get better results.</p>
+
+                    <h2>The Code Execution Process</h2>
+
+                    <div class="workflow-diagram">
+                        <div class="workflow-step">Your Request</div>
+                        <span class="workflow-arrow">→</span>
+                        <div class="workflow-step">Python Code</div>
+                        <span class="workflow-arrow">→</span>
+                        <div class="workflow-step">Sandbox Execution</div>
+                        <span class="workflow-arrow">→</span>
+                        <div class="workflow-step">Output File</div>
+                    </div>
+
+                    <p>Claude doesn't "generate" binary files from memory. Instead, it:</p>
+                    <ol>
+                        <li><strong>Writes Python code</strong> using specialized libraries</li>
+                        <li><strong>Executes that code</strong> in a secure, sandboxed environment</li>
+                        <li><strong>Captures the output</strong> and presents it for download</li>
+                    </ol>
+
+                    <h2>The Library Stack</h2>
+
+                    <div class="file-type-grid">
+                        <div class="file-type-card">
+                            <div class="file-icon">📊</div>
+                            <h4>PowerPoint</h4>
+                            <p>python-pptx library</p>
+                        </div>
+                        <div class="file-type-card">
+                            <div class="file-icon">📑</div>
+                            <h4>Excel</h4>
+                            <p>openpyxl library</p>
+                        </div>
+                        <div class="file-type-card">
+                            <div class="file-icon">📋</div>
+                            <h4>CSV</h4>
+                            <p>pandas / csv library</p>
+                        </div>
+                    </div>
+
+                    <div class="callout callout-insight">
+                        <span class="callout-icon">🔧</span>
+                        <div>
+                            <strong>Why This Matters:</strong> Since Claude is essentially programming your deliverable, specificity produces precision. Vague prompts → generic outputs. Detailed prompts → exactly what you need.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="content-nav">
+                    <button class="btn btn-secondary" onclick="navigateTo('video')">← Back</button>
+                    <button class="btn btn-primary" onclick="navigateTo('lesson-2')">Continue →</button>
+                </div>
+            </section>
+
+            <!-- Lesson 2: PowerPoint & Slides -->
+            <section class="screen" id="lesson-2">
+                <div class="lesson-content">
+                    <h1>PowerPoint & Google Slides</h1>
+
+                    <p>Presentations are time-consuming to create manually. Claude can generate complete .pptx files in seconds—but understanding the constraints helps you get better results.</p>
+
+                    <h2>The Structural Draft Approach</h2>
+
+                    <p>Claude produces <strong>structural drafts</strong>—content that is well-organized but with basic visual design. The recommended workflow:</p>
+
+                    <ol>
+                        <li><strong>Generate</strong> with Claude — Content structure and organization</li>
+                        <li><strong>Download</strong> the .pptx file</li>
+                        <li><strong>Apply</strong> your corporate template</li>
+                        <li><strong>Polish</strong> visuals — colors, images, layout</li>
+                    </ol>
+
+                    <h2>Prompt Template</h2>
+
+                    <div class="copy-block">
+                        <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+                        <pre>Create a [X]-slide PowerPoint presentation about [TOPIC].
+
+Slide 1: Title - "[TITLE]"
+Slide 2: Agenda - [ITEMS]
+Slide 3: [CONTENT]
+Slide 4: [CONTENT]
+...
+Final Slide: Next Steps / Summary
+
+Use title-and-content layouts.
+Include speaker notes for each slide.</pre>
+                    </div>
+
+                    <h2>Claude vs. Gemini</h2>
+
+                    <table class="comparison-table">
+                        <thead>
+                            <tr>
+                                <th>Factor</th>
+                                <th>Claude</th>
+                                <th>Gemini</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Output</td>
+                                <td>Downloadable .pptx file</td>
+                                <td>Direct to Google Slides</td>
+                            </tr>
+                            <tr>
+                                <td>Control</td>
+                                <td>Precise structural control</td>
+                                <td>Less precise, faster</td>
+                            </tr>
+                            <tr>
+                                <td>Best for</td>
+                                <td>Offline work, specific needs</td>
+                                <td>Google ecosystem, speed</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="callout callout-tip">
+                        <span class="callout-icon">💡</span>
+                        <div>
+                            <strong>Decision Rule:</strong> Use Claude when you need a downloadable file with precise control. Use Gemini when you want direct Drive integration and speed matters more than precision.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="content-nav">
+                    <button class="btn btn-secondary" onclick="navigateTo('lesson-1')">← Back</button>
+                    <button class="btn btn-primary" onclick="navigateTo('lesson-3')">Continue →</button>
+                </div>
+            </section>
+
+            <!-- Lesson 3: CSV & Data Exports -->
+            <section class="screen" id="lesson-3">
+                <div class="lesson-content">
+                    <h1>CSV & Data Exports</h1>
+
+                    <p>CSV files are the universal exchange format for data. Claude can generate, transform, and export data with precision.</p>
+
+                    <h2>Common Export Scenarios</h2>
+
+                    <h3>1. Create Sample Data</h3>
+                    <div class="copy-block">
+                        <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+                        <pre>Create a CSV file with sample customer data:
+- Columns: Customer_ID, Company, Industry, Revenue, Status
+- Include 20 rows of realistic data
+- Sort by Revenue descending</pre>
+                    </div>
+
+                    <h3>2. Transform Existing Data</h3>
+                    <div class="copy-block">
+                        <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+                        <pre>[Upload your file]
+
+Clean this data:
+1. Normalize dates to YYYY-MM-DD format
+2. Remove duplicate rows
+3. Fill missing Region values with "Unknown"
+4. Export as a clean CSV</pre>
+                    </div>
+
+                    <h3>3. Create Aggregated Summaries</h3>
+                    <div class="copy-block">
+                        <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+                        <pre>From the uploaded data, create a summary CSV with:
+- One row per Region
+- Columns: Region, Total_Revenue, Avg_Order_Value, Count
+- Sort by Total_Revenue descending</pre>
+                    </div>
+
+                    <h2>CSV vs. Excel</h2>
+
+                    <table class="comparison-table">
+                        <thead>
+                            <tr>
+                                <th>Use CSV When...</th>
+                                <th>Use Excel When...</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Transferring data between systems</td>
+                                <td>Multiple sheets required</td>
+                            </tr>
+                            <tr>
+                                <td>Importing to databases</td>
+                                <td>Formatting needed</td>
+                            </tr>
+                            <tr>
+                                <td>Universal compatibility</td>
+                                <td>Formulas included</td>
+                            </tr>
+                            <tr>
+                                <td>Simple tabular data</td>
+                                <td>Conditional formatting</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="content-nav">
+                    <button class="btn btn-secondary" onclick="navigateTo('lesson-2')">← Back</button>
+                    <button class="btn btn-primary" onclick="navigateTo('lesson-4')">Continue →</button>
+                </div>
+            </section>
+
+            <!-- Lesson 4: Vibe Coding -->
+            <section class="screen" id="lesson-4">
+                <div class="lesson-content">
+                    <h1>Vibe Coding</h1>
+
+                    <p>One of the most powerful aspects of AI file creation is <strong>vibe coding</strong>—describing what you want in natural, aesthetic terms rather than technical specifications.</p>
+
+                    <h2>What is Vibe Coding?</h2>
+
+                    <p><strong>Instead of:</strong></p>
+                    <div class="prompt-box">
+                        Use hex color #0056D2 for headers, font-size 24pt, border-collapse: collapse on tables...
+                    </div>
+
+                    <p><strong>Try:</strong></p>
+                    <div class="prompt-box good">
+                        <span class="prompt-label">✓ Vibe Coding</span>
+                        Make it feel like a Fortune 500 investor presentation—clean, professional, data-driven. The vibe should say "we know what we're doing."
+                    </div>
+
+                    <p>Claude translates your aesthetic description into the technical parameters.</p>
+
+                    <h2>Why This Matters for Non-Developers</h2>
+
+                    <p><strong>Key insight:</strong> You don't need to know how to code to get code-quality outputs.</p>
+
+                    <p>Even if you've never written HTML, CSS, or Python, you can use vibe coding to generate:</p>
+                    <ul>
+                        <li><strong>Formatted HTML tables</strong> that look polished when pasted into emails</li>
+                        <li><strong>Styled reports</strong> with professional layouts you can screenshot</li>
+                        <li><strong>Structured outputs</strong> formatted exactly how you need for copy/paste workflows</li>
+                    </ul>
+
+                    <div class="prompt-box good">
+                        <span class="prompt-label">✓ Example</span>
+                        Create an HTML table showing our top 5 accounts by revenue. Make it look like something from a modern SaaS dashboard—clean lines, alternating row colors, bold headers. I want to screenshot this for my executive summary.
+                    </div>
+
+                    <p>Claude generates the HTML, renders it visually, and you capture exactly what you need. No coding knowledge required.</p>
+
+                    <h2>Best Practice: Combine Both</h2>
+
+                    <div class="copy-block">
+                        <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+                        <pre>Create a 6-slide presentation about Q3 results.
+
+[STRUCTURAL - be specific]
+Slide 1: Title - "Q3 Business Review"
+Slide 2: Key Metrics
+Slide 3: Regional Performance
+Slide 4: Challenges
+Slide 5: Q4 Roadmap
+Slide 6: Discussion
+
+[VIBE - describe the feel]
+Make it feel confident and executive-ready.
+Clean design, minimal text per slide.
+The aesthetic should communicate competence.
+Use corporate blue as the accent color.</pre>
+                    </div>
+
+                    <div class="callout callout-tip">
+                        <span class="callout-icon">💡</span>
+                        <div>
+                            <strong>The Formula:</strong> Be specific about <em>what</em> goes on each slide (structure). Be aesthetic about <em>how</em> it should feel (vibe). Combine both for best results.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="content-nav">
+                    <button class="btn btn-secondary" onclick="navigateTo('lesson-3')">← Back</button>
+                    <button class="btn btn-primary" onclick="navigateTo('flashcards')">Practice with Flashcards →</button>
+                </div>
+            </section>
+
+            <!-- Flashcards Screen -->
+            <section class="screen" id="flashcards">
+                <h1 style="margin-bottom: 0.5rem;">Flashcards</h1>
+                <p style="color: #6B7280; margin-bottom: 2rem;">Review key concepts from this module. Click the card to flip it.</p>
+
+                <div class="flashcard-container">
+                    <div class="flashcard" id="flashcard" onclick="flipCard()">
+                        <div class="flashcard-face flashcard-front">
+                            <h3 id="cardFront">How does Claude actually create downloadable files?</h3>
+                        </div>
+                        <div class="flashcard-face flashcard-back">
+                            <p id="cardBack">Claude writes Python code using specialized libraries, executes it in a sandbox, and captures the output file for download. It doesn't "generate" files—it programs them.</p>
+                        </div>
+                    </div>
+                    <p class="flip-hint">Click card to flip</p>
+                </div>
+
+                <div class="flashcard-nav">
+                    <button class="flashcard-btn" onclick="prevCard()">←</button>
+                    <span class="flashcard-counter"><span id="cardNum">1</span> / <span id="cardTotal">8</span></span>
+                    <button class="flashcard-btn" onclick="nextCard()">→</button>
+                </div>
+
+                <div class="content-nav">
+                    <button class="btn btn-secondary" onclick="navigateTo('lesson-4')">← Back to Lesson</button>
+                    <button class="btn btn-primary" onclick="navigateTo('lab')">Continue to Lab →</button>
+                </div>
+            </section>
+
+            <!-- Lab Exercise Screen -->
+            <section class="screen" id="lab">
+                <div class="lab-header">
+                    <h1>🧪 Lab Exercise: Building Mission-Ready Deliverables</h1>
+                    <p>Practice creating presentations and data exports using Claude and Gemini.</p>
+                    <div class="lab-meta">
+                        <span>⏱ 25-30 minutes</span>
+                        <span>🛠 Tools: Claude, Gemini</span>
+                        <span>⭐ Advanced: +15 min</span>
+                    </div>
+                </div>
+
+                <div class="lab-steps">
+                    <div class="lab-step active" id="labStep1">
+                        <div class="step-header">
+                            <div class="step-number">1</div>
+                            <div class="step-title">PowerPoint with Claude</div>
+                        </div>
+                        <div class="step-content">
+                            <p>Create a customer QBR or internal update presentation.</p>
+
+                            <div class="copy-block">
+                                <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+                                <pre>Create a 6-slide PowerPoint presentation for a customer QBR.
+
+Slide 1: Title - "Q3 Business Review"
+Slide 2: Agenda
+Slide 3: Adoption Metrics (include sample numbers)
+Slide 4: Key Wins This Quarter
+Slide 5: Challenges & Solutions
+Slide 6: Next Steps
+
+Use title-and-content layouts.
+Include speaker notes for each slide.</pre>
+                            </div>
+
+                            <p><strong>Steps:</strong></p>
+                            <ol>
+                                <li>Open Claude Desktop or claude.ai</li>
+                                <li>Paste the prompt (customize with your own content)</li>
+                                <li>Download the generated .pptx file</li>
+                                <li>Open and review the structure</li>
+                            </ol>
+
+                            <p><strong>Deliverable:</strong> Screenshot of your generated presentation</p>
+                        </div>
+                    </div>
+
+                    <div class="lab-step" id="labStep2">
+                        <div class="step-header">
+                            <div class="step-number">2</div>
+                            <div class="step-title">Google Slides with Gemini</div>
+                        </div>
+                        <div class="step-content">
+                            <p>Create a presentation that exports directly to Google Drive.</p>
+
+                            <div class="copy-block">
+                                <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+                                <pre>Create a 4-slide presentation for a team sync.
+
+Topic: Project Status Update
+
+Slide 1: Title
+Slide 2: What We've Completed
+Slide 3: Current Focus
+Slide 4: Next Steps
+
+Keep it clean and visual. Professional blue theme.</pre>
+                            </div>
+
+                            <p><strong>Steps:</strong></p>
+                            <ol>
+                                <li>Go to gemini.google.com</li>
+                                <li>Enter the prompt</li>
+                                <li>Click "Export to Google Slides"</li>
+                                <li>Open in Google Drive</li>
+                            </ol>
+
+                            <p><strong>Deliverable:</strong> Share link to your Google Slides presentation</p>
+                        </div>
+                    </div>
+
+                    <div class="lab-step" id="labStep3">
+                        <div class="step-header">
+                            <div class="step-number">3</div>
+                            <div class="step-title">CSV Data Export</div>
+                        </div>
+                        <div class="step-content">
+                            <p>Create a clean data export for stakeholders.</p>
+
+                            <div class="copy-block">
+                                <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+                                <pre>Create a CSV file with sample customer engagement data:
+
+Columns:
+- Customer_ID
+- Company_Name
+- Industry
+- Active_Users
+- Engagement_Score (0-100)
+- Subscription_Tier (Basic, Professional, Enterprise)
+
+Include 15 rows of realistic sample data.
+Sort by Engagement_Score descending.</pre>
+                            </div>
+
+                            <p><strong>Steps:</strong></p>
+                            <ol>
+                                <li>Enter the prompt in Claude</li>
+                                <li>Download the CSV</li>
+                                <li>Open in Excel or Google Sheets</li>
+                                <li>Verify the data structure</li>
+                            </ol>
+
+                            <p><strong>Deliverable:</strong> Screenshot of your CSV open in a spreadsheet</p>
+                        </div>
+                    </div>
+
+                    <div class="lab-step" id="labStep4">
+                        <div class="step-header">
+                            <div class="step-number">4</div>
+                            <div class="step-title">Vibe Coding Comparison</div>
+                        </div>
+                        <div class="step-content">
+                            <p>Compare technical prompts vs. vibe coding.</p>
+
+                            <p><strong>Prompt A (Technical):</strong></p>
+                            <div class="copy-block">
+                                <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+                                <pre>Create a 3-slide presentation with 32pt title font,
+18pt body font, color #0056D2 for headers.</pre>
+                            </div>
+
+                            <p><strong>Prompt B (Vibe):</strong></p>
+                            <div class="copy-block">
+                                <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+                                <pre>Create a 3-slide presentation about team goals.
+Make it feel modern and confident—like something
+a tech startup would present to investors.</pre>
+                            </div>
+
+                            <p>Generate both. Which output better matches what you'd use?</p>
+
+                            <p><strong>Deliverable:</strong> One sentence on your preferred approach</p>
+                        </div>
+                    </div>
+
+                    <div class="lab-navigation">
+                        <button class="btn btn-secondary" id="labPrevBtn" onclick="prevLabStep()" style="visibility: hidden;">← Previous Step</button>
+                        <button class="btn btn-primary" id="labNextBtn" onclick="nextLabStep()">Next Step →</button>
+                    </div>
+                </div>
+
+                <div class="content-nav">
+                    <button class="btn btn-secondary" onclick="navigateTo('flashcards')">← Back</button>
+                    <button class="btn btn-primary" onclick="navigateTo('quiz')">Take the Quiz →</button>
+                </div>
+            </section>
+
+            <!-- Quiz Screen -->
+            <section class="screen" id="quiz">
+                <div class="quiz-container">
+                    <div class="quiz-header">
+                        <h2>Knowledge Check</h2>
+                        <div class="quiz-progress">
+                            <div class="quiz-dot current" data-q="0"></div>
+                            <div class="quiz-dot" data-q="1"></div>
+                            <div class="quiz-dot" data-q="2"></div>
+                            <div class="quiz-dot" data-q="3"></div>
+                            <div class="quiz-dot" data-q="4"></div>
+                            <div class="quiz-dot" data-q="5"></div>
+                            <div class="quiz-dot" data-q="6"></div>
+                        </div>
+                    </div>
+
+                    <!-- Question 1 -->
+                    <div class="quiz-question active" data-question="0">
+                        <div class="question-number">Question 1 of 7</div>
+                        <div class="question-text">How does Claude create downloadable files like PowerPoint presentations?</div>
+                        <div class="answer-options">
+                            <div class="answer-option" data-answer="a" onclick="selectAnswer(this, 0)">
+                                <span class="option-letter">A</span>
+                                <span>It generates binary file data directly from its training</span>
+                            </div>
+                            <div class="answer-option" data-answer="b" onclick="selectAnswer(this, 0)">
+                                <span class="option-letter">B</span>
+                                <span>It writes Python code, executes it in a sandbox, and captures the output</span>
+                            </div>
+                            <div class="answer-option" data-answer="c" onclick="selectAnswer(this, 0)">
+                                <span class="option-letter">C</span>
+                                <span>It connects to Microsoft Office servers to create files remotely</span>
+                            </div>
+                            <div class="answer-option" data-answer="d" onclick="selectAnswer(this, 0)">
+                                <span class="option-letter">D</span>
+                                <span>It converts Markdown to the requested file format</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Question 2 -->
+                    <div class="quiz-question" data-question="1">
+                        <div class="question-number">Question 2 of 7</div>
+                        <div class="question-text">True or False: Claude produces visually stunning presentations that are ready to share with clients without any modifications.</div>
+                        <div class="answer-options">
+                            <div class="answer-option" data-answer="a" onclick="selectAnswer(this, 1)">
+                                <span class="option-letter">A</span>
+                                <span>True</span>
+                            </div>
+                            <div class="answer-option" data-answer="b" onclick="selectAnswer(this, 1)">
+                                <span class="option-letter">B</span>
+                                <span>False</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Question 3 -->
+                    <div class="quiz-question" data-question="2">
+                        <div class="question-number">Question 3 of 7</div>
+                        <div class="question-text">When should you use Gemini instead of Claude for creating a presentation?</div>
+                        <div class="answer-options">
+                            <div class="answer-option" data-answer="a" onclick="selectAnswer(this, 2)">
+                                <span class="option-letter">A</span>
+                                <span>When you need precise control over slide structure and speaker notes</span>
+                            </div>
+                            <div class="answer-option" data-answer="b" onclick="selectAnswer(this, 2)">
+                                <span class="option-letter">B</span>
+                                <span>When you want a native Google Slides file built directly in the Slides format</span>
+                            </div>
+                            <div class="answer-option" data-answer="c" onclick="selectAnswer(this, 2)">
+                                <span class="option-letter">C</span>
+                                <span>When you need to work offline</span>
+                            </div>
+                            <div class="answer-option" data-answer="d" onclick="selectAnswer(this, 2)">
+                                <span class="option-letter">D</span>
+                                <span>When you need to include complex data tables</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Question 4 -->
+                    <div class="quiz-question" data-question="3">
+                        <div class="question-number">Question 4 of 7</div>
+                        <div class="question-text">What is "vibe coding"?</div>
+                        <div class="answer-options">
+                            <div class="answer-option" data-answer="a" onclick="selectAnswer(this, 3)">
+                                <span class="option-letter">A</span>
+                                <span>Writing code that follows best practices</span>
+                            </div>
+                            <div class="answer-option" data-answer="b" onclick="selectAnswer(this, 3)">
+                                <span class="option-letter">B</span>
+                                <span>Describing desired outcomes aesthetically rather than technically</span>
+                            </div>
+                            <div class="answer-option" data-answer="c" onclick="selectAnswer(this, 3)">
+                                <span class="option-letter">C</span>
+                                <span>Using emojis and casual language in prompts</span>
+                            </div>
+                            <div class="answer-option" data-answer="d" onclick="selectAnswer(this, 3)">
+                                <span class="option-letter">D</span>
+                                <span>Generating code that looks visually pleasing</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Question 5 -->
+                    <div class="quiz-question" data-question="4">
+                        <div class="question-number">Question 5 of 7</div>
+                        <div class="question-text">You need to clean a messy customer spreadsheet and share the results. What's the most efficient approach?</div>
+                        <div class="answer-options">
+                            <div class="answer-option" data-answer="a" onclick="selectAnswer(this, 4)">
+                                <span class="option-letter">A</span>
+                                <span>Manually clean the data in Excel</span>
+                            </div>
+                            <div class="answer-option" data-answer="b" onclick="selectAnswer(this, 4)">
+                                <span class="option-letter">B</span>
+                                <span>Upload to Claude, describe transformations, download the cleaned CSV</span>
+                            </div>
+                            <div class="answer-option" data-answer="c" onclick="selectAnswer(this, 4)">
+                                <span class="option-letter">C</span>
+                                <span>Use Google Sheets formulas to clean it</span>
+                            </div>
+                            <div class="answer-option" data-answer="d" onclick="selectAnswer(this, 4)">
+                                <span class="option-letter">D</span>
+                                <span>Ask Claude to describe how to clean it, then do it manually</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Question 6 -->
+                    <div class="quiz-question" data-question="5">
+                        <div class="question-number">Question 6 of 7</div>
+                        <div class="question-text">True or False: You should always use Excel (.xlsx) format instead of CSV because it's more capable.</div>
+                        <div class="answer-options">
+                            <div class="answer-option" data-answer="a" onclick="selectAnswer(this, 5)">
+                                <span class="option-letter">A</span>
+                                <span>True</span>
+                            </div>
+                            <div class="answer-option" data-answer="b" onclick="selectAnswer(this, 5)">
+                                <span class="option-letter">B</span>
+                                <span>False</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Question 7 -->
+                    <div class="quiz-question" data-question="6">
+                        <div class="question-number">Question 7 of 7</div>
+                        <div class="question-text">You need a presentation deck and a data summary for a customer meeting. What's the optimal workflow?</div>
+                        <div class="answer-options">
+                            <div class="answer-option" data-answer="a" onclick="selectAnswer(this, 6)">
+                                <span class="option-letter">A</span>
+                                <span>Use Gemini for everything since it integrates with Google</span>
+                            </div>
+                            <div class="answer-option" data-answer="b" onclick="selectAnswer(this, 6)">
+                                <span class="option-letter">B</span>
+                                <span>Use Claude to generate both as downloadable files</span>
+                            </div>
+                            <div class="answer-option" data-answer="c" onclick="selectAnswer(this, 6)">
+                                <span class="option-letter">C</span>
+                                <span>Create the presentation manually and use Claude only for data</span>
+                            </div>
+                            <div class="answer-option" data-answer="d" onclick="selectAnswer(this, 6)">
+                                <span class="option-letter">D</span>
+                                <span>Use Claude for data work, then choose Claude or Gemini for presentation based on preference</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Results -->
+                    <div class="quiz-question" data-question="results" style="display: none;">
+                        <div class="quiz-results">
+                            <div class="results-score" id="quizScore">0/7</div>
+                            <div class="results-label">Questions Correct</div>
+                            <div class="results-breakdown">
+                                <div class="breakdown-item">
+                                    <div class="breakdown-value correct" id="correctCount">0</div>
+                                    <div class="breakdown-label">Correct</div>
+                                </div>
+                                <div class="breakdown-item">
+                                    <div class="breakdown-value incorrect" id="incorrectCount">0</div>
+                                    <div class="breakdown-label">Incorrect</div>
+                                </div>
+                            </div>
+                            <p id="resultMessage" style="margin-bottom: 2rem; color: #6B7280;"></p>
+                            <button class="btn btn-primary" onclick="navigateTo('study-guide')">Review Study Guide →</button>
+                        </div>
+                    </div>
+
+                    <div class="feedback-panel" id="feedbackPanel">
+                        <div class="feedback-header" id="feedbackHeader"></div>
+                        <p id="feedbackText"></p>
+                    </div>
+
+                    <div class="quiz-footer">
+                        <button class="btn btn-primary" id="quizNextBtn" onclick="nextQuestion()" disabled>Next Question →</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Study Guide Screen -->
+            <section class="screen" id="study-guide">
+                <h1 style="margin-bottom: 2rem;">📋 Study Guide</h1>
+
+                <div class="study-guide-card">
+                    <h2>🎯 Core Concept</h2>
+                    <p style="font-size: 1.1rem; line-height: 1.7;"><strong>Mission Output Commander:</strong> Your Squadron now produces tangible deliverables using Claude's code execution. Claude writes Python code, executes it in a sandbox, and captures output files for download.</p>
+                </div>
+
+                <div class="study-guide-card">
+                    <h2>📖 The Library Stack</h2>
+                    <div class="term-grid">
+                        <div class="term-item">
+                            <span class="term-name">python-pptx</span>
+                            <span class="term-def">Creates PowerPoint presentations (.pptx)</span>
+                        </div>
+                        <div class="term-item">
+                            <span class="term-name">openpyxl</span>
+                            <span class="term-def">Creates Excel files with formatting (.xlsx)</span>
+                        </div>
+                        <div class="term-item">
+                            <span class="term-name">pandas</span>
+                            <span class="term-def">Data manipulation and CSV exports</span>
+                        </div>
+                        <div class="term-item">
+                            <span class="term-name">Vibe Coding</span>
+                            <span class="term-def">Describing outcomes aesthetically rather than technically</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="study-guide-card">
+                    <h2>✈️ Tool Decision Matrix</h2>
+                    <table class="comparison-table">
+                        <thead>
+                            <tr>
+                                <th>Need</th>
+                                <th>Use Claude</th>
+                                <th>Use Gemini</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Downloadable file</td>
+                                <td>✓</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>Precise structural control</td>
+                                <td>✓</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>Native Google Slides format</td>
+                                <td></td>
+                                <td>✓</td>
+                            </tr>
+                            <tr>
+                                <td>Speed over precision</td>
+                                <td></td>
+                                <td>✓</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="study-guide-card">
+                    <h2>✓ Do's and Don'ts</h2>
+                    <div class="do-dont-grid">
+                        <div class="do-column">
+                            <h3>✓ Do</h3>
+                            <div class="do-dont-item">
+                                <span style="color: var(--success);">✓</span>
+                                <span>Specify slide-by-slide content</span>
+                            </div>
+                            <div class="do-dont-item">
+                                <span style="color: var(--success);">✓</span>
+                                <span>Use structural draft workflow</span>
+                            </div>
+                            <div class="do-dont-item">
+                                <span style="color: var(--success);">✓</span>
+                                <span>Combine vibe + structure</span>
+                            </div>
+                            <div class="do-dont-item">
+                                <span style="color: var(--success);">✓</span>
+                                <span>Verify data before sharing</span>
+                            </div>
+                        </div>
+                        <div class="dont-column">
+                            <h3>✗ Don't</h3>
+                            <div class="do-dont-item">
+                                <span style="color: var(--error);">✗</span>
+                                <span>Expect design-ready output</span>
+                            </div>
+                            <div class="do-dont-item">
+                                <span style="color: var(--error);">✗</span>
+                                <span>Use vague file requests</span>
+                            </div>
+                            <div class="do-dont-item">
+                                <span style="color: var(--error);">✗</span>
+                                <span>Skip data verification</span>
+                            </div>
+                            <div class="do-dont-item">
+                                <span style="color: var(--error);">✗</span>
+                                <span>Use wrong tool for workflow</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="study-guide-card" style="background: linear-gradient(135deg, var(--dark-navy) 0%, var(--medium-navy) 100%); color: white;">
+                    <h2 style="color: white;">➡️ Next Module Preview</h2>
+                    <p><strong>Module 10: Future Frontiers (Agents & MCP)</strong></p>
+                    <p style="opacity: 0.9;">Learn about AI Agents and Model Context Protocol—systems that execute multi-step workflows autonomously, access external tools, and operate with minimal intervention. From file factory to autonomous operations.</p>
+                </div>
+
+                <div class="content-nav">
+                    <button class="btn btn-secondary" onclick="navigateTo('quiz')">← Back to Quiz</button>
+                    <button class="btn btn-success">Module Complete ✓</button>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // Navigation State
+        const screens = ['welcome', 'video', 'lesson-1', 'lesson-2', 'lesson-3', 'lesson-4', 'flashcards', 'lab', 'quiz', 'study-guide'];
+        let currentScreen = 'welcome';
+        let completedScreens = new Set();
+
+        // Flashcard State
+        const flashcards = [
+            {
+                front: "How does Claude actually create downloadable files?",
+                back: "Claude writes Python code using specialized libraries, executes it in a sandbox, and captures the output file for download. It doesn't 'generate' files—it programs them."
+            },
+            {
+                front: "What Python libraries does Claude use for file creation?",
+                back: "• python-pptx → PowerPoint (.pptx)\n• openpyxl → Excel (.xlsx)\n• pandas → CSV, data manipulation\n• csv → Simple CSV operations"
+            },
+            {
+                front: "What is 'vibe coding'?",
+                back: "Describing desired outcomes aesthetically rather than technically.\n\nInstead of: 'Use hex #0056D2'\nTry: 'Make it feel like a Fortune 500 presentation'\n\nBest practice: Combine vibe descriptions with structural precision."
+            },
+            {
+                front: "When should you use Claude vs. Gemini for presentations?",
+                back: "Use Claude when:\n• Need downloadable file\n• Want precise structural control\n• Working offline\n\nUse Gemini when:\n• Want direct Google Drive export\n• Speed matters more than precision"
+            },
+            {
+                front: "What is the 'structural draft' workflow?",
+                back: "1. Generate with Claude (content structure)\n2. Download the .pptx file\n3. Apply corporate template\n4. Polish visuals\n\nClaude handles content; design tools handle visual polish."
+            },
+            {
+                front: "When should you use CSV vs. Excel format?",
+                back: "Use CSV: Data transfer, database import, universal compatibility, simple data\n\nUse Excel: Multiple sheets, formatting needed, formulas included, conditional formatting"
+            },
+            {
+                front: "What prompt elements produce the best PowerPoint outputs?",
+                back: "1. Number of slides specified\n2. Content for each slide described\n3. Layout preferences stated\n4. Speaker notes requested\n5. Aesthetic direction via vibe coding"
+            },
+            {
+                front: "What is the Mission Output Framework?",
+                back: "Intel Gathering → Analysis → Synthesis → Delivery\n\nFile creation is the final phase—turning intelligence into tangible deliverables (slides, spreadsheets, reports)."
+            }
+        ];
+        let currentCard = 0;
+
+        // Lab State
+        let currentLabStep = 1;
+        const totalLabSteps = 4;
+
+        // Quiz State
+        const quizAnswers = ['b', 'b', 'b', 'b', 'b', 'b', 'd'];
+        const quizFeedback = [
+            {
+                correct: "Correct! Claude uses code execution: it writes Python code using libraries like python-pptx, executes it in a secure sandbox, and captures the resulting file for download.",
+                incorrect: "Claude uses code execution: it writes Python code, executes it in a sandbox, and captures the output file. It doesn't generate files from memory or connect to external servers."
+            },
+            {
+                correct: "Correct! Claude produces structural drafts—content that is well-organized but with basic visual design. The workflow: generate structure with Claude, then apply visual polish with design tools.",
+                incorrect: "Claude produces structural drafts with basic styling. The recommended workflow: generate with Claude, download, apply your template, then polish visuals. Each tool does what it does best."
+            },
+            {
+                correct: "Correct! Gemini creates native Google Slides directly in the Slides format with AI-selected imagery. While Claude can also integrate with Drive, it generates .pptx files via python-pptx. Use Claude for precise structural control; use Gemini for native Slides format.",
+                incorrect: "Gemini creates native Google Slides format; Claude creates .pptx files via code execution. Both can work with Google Drive, but the key difference is the output format and approach."
+            },
+            {
+                correct: "Exactly! Vibe coding means describing outcomes aesthetically rather than technically. 'Make it feel like a Fortune 500 presentation' instead of specifying hex codes. Key for non-developers: generate HTML tables, styled reports, and formatted outputs without knowing code—just describe the aesthetic.",
+                incorrect: "Vibe coding describes outcomes aesthetically: 'Make it feel professional' instead of 'Use hex #0056D2'. Claude translates aesthetic descriptions into technical parameters. Non-developers can generate HTML, styled reports, and formatted outputs without coding knowledge."
+            },
+            {
+                correct: "Perfect! Upload to Claude, describe transformations, download clean CSV. Claude writes transformation code, executes it, and outputs the cleaned file. What takes 30 minutes manually takes 2 minutes with AI.",
+                incorrect: "The most efficient approach: upload to Claude, describe the transformations needed, download the cleaned CSV. Let Claude execute the transformation code rather than doing it manually."
+            },
+            {
+                correct: "Correct! Each format has appropriate uses. CSV for data transfer and universal compatibility; Excel when you need formatting, multiple sheets, or formulas. Choose based on need, not capability.",
+                incorrect: "While Excel is more capable, CSV is often preferred for data interchange due to simplicity and universal compatibility. Use each format for its appropriate purpose."
+            },
+            {
+                correct: "Excellent reasoning! Use Claude for data analysis and CSV export (its strength), then choose your presentation tool based on workflow preference—Claude for downloadable files, Gemini for Google integration.",
+                incorrect: "The optimal approach: Claude for data work (analysis, CSV export), then choose Claude OR Gemini for the presentation based on whether you want downloadable files or Google Drive integration."
+            }
+        ];
+        let currentQuestion = 0;
+        let userAnswers = [];
+        let quizComplete = false;
+
+        // Navigation Functions
+        function navigateTo(screenId) {
+            completedScreens.add(currentScreen);
+
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+
+            document.getElementById(screenId).classList.add('active');
+            document.querySelector(`[data-screen="${screenId}"]`)?.classList.add('active');
+
+            completedScreens.forEach(id => {
+                const navItem = document.querySelector(`[data-screen="${id}"]`);
+                if (navItem && id !== screenId) {
+                    navItem.classList.add('completed');
+                }
+            });
+
+            currentScreen = screenId;
+            updateProgress();
+            window.scrollTo(0, 0);
+        }
+
+        function updateProgress() {
+            const progress = Math.round((completedScreens.size / screens.length) * 100);
+            document.getElementById('progressFill').style.width = `${progress}%`;
+            document.getElementById('progressText').textContent = `${progress}% Complete`;
+        }
+
+        // Flashcard Functions
+        function flipCard() {
+            document.getElementById('flashcard').classList.toggle('flipped');
+        }
+
+        function nextCard() {
+            currentCard = (currentCard + 1) % flashcards.length;
+            updateCard();
+        }
+
+        function prevCard() {
+            currentCard = (currentCard - 1 + flashcards.length) % flashcards.length;
+            updateCard();
+        }
+
+        function updateCard() {
+            document.getElementById('flashcard').classList.remove('flipped');
+            setTimeout(() => {
+                document.getElementById('cardFront').textContent = flashcards[currentCard].front;
+                document.getElementById('cardBack').textContent = flashcards[currentCard].back;
+                document.getElementById('cardNum').textContent = currentCard + 1;
+            }, 150);
+        }
+
+        // Lab Functions
+        function nextLabStep() {
+            if (currentLabStep < totalLabSteps) {
+                document.getElementById(`labStep${currentLabStep}`).classList.remove('active');
+                currentLabStep++;
+                document.getElementById(`labStep${currentLabStep}`).classList.add('active');
+                updateLabNav();
+            }
+        }
+
+        function prevLabStep() {
+            if (currentLabStep > 1) {
+                document.getElementById(`labStep${currentLabStep}`).classList.remove('active');
+                currentLabStep--;
+                document.getElementById(`labStep${currentLabStep}`).classList.add('active');
+                updateLabNav();
+            }
+        }
+
+        function updateLabNav() {
+            document.getElementById('labPrevBtn').style.visibility = currentLabStep > 1 ? 'visible' : 'hidden';
+            document.getElementById('labNextBtn').textContent = currentLabStep < totalLabSteps ? 'Next Step →' : 'Complete Lab ✓';
+            if (currentLabStep === totalLabSteps) {
+                document.getElementById('labNextBtn').onclick = () => navigateTo('quiz');
+            } else {
+                document.getElementById('labNextBtn').onclick = nextLabStep;
+            }
+        }
+
+        // Quiz Functions
+        function selectAnswer(element, questionIndex) {
+            if (quizComplete || userAnswers[questionIndex] !== undefined) return;
+
+            const question = document.querySelector(`[data-question="${questionIndex}"]`);
+            const options = question.querySelectorAll('.answer-option');
+            const selectedAnswer = element.dataset.answer;
+            const isCorrect = selectedAnswer === quizAnswers[questionIndex];
+
+            userAnswers[questionIndex] = selectedAnswer;
+
+            options.forEach(opt => {
+                opt.classList.add('disabled');
+                if (opt.dataset.answer === quizAnswers[questionIndex]) {
+                    opt.classList.add('correct');
+                }
+            });
+
+            if (!isCorrect) {
+                element.classList.add('incorrect');
+            }
+
+            const dot = document.querySelector(`.quiz-dot[data-q="${questionIndex}"]`);
+            dot.classList.remove('current');
+            dot.classList.add(isCorrect ? 'correct' : 'incorrect');
+
+            const feedbackPanel = document.getElementById('feedbackPanel');
+            const feedbackHeader = document.getElementById('feedbackHeader');
+            const feedbackText = document.getElementById('feedbackText');
+
+            feedbackHeader.className = `feedback-header ${isCorrect ? 'feedback-correct' : 'feedback-incorrect'}`;
+            feedbackHeader.innerHTML = isCorrect ? '✓ Correct!' : '✗ Incorrect';
+            feedbackText.textContent = isCorrect ? quizFeedback[questionIndex].correct : quizFeedback[questionIndex].incorrect;
+            feedbackPanel.classList.add('show');
+
+            document.getElementById('quizNextBtn').disabled = false;
+        }
+
+        function nextQuestion() {
+            if (currentQuestion < quizAnswers.length - 1) {
+                document.querySelector(`[data-question="${currentQuestion}"]`).classList.remove('active');
+                currentQuestion++;
+                document.querySelector(`[data-question="${currentQuestion}"]`).classList.add('active');
+
+                document.querySelector(`.quiz-dot[data-q="${currentQuestion}"]`).classList.add('current');
+
+                document.getElementById('feedbackPanel').classList.remove('show');
+                document.getElementById('quizNextBtn').disabled = true;
+
+                if (currentQuestion === quizAnswers.length - 1) {
+                    document.getElementById('quizNextBtn').textContent = 'See Results →';
+                }
+            } else {
+                showResults();
+            }
+        }
+
+        function showResults() {
+            quizComplete = true;
+            const correct = userAnswers.filter((a, i) => a === quizAnswers[i]).length;
+            const incorrect = quizAnswers.length - correct;
+
+            document.querySelector(`[data-question="${currentQuestion}"]`).classList.remove('active');
+            document.querySelector('[data-question="results"]').style.display = 'block';
+            document.querySelector('[data-question="results"]').classList.add('active');
+
+            document.getElementById('quizScore').textContent = `${correct}/${quizAnswers.length}`;
+            document.getElementById('correctCount').textContent = correct;
+            document.getElementById('incorrectCount').textContent = incorrect;
+
+            let message = '';
+            if (correct === quizAnswers.length) {
+                message = "Excellent! You've achieved Mission Output Commander level. Ready for Module 10!";
+            } else if (correct >= 5) {
+                message = "Good foundation! Review the Claude vs. Gemini decision framework before continuing.";
+            } else if (correct >= 3) {
+                message = "Review the video and flashcards, then retake the quiz.";
+            } else {
+                message = "Schedule time to review the module content before proceeding.";
+            }
+            document.getElementById('resultMessage').textContent = message;
+
+            document.getElementById('feedbackPanel').classList.remove('show');
+            document.querySelector('.quiz-footer').style.display = 'none';
+        
+            // SCORM reporting
+            const scorePercent = Math.round((correct / quizAnswers.length) * 100);
+            const passed = scorePercent >= 70;
+
+            if (typeof setSCORMScore === 'function') {
+                setSCORMScore(scorePercent);
+            }
+            if (typeof setSCORMStatus === 'function') {
+                setSCORMStatus(passed ? 'passed' : 'failed');
+            }
+
+            // Celebration confetti for passing
+            if (passed && typeof confetti === 'function') {
+                confetti({
+                    particleCount: 100,
+                    spread: 70,
+                    origin: { y: 0.6 },
+                    colors: ['#2ED4B5', '#1657A0', '#FFC83B', '#19316A']
+                });
+
+                setTimeout(() => {
+                    confetti({
+                        particleCount: 50,
+                        angle: 60,
+                        spread: 55,
+                        origin: { x: 0 },
+                        colors: ['#2ED4B5', '#1657A0', '#FFC83B']
+                    });
+                }, 250);
+
+                setTimeout(() => {
+                    confetti({
+                        particleCount: 50,
+                        angle: 120,
+                        spread: 55,
+                        origin: { x: 1 },
+                        colors: ['#2ED4B5', '#1657A0', '#FFC83B']
+                    });
+                }, 400);
+            }
+
+            // Close popup window after completion
+            if (window.opener !== null) {
+                setTimeout(() => {
+                    const shouldClose = confirm('Module completed! Close this window?');
+                    if (shouldClose) {
+                        window.close();
+                    }
+                }, 3000);
+            }
+        }
+
+        // Copy to clipboard
+        function copyToClipboard(button) {
+            const codeBlock = button.parentElement.querySelector('pre');
+            navigator.clipboard.writeText(codeBlock.textContent).then(() => {
+                button.textContent = 'Copied!';
+                setTimeout(() => button.textContent = 'Copy', 2000);
+            });
+        }
+
+        // Initialize nav click handlers
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', () => {
+                const screen = item.dataset.screen;
+                if (screen) navigateTo(screen);
+            });
+        });
+
+        // Initialize
+        document.getElementById('cardTotal').textContent = flashcards.length;
+    </script>
+</body>
+</html>

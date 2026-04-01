@@ -1,0 +1,1698 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module 11: Capstone & Governance | Solo Pilot to Squadron Leader</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sofia+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-blue: #19316A;
+            --pelorous: #1657A0;
+            --teal: #2ED4B5;
+            --violet-red: #EE2C82;
+            --dark-base: #14203F;
+            --light-gray: #D9D9D9;
+            --bg-light: #F8F9FA;
+            --white: #FFFFFF;
+            --success: #2ED4B5;
+            --error: #EE2C82;
+            --warning: #F5A623;
+            --gold: #FFD700;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Sofia Sans', sans-serif;
+            background: var(--bg-light);
+            color: var(--dark-base);
+            line-height: 1.6;
+        }
+
+        .course-header {
+            background: linear-gradient(135deg, var(--dark-navy) 0%, var(--medium-navy) 100%);
+            color: white;
+            padding: 1rem 2rem;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .course-title { font-size: 1.1rem; font-weight: 600; }
+        .course-subtitle { font-size: 0.85rem; opacity: 0.9; }
+
+        .progress-container {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .progress-bar {
+            width: 200px;
+            height: 8px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--gold);
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        .progress-text { font-size: 0.85rem; }
+
+        .main-container {
+            display: flex;
+            margin-top: 60px;
+            min-height: calc(100vh - 60px);
+        }
+
+        .sidebar {
+            width: 280px;
+            background: var(--white);
+            border-right: 1px solid var(--light-gray);
+            position: fixed;
+            top: 60px;
+            bottom: 0;
+            left: 0;
+            overflow-y: auto;
+            padding: 1.5rem 0;
+        }
+
+        .nav-section {
+            padding: 0 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .nav-section-title {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #6B7280;
+            margin-bottom: 0.75rem;
+            padding: 0 0.75rem;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 0.25rem;
+        }
+
+        .nav-item:hover { background: var(--bg-light); }
+        .nav-item.active { background: rgba(0, 66, 243, 0.1); color: var(--primary-blue); }
+        .nav-item.completed .nav-icon { background: var(--success); color: white; }
+
+        .nav-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: var(--light-gray);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .nav-item.active .nav-icon { background: var(--primary-blue); color: white; }
+        .nav-label { font-size: 0.9rem; font-weight: 500; }
+        .nav-duration { font-size: 0.75rem; color: #6B7280; margin-left: auto; }
+
+        .content-area {
+            flex: 1;
+            margin-left: 280px;
+            padding: 2rem 3rem;
+            max-width: 1000px;
+        }
+
+        .screen { display: none; }
+        .screen.active { display: block; animation: fadeIn 0.4s ease; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .welcome-hero {
+            background: linear-gradient(135deg, var(--gold) 0%, #F5A623 100%);
+            border-radius: 16px;
+            padding: 3rem;
+            color: var(--dark-base);
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .welcome-hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 400px;
+            height: 400px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+        }
+
+        .welcome-hero h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            position: relative;
+        }
+
+        .welcome-hero .module-tag {
+            display: inline-block;
+            background: rgba(0,0,0,0.15);
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .welcome-hero p {
+            font-size: 1.1rem;
+            max-width: 600px;
+            position: relative;
+        }
+
+        .objectives-card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .objectives-card h2 {
+            font-size: 1.25rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .objective-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--bg-light);
+        }
+
+        .objective-item:last-child { border-bottom: none; }
+
+        .objective-level {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .level-retrieval { background: #E0F2FE; color: #0369A1; }
+        .level-comprehension { background: #FEF3C7; color: #B45309; }
+        .level-analysis { background: #FCE7F3; color: #BE185D; }
+        .level-utilization { background: #D1FAE5; color: #047857; }
+
+        .time-estimate {
+            display: flex;
+            gap: 2rem;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--bg-light);
+        }
+
+        .time-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #6B7280;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            font-family: inherit;
+        }
+
+        .btn-primary { background: var(--primary-blue); color: white; }
+        .btn-primary:hover { background: #0035CC; transform: translateY(-1px); }
+        .btn-secondary { background: var(--white); color: var(--dark-base); border: 1px solid var(--light-gray); }
+        .btn-secondary:hover { background: var(--bg-light); }
+        .btn-success { background: var(--success); color: white; }
+        .btn-gold { background: var(--gold); color: var(--dark-base); }
+
+        .content-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--light-gray);
+        }
+
+        .lesson-content {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 2.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .lesson-content h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            color: var(--primary-blue);
+        }
+
+        .lesson-content h2 {
+            font-size: 1.5rem;
+            margin: 2rem 0 1rem;
+            color: var(--dark-base);
+        }
+
+        .lesson-content h3 {
+            font-size: 1.2rem;
+            margin: 1.5rem 0 0.75rem;
+        }
+
+        .lesson-content p {
+            margin-bottom: 1rem;
+            color: #4B5563;
+        }
+
+        .lesson-content ul, .lesson-content ol {
+            margin: 1rem 0;
+            padding-left: 1.5rem;
+        }
+
+        .lesson-content li {
+            margin-bottom: 0.5rem;
+            color: #4B5563;
+        }
+
+        .concept-card {
+            background: var(--bg-light);
+            border-left: 4px solid var(--primary-blue);
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .concept-card h4 {
+            color: var(--primary-blue);
+            margin-bottom: 0.75rem;
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+        }
+
+        .comparison-table th, .comparison-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--light-gray);
+        }
+
+        .comparison-table th {
+            background: var(--bg-light);
+            font-weight: 600;
+        }
+
+        .comparison-table tr:hover { background: var(--bg-light); }
+
+        .pillar-cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .pillar-card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            border: 2px solid var(--light-gray);
+            transition: all 0.3s;
+        }
+
+        .pillar-card:hover {
+            border-color: var(--primary-blue);
+            transform: translateY(-2px);
+        }
+
+        .pillar-card .pillar-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .pillar-card h4 {
+            color: var(--primary-blue);
+            margin-bottom: 0.5rem;
+        }
+
+        .pillar-card p {
+            font-size: 0.9rem;
+            color: #6B7280;
+        }
+
+        /* Flashcards */
+        .flashcard-container { perspective: 1000px; margin: 2rem 0; }
+
+        .flashcard {
+            width: 100%;
+            height: 300px;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.6s;
+            cursor: pointer;
+        }
+
+        .flashcard.flipped { transform: rotateY(180deg); }
+
+        .flashcard-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .flashcard-front {
+            background: linear-gradient(135deg, var(--gold) 0%, #F5A623 100%);
+            color: var(--dark-base);
+            font-size: 1.3rem;
+            font-weight: 500;
+        }
+
+        .flashcard-back {
+            background: var(--white);
+            border: 2px solid var(--gold);
+            transform: rotateY(180deg);
+            font-size: 1rem;
+            white-space: pre-line;
+            text-align: left;
+            overflow-y: auto;
+        }
+
+        .flashcard-nav {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 2rem;
+            margin-top: 1.5rem;
+        }
+
+        .flashcard-counter { font-size: 1rem; color: #6B7280; }
+
+        /* Lab Styles */
+        .lab-step {
+            display: none;
+            background: var(--white);
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .lab-step.active { display: block; }
+
+        .lab-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .step-number {
+            width: 40px;
+            height: 40px;
+            background: var(--gold);
+            color: var(--dark-base);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+        }
+
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .checklist-item:hover { background: var(--bg-light); }
+
+        .checklist-checkbox {
+            width: 24px;
+            height: 24px;
+            border: 2px solid var(--light-gray);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: transparent;
+            transition: all 0.2s;
+        }
+
+        .checklist-item.checked .checklist-checkbox {
+            background: var(--success);
+            border-color: var(--success);
+            color: white;
+        }
+
+        /* Quiz Styles */
+        .quiz-progress {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .quiz-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--light-gray);
+            transition: all 0.3s;
+        }
+
+        .quiz-dot.current { background: var(--primary-blue); transform: scale(1.2); }
+        .quiz-dot.correct { background: var(--success); }
+        .quiz-dot.incorrect { background: var(--error); }
+
+        .question-card {
+            display: none;
+            background: var(--white);
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .question-card.active { display: block; }
+
+        .question-text {
+            font-size: 1.2rem;
+            font-weight: 500;
+            margin-bottom: 1.5rem;
+        }
+
+        .answer-options {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .answer-option {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            border: 2px solid var(--light-gray);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .answer-option:hover:not(.disabled) {
+            border-color: var(--primary-blue);
+            background: rgba(0, 66, 243, 0.05);
+        }
+
+        .answer-option.correct { border-color: var(--success); background: rgba(47, 211, 180, 0.1); }
+        .answer-option.incorrect { border-color: var(--error); background: rgba(238, 44, 130, 0.1); }
+        .answer-option.disabled { cursor: not-allowed; opacity: 0.7; }
+
+        .option-letter {
+            width: 32px;
+            height: 32px;
+            background: var(--bg-light);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+
+        .feedback-panel {
+            margin-top: 1.5rem;
+            padding: 1.5rem;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .feedback-panel.show { display: block; }
+        .feedback-header { font-weight: 600; margin-bottom: 0.5rem; }
+        .feedback-correct { background: rgba(47, 211, 180, 0.1); border-left: 4px solid var(--success); }
+        .feedback-incorrect { background: rgba(238, 44, 130, 0.1); border-left: 4px solid var(--error); }
+
+        .quiz-nav {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 1.5rem;
+        }
+
+        .results-card { text-align: center; padding: 3rem; }
+        .results-score { font-size: 4rem; font-weight: 700; color: var(--gold); }
+        .results-message { font-size: 1.5rem; margin: 1rem 0; }
+
+        .results-breakdown {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            margin: 2rem 0;
+        }
+
+        .breakdown-item { text-align: center; }
+        .breakdown-number { font-size: 2rem; font-weight: 700; }
+        .breakdown-number.correct { color: var(--success); }
+        .breakdown-number.incorrect { color: var(--error); }
+
+        /* Certification Card */
+        .certification-card {
+            background: linear-gradient(135deg, var(--gold) 0%, #F5A623 100%);
+            border-radius: 16px;
+            padding: 3rem;
+            text-align: center;
+            color: var(--dark-base);
+            margin: 2rem 0;
+        }
+
+        .certification-card h2 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .certification-badge {
+            font-size: 5rem;
+            margin-bottom: 1rem;
+        }
+
+        .video-placeholder {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            border-radius: 12px;
+            padding: 4rem 2rem;
+            text-align: center;
+            color: white;
+            margin-bottom: 2rem;
+        }
+
+        .copy-block {
+            position: relative;
+            background: #1E293B;
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background: rgba(255,255,255,0.1);
+            color: white;
+            border: none;
+            padding: 0.4rem 0.8rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+
+        .copy-btn:hover { background: rgba(255,255,255,0.2); }
+
+        .copy-block pre {
+            color: #E2E8F0;
+            padding: 1.5rem;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+    <header class="course-header">
+        <div>
+            <div class="course-title">Solo Pilot to Squadron Leader</div>
+            <div class="course-subtitle">Module 11: Capstone & Governance</div>
+        </div>
+        <div class="progress-container">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+            </div>
+            <span class="progress-text" id="progressText">0% Complete</span>
+        </div>
+    </header>
+
+    <div class="main-container">
+        <nav class="sidebar">
+            <div class="nav-section">
+                <div class="nav-section-title">Module Content</div>
+                <div class="nav-item active" data-screen="welcome" onclick="navigateTo('welcome')">
+                    <div class="nav-icon">1</div>
+                    <span class="nav-label">Welcome</span>
+                    <span class="nav-duration">2 min</span>
+                </div>
+                <div class="nav-item" data-screen="video" onclick="navigateTo('video')">
+                    <div class="nav-icon">2</div>
+                    <span class="nav-label">Video</span>
+                    <span class="nav-duration">15 min</span>
+                </div>
+                <div class="nav-item" data-screen="lesson-1" onclick="navigateTo('lesson-1')">
+                    <div class="nav-icon">3</div>
+                    <span class="nav-label">Governance Framework</span>
+                    <span class="nav-duration">10 min</span>
+                </div>
+                <div class="nav-item" data-screen="lesson-2" onclick="navigateTo('lesson-2')">
+                    <div class="nav-icon">4</div>
+                    <span class="nav-label">Measuring ROI</span>
+                    <span class="nav-duration">8 min</span>
+                </div>
+                <div class="nav-item" data-screen="lesson-3" onclick="navigateTo('lesson-3')">
+                    <div class="nav-icon">5</div>
+                    <span class="nav-label">Certification Standards</span>
+                    <span class="nav-duration">8 min</span>
+                </div>
+            </div>
+            <div class="nav-section">
+                <div class="nav-section-title">Practice & Assessment</div>
+                <div class="nav-item" data-screen="flashcards" onclick="navigateTo('flashcards')">
+                    <div class="nav-icon">6</div>
+                    <span class="nav-label">Flashcards</span>
+                    <span class="nav-duration">5 min</span>
+                </div>
+                <div class="nav-item" data-screen="lab" onclick="navigateTo('lab')">
+                    <div class="nav-icon">7</div>
+                    <span class="nav-label">Capstone Project</span>
+                    <span class="nav-duration">45 min</span>
+                </div>
+                <div class="nav-item" data-screen="quiz" onclick="navigateTo('quiz')">
+                    <div class="nav-icon">8</div>
+                    <span class="nav-label">Quiz</span>
+                    <span class="nav-duration">10 min</span>
+                </div>
+                <div class="nav-item" data-screen="study-guide" onclick="navigateTo('study-guide')">
+                    <div class="nav-icon">9</div>
+                    <span class="nav-label">Study Guide</span>
+                    <span class="nav-duration">5 min</span>
+                </div>
+            </div>
+        </nav>
+
+        <main class="content-area">
+            <!-- Welcome Screen -->
+            <section id="welcome" class="screen active">
+                <div class="welcome-hero">
+                    <span class="module-tag">Final Module</span>
+                    <h1>Capstone & Governance</h1>
+                    <p>Accountability, ROI & Certification</p>
+                </div>
+
+                <div class="objectives-card">
+                    <h2>Learning Objectives</h2>
+                    <div class="objective-item">
+                        <span class="objective-level level-utilization">Utilization</span>
+                        <span>Execute a comprehensive multi-step workflow demonstrating mastery of all Squadron capabilities</span>
+                    </div>
+                    <div class="objective-item">
+                        <span class="objective-level level-utilization">Utilization</span>
+                        <span>Apply the Human-in-the-Loop verification standard for AI outputs</span>
+                    </div>
+                    <div class="objective-item">
+                        <span class="objective-level level-analysis">Analysis</span>
+                        <span>Track personal AI ROI using the time-saved and quality-gained framework</span>
+                    </div>
+                    <div class="objective-item">
+                        <span class="objective-level level-comprehension">Comprehension</span>
+                        <span>Articulate the accountability framework for AI-assisted work</span>
+                    </div>
+
+                    <div class="time-estimate">
+                        <div class="time-item">
+                            <span>Total Time:</span>
+                            <strong>~90 minutes</strong>
+                        </div>
+                        <div class="time-item">
+                            <span>Capstone:</span>
+                            <strong>45-60 minutes</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="btn btn-gold" onclick="navigateTo('video')">Begin Final Module</button>
+            </section>
+
+            <!-- Video Screen -->
+            <section id="video" class="screen">
+                <div class="video-placeholder">
+                    <h3>Module 11 Video</h3>
+                    <p>Capstone & Governance: Accountability & Certification (~15 minutes)</p>
+                    <p style="margin-top: 1rem; font-size: 0.9rem;">Video content will be embedded here</p>
+                </div>
+
+                <div class="content-nav">
+                    <button class="btn btn-secondary" onclick="navigateTo('welcome')">Back</button>
+                    <button class="btn btn-primary" onclick="navigateTo('lesson-1')">Continue to Lesson</button>
+                </div>
+            </section>
+
+            <!-- Lesson 1: Governance Framework -->
+            <section id="lesson-1" class="screen">
+                <div class="lesson-content">
+                    <h1>The Governance Framework</h1>
+                    <p style="color: #6B7280; margin-bottom: 2rem;">The foundation for sustainable AI usage</p>
+
+                    <h2>The Three Pillars</h2>
+                    <p>Before your capstone project, let's establish the governance principles that make everything else sustainable.</p>
+
+                    <div class="pillar-cards">
+                        <div class="pillar-card">
+                            <div class="pillar-icon">🎯</div>
+                            <h4>Accountability</h4>
+                            <p>"AI drafts. Humans send." You own every output that bears your name.</p>
+                        </div>
+                        <div class="pillar-card">
+                            <div class="pillar-icon">🔍</div>
+                            <h4>Verification</h4>
+                            <p>Scale scrutiny with consequence. Different outputs need different review levels.</p>
+                        </div>
+                        <div class="pillar-card">
+                            <div class="pillar-icon">💡</div>
+                            <h4>Transparency</h4>
+                            <p>Know what context you provided, how the AI reasoned, and its limitations.</p>
+                        </div>
+                    </div>
+
+                    <div class="concept-card" style="border-left-color: var(--gold);">
+                        <h4 style="color: var(--warning);">The "Send" Button is Yours</h4>
+                        <p>When you use AI to draft an email, analyze data, or create a presentation—the AI is your collaborator. But you are the author. You own the consequences. "The AI wrote it" is never a valid excuse.</p>
+                    </div>
+
+                    <h2>Verification Standards by Risk Level</h2>
+
+                    <table class="comparison-table">
+                        <thead>
+                            <tr>
+                                <th>Output Type</th>
+                                <th>Risk Level</th>
+                                <th>Verification Standard</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Internal brainstorming</td>
+                                <td>Low</td>
+                                <td>Quick review for relevance</td>
+                            </tr>
+                            <tr>
+                                <td>Draft internal documents</td>
+                                <td>Low-Medium</td>
+                                <td>Review for accuracy and tone</td>
+                            </tr>
+                            <tr>
+                                <td>Customer-facing emails</td>
+                                <td>Medium</td>
+                                <td>Full review + fact-check key claims</td>
+                            </tr>
+                            <tr>
+                                <td>Data analysis conclusions</td>
+                                <td>Medium-High</td>
+                                <td>Verify methodology + spot-check calculations</td>
+                            </tr>
+                            <tr>
+                                <td>Public content</td>
+                                <td>High</td>
+                                <td>Multi-person review + PR/Legal if needed</td>
+                            </tr>
+                            <tr>
+                                <td>Financial/legal documents</td>
+                                <td>High</td>
+                                <td>Expert review + compliance check</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h2>The Spot-Check Protocol</h2>
+                    <p>For data analysis, don't verify every number—use this protocol:</p>
+                    <ol>
+                        <li><strong>Methodology:</strong> Did the AI approach the problem correctly?</li>
+                        <li><strong>Spot-check:</strong> Manually verify 3-5 data points</li>
+                        <li><strong>Logic:</strong> Do conclusions follow from the data?</li>
+                        <li><strong>Edge cases:</strong> Test unusual scenarios</li>
+                    </ol>
+                    <p>If all pass, trust the output. If any fails, investigate.</p>
+                </div>
+
+                <div class="content-nav">
+                    <button class="btn btn-secondary" onclick="navigateTo('video')">Back</button>
+                    <button class="btn btn-primary" onclick="navigateTo('lesson-2')">Continue</button>
+                </div>
+            </section>
+
+            <!-- Lesson 2: Measuring ROI -->
+            <section id="lesson-2" class="screen">
+                <div class="lesson-content">
+                    <h1>Measuring Your ROI</h1>
+                    <p style="color: #6B7280; margin-bottom: 2rem;">Is all this worth it? Let's find out.</p>
+
+                    <h2>The Time-Quality Matrix</h2>
+                    <p>AI impact falls into four quadrants:</p>
+
+                    <table class="comparison-table">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>Lower Quality</th>
+                                <th>Same/Higher Quality</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Faster</strong></td>
+                                <td style="background: rgba(238, 44, 130, 0.1);">Risky Acceleration</td>
+                                <td style="background: rgba(47, 211, 180, 0.2);"><strong>The Sweet Spot</strong></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Same Speed</strong></td>
+                                <td style="background: rgba(238, 44, 130, 0.2);">Net Negative</td>
+                                <td style="background: rgba(47, 211, 180, 0.1);">Modest Win</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="concept-card">
+                        <h4>Net Time Saved Formula</h4>
+                        <p><strong>Net Time Saved = (Time task would have taken) - (Time with AI + Review time + Fix time)</strong></p>
+                        <p style="margin-top: 0.5rem;">For most tasks, Squadron Leaders see 30-70% savings. Some tasks see 90%+. A few see no savings at all.</p>
+                    </div>
+
+                    <h2>Quality Gains</h2>
+                    <p>Time isn't everything. AI often improves quality in ways harder to measure:</p>
+                    <ul>
+                        <li><strong>Comprehensiveness:</strong> Covering angles you would have missed</li>
+                        <li><strong>Consistency:</strong> Maintaining voice/format across documents</li>
+                        <li><strong>Creativity:</strong> Generating options you wouldn't have considered</li>
+                        <li><strong>Accuracy:</strong> Catching errors through computational analysis</li>
+                    </ul>
+
+                    <h2>The Monthly Review</h2>
+                    <p>Every month, reflect on five questions:</p>
+                    <ol>
+                        <li><strong>Volume:</strong> What percentage of my work involved AI?</li>
+                        <li><strong>Time:</strong> Where did I save the most time?</li>
+                        <li><strong>Quality:</strong> Where did AI most improve my output?</li>
+                        <li><strong>Struggles:</strong> Where did AI add friction?</li>
+                        <li><strong>Learning:</strong> What new capability should I develop?</li>
+                    </ol>
+                    <p><em>Squadron Leaders who review monthly improve dramatically faster than those who don't.</em></p>
+                </div>
+
+                <div class="content-nav">
+                    <button class="btn btn-secondary" onclick="navigateTo('lesson-1')">Back</button>
+                    <button class="btn btn-primary" onclick="navigateTo('lesson-3')">Continue</button>
+                </div>
+            </section>
+
+            <!-- Lesson 3: Certification Standards -->
+            <section id="lesson-3" class="screen">
+                <div class="lesson-content">
+                    <h1>Certification Standards</h1>
+                    <p style="color: #6B7280; margin-bottom: 2rem;">What mastery looks like</p>
+
+                    <h2>The Five-Phase Capstone Workflow</h2>
+                    <p>Your capstone project demonstrates end-to-end Squadron capability:</p>
+
+                    <table class="comparison-table">
+                        <thead>
+                            <tr>
+                                <th>Phase</th>
+                                <th>Activity</th>
+                                <th>Demonstrates</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>1. Capture</strong></td>
+                                <td>Voice/notes to XML context</td>
+                                <td>Flight Recorder integration</td>
+                            </tr>
+                            <tr>
+                                <td><strong>2. Research</strong></td>
+                                <td>Recon & Radar to Fact Brief</td>
+                                <td>Grounding and verification</td>
+                            </tr>
+                            <tr>
+                                <td><strong>3. Analysis</strong></td>
+                                <td>Code/logic to insights</td>
+                                <td>Calculator problem solution</td>
+                            </tr>
+                            <tr>
+                                <td><strong>4. Draft</strong></td>
+                                <td>Structured prompt to brief</td>
+                                <td>Prompt architecture</td>
+                            </tr>
+                            <tr>
+                                <td><strong>5. Verify</strong></td>
+                                <td>HITL to final output</td>
+                                <td>Governance framework</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h2>The Squadron Leader Pledge</h2>
+                    <p>As a certified Squadron Leader, you commit to:</p>
+
+                    <div class="concept-card" style="border-left-color: var(--gold);">
+                        <ol style="margin: 0;">
+                            <li><strong>Accountability:</strong> Owning every output that bears my name</li>
+                            <li><strong>Verification:</strong> Applying appropriate review standards</li>
+                            <li><strong>Transparency:</strong> Being honest about AI's role</li>
+                            <li><strong>Continuous learning:</strong> Staying current with capabilities</li>
+                            <li><strong>Sharing knowledge:</strong> Helping others develop proficiency</li>
+                        </ol>
+                    </div>
+
+                    <div class="certification-card">
+                        <div class="certification-badge">🎖️</div>
+                        <h2>Squadron Leader Certification</h2>
+                        <p>Complete all five phases of the capstone project to earn your certification.</p>
+                    </div>
+                </div>
+
+                <div class="content-nav">
+                    <button class="btn btn-secondary" onclick="navigateTo('lesson-2')">Back</button>
+                    <button class="btn btn-primary" onclick="navigateTo('flashcards')">Continue to Flashcards</button>
+                </div>
+            </section>
+
+            <!-- Flashcards -->
+            <section id="flashcards" class="screen">
+                <h1 style="margin-bottom: 0.5rem;">Flashcards</h1>
+                <p style="color: #6B7280; margin-bottom: 2rem;">Click card to flip. Review key governance concepts.</p>
+
+                <div class="flashcard-container">
+                    <div class="flashcard" id="flashcard" onclick="flipCard()">
+                        <div class="flashcard-face flashcard-front" id="cardFront"></div>
+                        <div class="flashcard-face flashcard-back" id="cardBack"></div>
+                    </div>
+                </div>
+
+                <div class="flashcard-nav">
+                    <button class="btn btn-secondary" onclick="prevCard()">Previous</button>
+                    <span class="flashcard-counter" id="cardCounter">1 / 8</span>
+                    <button class="btn btn-secondary" onclick="nextCard()">Next</button>
+                </div>
+
+                <div class="content-nav">
+                    <button class="btn btn-secondary" onclick="navigateTo('lesson-3')">Back to Lesson</button>
+                    <button class="btn btn-primary" onclick="navigateTo('lab')">Continue to Capstone</button>
+                </div>
+            </section>
+
+            <!-- Lab Exercise (Capstone) -->
+            <section id="lab" class="screen">
+                <h1 style="margin-bottom: 0.5rem;">Capstone Project</h1>
+                <p style="color: #6B7280; margin-bottom: 2rem;">The Squadron Mission (45-60 minutes)</p>
+
+                <div class="lab-step active" id="labStep1">
+                    <div class="lab-header">
+                        <div class="step-number">1</div>
+                        <div>
+                            <h3>Phase 1: Capture</h3>
+                            <p style="color: #6B7280;">Voice/notes to XML context</p>
+                        </div>
+                    </div>
+
+                    <p>Create source material about a real business challenge you face:</p>
+                    <ul>
+                        <li>Record a 2-3 minute voice memo OR pull existing meeting notes</li>
+                        <li>Capture: the problem, stakeholders, constraints, success criteria</li>
+                        <li>Structure it in XML for Mission Control</li>
+                    </ul>
+
+                    <div class="copy-block">
+                        <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+                        <pre>&lt;context&gt;
+&lt;source&gt;[Voice memo / Meeting notes]&lt;/source&gt;
+&lt;problem&gt;[Your challenge in 2-3 sentences]&lt;/problem&gt;
+&lt;stakeholders&gt;[Who cares? What are their concerns?]&lt;/stakeholders&gt;
+&lt;constraints&gt;[Budget, timeline, resource limitations]&lt;/constraints&gt;
+&lt;success_criteria&gt;[How will we know if this succeeds?]&lt;/success_criteria&gt;
+&lt;/context&gt;</pre>
+                    </div>
+
+                    <div class="checklist-item" onclick="toggleCheck(this)">
+                        <div class="checklist-checkbox">✓</div>
+                        <span>I have source material from capture</span>
+                    </div>
+                    <div class="checklist-item" onclick="toggleCheck(this)">
+                        <div class="checklist-checkbox">✓</div>
+                        <span>I've structured it in XML</span>
+                    </div>
+
+                    <button class="btn btn-primary" style="margin-top: 1rem;" onclick="nextLabStep()">Continue to Phase 2</button>
+                </div>
+
+                <div class="lab-step" id="labStep2">
+                    <div class="lab-header">
+                        <div class="step-number">2</div>
+                        <div>
+                            <h3>Phase 2: Research</h3>
+                            <p style="color: #6B7280;">Recon & Radar to Fact Brief</p>
+                        </div>
+                    </div>
+
+                    <p>Use Gemini or your Recon tool to gather verified facts:</p>
+                    <ul>
+                        <li>Identify 3+ research needs for your challenge</li>
+                        <li>Search for current data and authoritative sources</li>
+                        <li>Create a Fact Brief with citations</li>
+                    </ul>
+
+                    <div class="checklist-item" onclick="toggleCheck(this)">
+                        <div class="checklist-checkbox">✓</div>
+                        <span>I've gathered facts using Recon & Radar</span>
+                    </div>
+                    <div class="checklist-item" onclick="toggleCheck(this)">
+                        <div class="checklist-checkbox">✓</div>
+                        <span>I've created a Fact Brief with citations</span>
+                    </div>
+
+                    <button class="btn btn-primary" style="margin-top: 1rem;" onclick="nextLabStep()">Continue to Phase 3</button>
+                </div>
+
+                <div class="lab-step" id="labStep3">
+                    <div class="lab-header">
+                        <div class="step-number">3</div>
+                        <div>
+                            <h3>Phase 3: Analysis</h3>
+                            <p style="color: #6B7280;">Code/logic to insights</p>
+                        </div>
+                    </div>
+
+                    <p>Conduct systematic analysis:</p>
+                    <ul>
+                        <li><strong>If data-based:</strong> Use code execution for calculations and visualizations</li>
+                        <li><strong>If logical:</strong> Systematically compare options with clear criteria</li>
+                        <li>Document your methodology so you can verify it</li>
+                    </ul>
+
+                    <div class="checklist-item" onclick="toggleCheck(this)">
+                        <div class="checklist-checkbox">✓</div>
+                        <span>I've completed analysis (data-based or logical)</span>
+                    </div>
+                    <div class="checklist-item" onclick="toggleCheck(this)">
+                        <div class="checklist-checkbox">✓</div>
+                        <span>I can explain the methodology used</span>
+                    </div>
+
+                    <button class="btn btn-primary" style="margin-top: 1rem;" onclick="nextLabStep()">Continue to Phase 4</button>
+                </div>
+
+                <div class="lab-step" id="labStep4">
+                    <div class="lab-header">
+                        <div class="step-number">4</div>
+                        <div>
+                            <h3>Phase 4: Draft</h3>
+                            <p style="color: #6B7280;">Structured prompt to brief</p>
+                        </div>
+                    </div>
+
+                    <p>Assemble a complete structured prompt combining all phases:</p>
+
+                    <div class="copy-block">
+                        <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+                        <pre>&lt;system_role&gt;
+You are helping me create a one-page strategic brief.
+&lt;/system_role&gt;
+
+&lt;context&gt;[Phase 1 context]&lt;/context&gt;
+&lt;facts&gt;[Phase 2 Fact Brief]&lt;/facts&gt;
+&lt;analysis&gt;[Phase 3 analysis results]&lt;/analysis&gt;
+
+&lt;instructions&gt;
+Create a one-page brief that:
+1. Opens with the key recommendation
+2. Provides 3-4 supporting points with evidence
+3. Acknowledges risks/limitations
+4. Ends with specific next steps
+&lt;/instructions&gt;</pre>
+                    </div>
+
+                    <div class="checklist-item" onclick="toggleCheck(this)">
+                        <div class="checklist-checkbox">✓</div>
+                        <span>I've assembled a complete structured prompt</span>
+                    </div>
+                    <div class="checklist-item" onclick="toggleCheck(this)">
+                        <div class="checklist-checkbox">✓</div>
+                        <span>I've received a draft recommendation</span>
+                    </div>
+
+                    <button class="btn btn-primary" style="margin-top: 1rem;" onclick="nextLabStep()">Continue to Phase 5</button>
+                </div>
+
+                <div class="lab-step" id="labStep5">
+                    <div class="lab-header">
+                        <div class="step-number">5</div>
+                        <div>
+                            <h3>Phase 5: Verify</h3>
+                            <p style="color: #6B7280;">Human-in-the-Loop to final output</p>
+                        </div>
+                    </div>
+
+                    <p>Apply the full verification protocol:</p>
+
+                    <h4 style="margin-top: 1rem;">Accuracy Check</h4>
+                    <div class="checklist-item" onclick="toggleCheck(this)">
+                        <div class="checklist-checkbox">✓</div>
+                        <span>All facts verified against sources</span>
+                    </div>
+                    <div class="checklist-item" onclick="toggleCheck(this)">
+                        <div class="checklist-checkbox">✓</div>
+                        <span>Spot-checked 3+ data points manually</span>
+                    </div>
+
+                    <h4 style="margin-top: 1rem;">Quality Check</h4>
+                    <div class="checklist-item" onclick="toggleCheck(this)">
+                        <div class="checklist-checkbox">✓</div>
+                        <span>Recommendation is clear and actionable</span>
+                    </div>
+                    <div class="checklist-item" onclick="toggleCheck(this)">
+                        <div class="checklist-checkbox">✓</div>
+                        <span>Tone is appropriate for audience</span>
+                    </div>
+
+                    <h4 style="margin-top: 1rem;">Governance Check</h4>
+                    <div class="checklist-item" onclick="toggleCheck(this)">
+                        <div class="checklist-checkbox">✓</div>
+                        <span>No Red zone data included</span>
+                    </div>
+                    <div class="checklist-item" onclick="toggleCheck(this)">
+                        <div class="checklist-checkbox">✓</div>
+                        <span>Ready to put my name on it</span>
+                    </div>
+
+                    <h4 style="margin-top: 1rem;">Red Team Check</h4>
+                    <div class="checklist-item" onclick="toggleCheck(this)">
+                        <div class="checklist-checkbox">✓</div>
+                        <span>Asked AI to critique my own work</span>
+                    </div>
+                    <div class="checklist-item" onclick="toggleCheck(this)">
+                        <div class="checklist-checkbox">✓</div>
+                        <span>Addressed legitimate concerns</span>
+                    </div>
+
+                    <div class="certification-card" style="margin-top: 2rem;">
+                        <div class="certification-badge">🎖️</div>
+                        <h2>Capstone Complete!</h2>
+                        <p>If all boxes are checked, you've demonstrated Squadron Leader proficiency.</p>
+                    </div>
+
+                    <button class="btn btn-gold" style="margin-top: 1rem;" onclick="navigateTo('quiz')">Continue to Quiz</button>
+                </div>
+            </section>
+
+            <!-- Quiz -->
+            <section id="quiz" class="screen">
+                <h1 style="margin-bottom: 0.5rem;">Module Quiz</h1>
+                <p style="color: #6B7280; margin-bottom: 2rem;">Test your understanding (6 questions)</p>
+
+                <div class="quiz-progress" id="quizProgress"></div>
+
+                <div id="quizContainer"></div>
+
+                <div id="quizResults" style="display: none;">
+                    <div class="results-card">
+                        <div class="results-score" id="finalScore">0%</div>
+                        <div class="results-message" id="resultsMessage"></div>
+                        <div class="results-breakdown">
+                            <div class="breakdown-item">
+                                <div class="breakdown-number correct" id="correctCount">0</div>
+                                <div>Correct</div>
+                            </div>
+                            <div class="breakdown-item">
+                                <div class="breakdown-number incorrect" id="incorrectCount">0</div>
+                                <div>Incorrect</div>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary" onclick="navigateTo('study-guide')">View Study Guide</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Study Guide -->
+            <section id="study-guide" class="screen">
+                <h1 style="margin-bottom: 0.5rem;">Study Guide</h1>
+                <p style="color: #6B7280; margin-bottom: 2rem;">One-Page Quick Reference</p>
+
+                <div class="lesson-content">
+                    <h2>The Three Pillars of AI Governance</h2>
+                    <table class="comparison-table">
+                        <thead>
+                            <tr>
+                                <th>Pillar</th>
+                                <th>Principle</th>
+                                <th>In Practice</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Accountability</strong></td>
+                                <td>"AI drafts. Humans send."</td>
+                                <td>You own every output that bears your name</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Verification</strong></td>
+                                <td>Scale scrutiny with consequence</td>
+                                <td>Different outputs need different review levels</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Transparency</strong></td>
+                                <td>Know what you're working with</td>
+                                <td>Understand context, reasoning, limitations</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h2>The Five-Phase Capstone Workflow</h2>
+                    <table class="comparison-table">
+                        <thead>
+                            <tr>
+                                <th>Phase</th>
+                                <th>Activity</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>1. Capture</td><td>Voice/notes to XML context</td></tr>
+                            <tr><td>2. Research</td><td>Recon & Radar to Fact Brief</td></tr>
+                            <tr><td>3. Analysis</td><td>Code/logic to insights</td></tr>
+                            <tr><td>4. Draft</td><td>Structured prompt to brief</td></tr>
+                            <tr><td>5. Verify</td><td>Human-in-the-Loop to final output</td></tr>
+                        </tbody>
+                    </table>
+
+                    <h2>The Squadron Leader Pledge</h2>
+                    <ol>
+                        <li><strong>Accountability:</strong> Owning every output</li>
+                        <li><strong>Verification:</strong> Applying appropriate standards</li>
+                        <li><strong>Transparency:</strong> Being honest about AI's role</li>
+                        <li><strong>Continuous learning:</strong> Staying current</li>
+                        <li><strong>Sharing knowledge:</strong> Helping others</li>
+                    </ol>
+
+                    <div class="certification-card">
+                        <div class="certification-badge">🎖️</div>
+                        <h2>Welcome to the Squadron</h2>
+                        <p>"AI drafts. Humans send. You clear missions for takeoff. You own what leaves the runway."</p>
+                    </div>
+                </div>
+
+                <div class="content-nav">
+                    <button class="btn btn-secondary" onclick="navigateTo('quiz')">Back to Quiz</button>
+                    <button class="btn btn-gold" onclick="alert('Congratulations! You have completed the Solo Pilot to Squadron Leader course.')">Complete Course</button>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // Navigation State
+        const screens = ['welcome', 'video', 'lesson-1', 'lesson-2', 'lesson-3', 'flashcards', 'lab', 'quiz', 'study-guide'];
+        let currentScreen = 'welcome';
+        let completedScreens = new Set();
+
+        // Flashcard Data
+        const flashcards = [
+            {
+                front: "What are the Three Pillars of AI Governance?",
+                back: "1. Accountability: \"AI drafts. Humans send.\"\n2. Verification: Scale scrutiny with consequence\n3. Transparency: Know context, reasoning, limitations"
+            },
+            {
+                front: "What is the Spot-Check Protocol?",
+                back: "1. Verify methodology is sound\n2. Spot-check 3-5 data points manually\n3. Confirm logic follows from data\n4. Test edge cases\n\nIf all pass, trust output. If any fail, investigate."
+            },
+            {
+                front: "What are the five phases of the Capstone Project?",
+                back: "1. Capture: Voice/notes to XML context\n2. Research: Recon & Radar to Fact Brief\n3. Analysis: Code/logic to insights\n4. Draft: Structured prompt to brief\n5. Verify: Human-in-the-Loop to final output"
+            },
+            {
+                front: "What is the Time-Quality Matrix?",
+                back: "THE SWEET SPOT = Same or better quality in less time\n\nFaster + Lower Quality = Risky Acceleration\nFaster + Same/Higher Quality = Sweet Spot\nSame Speed + Lower Quality = Net Negative\nSame Speed + Same/Higher Quality = Modest Win"
+            },
+            {
+                front: "What is the Net Time Saved formula?",
+                back: "Net Time Saved =\n(Time task would have taken)\n- (Time with AI + Review time + Fix time)\n\nMost tasks: 30-70% savings\nSome tasks: 90%+\nSome tasks: No savings"
+            },
+            {
+                front: "What five questions should the Monthly Review answer?",
+                back: "1. Volume: What % of work involved AI?\n2. Time: Where did I save most time?\n3. Quality: Where did AI improve output most?\n4. Struggles: Where did AI add friction?\n5. Learning: What should I develop next?"
+            },
+            {
+                front: "What are the five commitments of the Squadron Leader Pledge?",
+                back: "1. Accountability: Owning every output\n2. Verification: Applying appropriate standards\n3. Transparency: Being honest about AI's role\n4. Continuous learning: Staying current\n5. Sharing knowledge: Helping others"
+            },
+            {
+                front: "What is the Transparency Prompt?",
+                back: "Before using critical AI output, ask:\n\n1. What assumptions did you make?\n2. What information would change your answer?\n3. What are you least confident about?\n4. What should I verify independently?"
+            }
+        ];
+        let currentCard = 0;
+
+        // Lab State
+        let currentLabStep = 1;
+        const totalLabSteps = 5;
+
+        // Quiz Data
+        const quizQuestions = [
+            {
+                question: "What does \"AI drafts, humans send\" mean in practice?",
+                options: [
+                    "AI should never create first drafts",
+                    "AI outputs require human review before external distribution, and humans own consequences",
+                    "AI can send emails automatically if a human wrote the prompt",
+                    "Humans should rewrite AI outputs completely"
+                ],
+                correct: 1,
+                feedback: {
+                    correct: "Exactly right. The AI is your collaborator, but you are the author. You review outputs and own the consequences.",
+                    incorrect: "\"AI drafts, humans send\" means you review outputs before sending and own the consequences. The AI helps; you're accountable."
+                }
+            },
+            {
+                question: "What verification approach is appropriate for data analysis going to your VP?",
+                options: [
+                    "Quick skim—Claude is reliable",
+                    "Verify methodology, spot-check 3-5 data points, confirm logic",
+                    "Manually recalculate every number",
+                    "Ask Claude to verify its own work"
+                ],
+                correct: 1,
+                feedback: {
+                    correct: "This is the Spot-Check Protocol. Verify methodology, spot-check a sample, confirm logic, test edge cases.",
+                    incorrect: "Use the Spot-Check Protocol: verify methodology, spot-check 3-5 points, confirm logic. This balances thoroughness with efficiency."
+                }
+            },
+            {
+                question: "True or False: The appropriate verification standard is the same for all AI outputs.",
+                options: [
+                    "True",
+                    "False"
+                ],
+                correct: 1,
+                feedback: {
+                    correct: "Verification standards scale with consequence. Quick review for brainstorming; expert review for financial documents.",
+                    incorrect: "Verification standards should scale with consequence. Different outputs need different levels of scrutiny."
+                }
+            },
+            {
+                question: "What are the five phases of the Capstone Project?",
+                options: [
+                    "Research, Draft, Edit, Review, Send",
+                    "Capture, Research, Analysis, Draft, Verify",
+                    "Plan, Execute, Monitor, Evaluate, Report",
+                    "Brainstorm, Outline, Write, Proofread, Publish"
+                ],
+                correct: 1,
+                feedback: {
+                    correct: "The five phases demonstrate end-to-end Squadron capability: Capture, Research, Analysis, Draft, Verify.",
+                    incorrect: "The five phases are: Capture (Flight Recorder), Research (Recon), Analysis (code/logic), Draft (prompt), Verify (governance)."
+                }
+            },
+            {
+                question: "What should you do if Red Team check finds your supporting points are based on questionable assumptions?",
+                options: [
+                    "Note the limitations and proceed",
+                    "Delete the uncertain supporting points",
+                    "Verify the assumptions with research, then revise",
+                    "Generate alternative supporting points"
+                ],
+                correct: 2,
+                feedback: {
+                    correct: "Red Team findings should trigger genuine improvements. If you can verify or update, do it before finalizing.",
+                    incorrect: "If Red Team finds issues you can resolve, address them. Verify assumptions, update stale data, then finalize."
+                }
+            },
+            {
+                question: "Which is NOT part of the Transparency Prompt?",
+                options: [
+                    "What assumptions did you make?",
+                    "What information would change your answer?",
+                    "What similar outputs have you created before?",
+                    "What should I verify independently?"
+                ],
+                correct: 2,
+                feedback: {
+                    correct: "\"What similar outputs have you created before?\" is NOT part of the prompt. AI doesn't have memory of previous sessions.",
+                    incorrect: "The Transparency Prompt asks: assumptions, what would change answer, confidence levels, what to verify. Not about previous outputs."
+                }
+            }
+        ];
+        let currentQuestion = 0;
+        let userAnswers = [];
+        let quizComplete = false;
+
+        // Navigation Functions
+        function navigateTo(screenId) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+
+            document.getElementById(screenId).classList.add('active');
+            document.querySelector(`[data-screen="${screenId}"]`)?.classList.add('active');
+
+            if (currentScreen !== screenId) {
+                completedScreens.add(currentScreen);
+                document.querySelector(`[data-screen="${currentScreen}"]`)?.classList.add('completed');
+            }
+
+            currentScreen = screenId;
+            updateProgress();
+
+            if (screenId === 'flashcards') updateFlashcard();
+            if (screenId === 'quiz' && !quizComplete) initQuiz();
+        }
+
+        function updateProgress() {
+            const progress = Math.round((completedScreens.size / screens.length) * 100);
+            document.getElementById('progressFill').style.width = `${progress}%`;
+            document.getElementById('progressText').textContent = `${progress}% Complete`;
+        }
+
+        // Flashcard Functions
+        function updateFlashcard() {
+            document.getElementById('cardFront').textContent = flashcards[currentCard].front;
+            document.getElementById('cardBack').textContent = flashcards[currentCard].back;
+            document.getElementById('cardCounter').textContent = `${currentCard + 1} / ${flashcards.length}`;
+            document.getElementById('flashcard').classList.remove('flipped');
+        }
+
+        function flipCard() {
+            document.getElementById('flashcard').classList.toggle('flipped');
+        }
+
+        function nextCard() {
+            currentCard = (currentCard + 1) % flashcards.length;
+            updateFlashcard();
+        }
+
+        function prevCard() {
+            currentCard = (currentCard - 1 + flashcards.length) % flashcards.length;
+            updateFlashcard();
+        }
+
+        // Lab Functions
+        function nextLabStep() {
+            if (currentLabStep < totalLabSteps) {
+                document.getElementById(`labStep${currentLabStep}`).classList.remove('active');
+                currentLabStep++;
+                document.getElementById(`labStep${currentLabStep}`).classList.add('active');
+            }
+        }
+
+        function toggleCheck(element) {
+            element.classList.toggle('checked');
+        }
+
+        // Quiz Functions
+        function initQuiz() {
+            const progressHtml = quizQuestions.map((_, i) =>
+                `<div class="quiz-dot ${i === 0 ? 'current' : ''}" id="dot${i}"></div>`
+            ).join('');
+            document.getElementById('quizProgress').innerHTML = progressHtml;
+
+            renderQuestion(0);
+        }
+
+        function renderQuestion(index) {
+            const q = quizQuestions[index];
+            const html = `
+                <div class="question-card active">
+                    <div class="question-text">${index + 1}. ${q.question}</div>
+                    <div class="answer-options">
+                        ${q.options.map((opt, i) => `
+                            <div class="answer-option" onclick="selectAnswer(${index}, ${i})">
+                                <span class="option-letter">${String.fromCharCode(65 + i)}</span>
+                                <span>${opt}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                    <div class="feedback-panel" id="feedback${index}"></div>
+                    <div class="quiz-nav">
+                        <button class="btn btn-primary" id="nextBtn${index}" style="display: none;"
+                            onclick="${index < quizQuestions.length - 1 ? `showQuestion(${index + 1})` : 'showResults()'}">
+                            ${index < quizQuestions.length - 1 ? 'Next Question' : 'See Results'}
+                        </button>
+                    </div>
+                </div>
+            `;
+            document.getElementById('quizContainer').innerHTML = html;
+        }
+
+        function selectAnswer(qIndex, aIndex) {
+            const q = quizQuestions[qIndex];
+            const isCorrect = aIndex === q.correct;
+            userAnswers[qIndex] = aIndex;
+
+            const options = document.querySelectorAll('.answer-option');
+            options.forEach((opt, i) => {
+                opt.classList.add('disabled');
+                if (i === q.correct) opt.classList.add('correct');
+                else if (i === aIndex && !isCorrect) opt.classList.add('incorrect');
+            });
+
+            const feedback = document.getElementById(`feedback${qIndex}`);
+            feedback.className = `feedback-panel show ${isCorrect ? 'feedback-correct' : 'feedback-incorrect'}`;
+            feedback.innerHTML = `
+                <div class="feedback-header">${isCorrect ? 'Correct!' : 'Not quite.'}</div>
+                <p>${isCorrect ? q.feedback.correct : q.feedback.incorrect}</p>
+            `;
+
+            document.getElementById(`dot${qIndex}`).classList.remove('current');
+            document.getElementById(`dot${qIndex}`).classList.add(isCorrect ? 'correct' : 'incorrect');
+
+            document.getElementById(`nextBtn${qIndex}`).style.display = 'inline-block';
+        }
+
+        function showQuestion(index) {
+            currentQuestion = index;
+            document.getElementById(`dot${index}`).classList.add('current');
+            renderQuestion(index);
+        }
+
+        function showResults() {
+            quizComplete = true;
+            const correct = userAnswers.filter((a, i) => a === quizQuestions[i].correct).length;
+            const percentage = Math.round((correct / quizQuestions.length) * 100);
+
+            document.getElementById('quizContainer').style.display = 'none';
+            document.getElementById('quizProgress').style.display = 'none';
+            document.getElementById('quizResults').style.display = 'block';
+
+            document.getElementById('finalScore').textContent = `${percentage}%`;
+            document.getElementById('correctCount').textContent = correct;
+            document.getElementById('incorrectCount').textContent = quizQuestions.length - correct;
+
+            let message = percentage >= 83 ? 'Excellent! Ready for certification.' :
+                         percentage >= 67 ? 'Good work! Review the Three Pillars.' :
+                         'Review the governance framework before proceeding.';
+            document.getElementById('resultsMessage').textContent = message;
+        
+            // SCORM reporting
+            const scorePercent = Math.round((correct / quizAnswers.length) * 100);
+            const passed = scorePercent >= 70;
+
+            if (typeof setSCORMScore === 'function') {
+                setSCORMScore(scorePercent);
+            }
+            if (typeof setSCORMStatus === 'function') {
+                setSCORMStatus(passed ? 'passed' : 'failed');
+            }
+
+            // Celebration confetti for passing
+            if (passed && typeof confetti === 'function') {
+                confetti({
+                    particleCount: 100,
+                    spread: 70,
+                    origin: { y: 0.6 },
+                    colors: ['#2ED4B5', '#1657A0', '#FFC83B', '#19316A']
+                });
+
+                setTimeout(() => {
+                    confetti({
+                        particleCount: 50,
+                        angle: 60,
+                        spread: 55,
+                        origin: { x: 0 },
+                        colors: ['#2ED4B5', '#1657A0', '#FFC83B']
+                    });
+                }, 250);
+
+                setTimeout(() => {
+                    confetti({
+                        particleCount: 50,
+                        angle: 120,
+                        spread: 55,
+                        origin: { x: 1 },
+                        colors: ['#2ED4B5', '#1657A0', '#FFC83B']
+                    });
+                }, 400);
+            }
+
+            // Close popup window after completion
+            if (window.opener !== null) {
+                setTimeout(() => {
+                    const shouldClose = confirm('Module completed! Close this window?');
+                    if (shouldClose) {
+                        window.close();
+                    }
+                }, 3000);
+            }
+        }
+
+        function copyToClipboard(button) {
+            const pre = button.parentElement.querySelector('pre');
+            navigator.clipboard.writeText(pre.textContent);
+            button.textContent = 'Copied!';
+            setTimeout(() => button.textContent = 'Copy', 2000);
+        }
+
+        // Initialize
+        updateFlashcard();
+    </script>
+</body>
+</html>

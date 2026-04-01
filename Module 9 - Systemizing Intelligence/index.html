@@ -1,0 +1,2632 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module 8: Systemizing Intelligence | Solo Pilot to Squadron Leader</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sofia+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* ActivTrak Official Brand Colors */
+            --dark-navy: #14203F;
+            --medium-navy: #19316A;
+            --blue: #1657A0;
+            --teal: #2ED4B5;
+            --yellow: #FFC83B;
+            --white: #FFFFFF;
+            --light-gray: #E5E7EB;
+            --bg-light: #F8FAFC;
+
+            /* Semantic mappings */
+            --primary-blue: #19316A;
+            --pelorous: #1657A0;
+            --dark-base: #14203F;
+            --success: #2ED4B5;
+            --error: #DC2626;
+            --warning: #F59E0B;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Sofia Sans', sans-serif;
+            background: var(--bg-light);
+            color: var(--dark-base);
+            line-height: 1.6;
+        }
+
+        /* Header */
+        .course-header {
+            background: linear-gradient(135deg, var(--dark-navy) 0%, var(--medium-navy) 100%);
+            color: white;
+            padding: 1rem 2rem;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .course-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .course-subtitle {
+            font-size: 0.85rem;
+            opacity: 0.9;
+        }
+
+        .progress-container {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .progress-bar {
+            width: 200px;
+            height: 8px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--teal);
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        .progress-text {
+            font-size: 0.85rem;
+        }
+
+        /* Main Layout */
+        .main-container {
+            display: flex;
+            margin-top: 60px;
+            min-height: calc(100vh - 60px);
+        }
+
+        /* Sidebar Navigation */
+        .sidebar {
+            width: 280px;
+            background: var(--white);
+            border-right: 1px solid var(--light-gray);
+            position: fixed;
+            top: 60px;
+            bottom: 0;
+            left: 0;
+            overflow-y: auto;
+            padding: 1.5rem 0;
+        }
+
+        .nav-section {
+            padding: 0 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .nav-section-title {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #6B7280;
+            margin-bottom: 0.75rem;
+            padding: 0 0.75rem;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 0.25rem;
+        }
+
+        .nav-item:hover {
+            background: var(--bg-light);
+        }
+
+        .nav-item.active {
+            background: rgba(0, 66, 243, 0.1);
+            color: var(--primary-blue);
+        }
+
+        .nav-item.completed .nav-icon {
+            background: var(--success);
+            color: white;
+        }
+
+        .nav-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: var(--light-gray);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .nav-item.active .nav-icon {
+            background: var(--primary-blue);
+            color: white;
+        }
+
+        .nav-label {
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .nav-duration {
+            font-size: 0.75rem;
+            color: #6B7280;
+            margin-left: auto;
+        }
+
+        /* Content Area */
+        .content-area {
+            flex: 1;
+            margin-left: 280px;
+            padding: 2rem 3rem;
+            max-width: 1000px;
+        }
+
+        /* Screen Sections */
+        .screen {
+            display: none;
+        }
+
+        .screen.active {
+            display: block;
+            animation: fadeIn 0.4s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Welcome Screen */
+        .welcome-hero {
+            background: linear-gradient(135deg, var(--dark-navy) 0%, var(--medium-navy) 100%);
+            border-radius: 16px;
+            padding: 3rem;
+            color: white;
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .welcome-hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 400px;
+            height: 400px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+        }
+
+        .welcome-hero h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            position: relative;
+        }
+
+        .welcome-hero .module-tag {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            margin-bottom: 1rem;
+        }
+
+        .welcome-hero p {
+            font-size: 1.1rem;
+            opacity: 0.95;
+            max-width: 600px;
+            position: relative;
+        }
+
+        .objectives-card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .objectives-card h2 {
+            font-size: 1.25rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .objective-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--bg-light);
+        }
+
+        .objective-item:last-child {
+            border-bottom: none;
+        }
+
+        .objective-level {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .level-retrieval { background: #E0F2FE; color: #0369A1; }
+        .level-comprehension { background: #FEF3C7; color: #B45309; }
+        .level-analysis { background: #FCE7F3; color: #BE185D; }
+        .level-utilization { background: #D1FAE5; color: #047857; }
+
+        .time-estimate {
+            display: flex;
+            gap: 2rem;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--bg-light);
+        }
+
+        .time-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #6B7280;
+        }
+
+        .start-btn {
+            background: var(--primary-blue);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .start-btn:hover {
+            background: #0035C7;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 66, 243, 0.3);
+        }
+
+        /* Lesson Content */
+        .lesson-content {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 2.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .lesson-content h1 {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            color: var(--dark-base);
+        }
+
+        .lesson-content h2 {
+            font-size: 1.5rem;
+            margin: 2rem 0 1rem;
+            color: var(--dark-base);
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--bg-light);
+        }
+
+        .lesson-content h3 {
+            font-size: 1.2rem;
+            margin: 1.5rem 0 0.75rem;
+            color: var(--pelorous);
+        }
+
+        .lesson-content p {
+            margin-bottom: 1rem;
+            font-size: 1.05rem;
+            line-height: 1.8;
+        }
+
+        .lesson-content ul, .lesson-content ol {
+            margin: 1rem 0 1rem 1.5rem;
+        }
+
+        .lesson-content li {
+            margin-bottom: 0.5rem;
+            line-height: 1.7;
+        }
+
+        .callout {
+            padding: 1.25rem 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+            display: flex;
+            gap: 1rem;
+        }
+
+        .callout-icon {
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .callout-insight {
+            background: rgba(0, 66, 243, 0.08);
+            border-left: 4px solid var(--primary-blue);
+        }
+
+        .callout-warning {
+            background: rgba(238, 44, 130, 0.08);
+            border-left: 4px solid var(--violet-red);
+        }
+
+        .callout-tip {
+            background: rgba(47, 211, 180, 0.1);
+            border-left: 4px solid var(--teal);
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .comparison-table th {
+            background: var(--dark-base);
+            color: white;
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .comparison-table td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--bg-light);
+        }
+
+        .comparison-table tr:nth-child(even) {
+            background: var(--bg-light);
+        }
+
+        /* Interactive Elements */
+        .interactive-demo {
+            background: var(--bg-light);
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .demo-title {
+            font-weight: 600;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .prompt-box {
+            background: var(--white);
+            border: 2px solid var(--light-gray);
+            border-radius: 8px;
+            padding: 1rem;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            margin: 1rem 0;
+            position: relative;
+        }
+
+        .prompt-box.bad {
+            border-color: var(--violet-red);
+            background: rgba(238, 44, 130, 0.03);
+        }
+
+        .prompt-box.good {
+            border-color: var(--teal);
+            background: rgba(47, 211, 180, 0.03);
+        }
+
+        .prompt-label {
+            position: absolute;
+            top: -10px;
+            left: 12px;
+            background: var(--white);
+            padding: 0 0.5rem;
+            font-family: 'Sofia Sans', sans-serif;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .prompt-box.bad .prompt-label { color: var(--violet-red); }
+        .prompt-box.good .prompt-label { color: var(--teal); }
+
+        /* Video Player */
+        .video-container {
+            background: var(--dark-base);
+            border-radius: 12px;
+            aspect-ratio: 16/9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .video-placeholder {
+            text-align: center;
+            color: white;
+        }
+
+        .play-btn {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: var(--primary-blue);
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            margin-bottom: 1rem;
+        }
+
+        .play-btn:hover {
+            transform: scale(1.1);
+            background: var(--teal);
+        }
+
+        .play-btn svg {
+            width: 32px;
+            height: 32px;
+            fill: white;
+            margin-left: 4px;
+        }
+
+        /* Flashcards */
+        .flashcard-container {
+            perspective: 1000px;
+            margin: 2rem auto;
+            max-width: 600px;
+        }
+
+        .flashcard {
+            width: 100%;
+            height: 300px;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.6s;
+            cursor: pointer;
+        }
+
+        .flashcard.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .flashcard-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .flashcard-front {
+            background: linear-gradient(135deg, var(--dark-navy) 0%, var(--medium-navy) 100%);
+            color: white;
+        }
+
+        .flashcard-back {
+            background: var(--white);
+            border: 2px solid var(--primary-blue);
+            transform: rotateY(180deg);
+            color: var(--dark-base);
+        }
+
+        .flashcard-front h3 {
+            font-size: 1.4rem;
+            line-height: 1.5;
+        }
+
+        .flashcard-back p {
+            font-size: 1.1rem;
+            line-height: 1.7;
+        }
+
+        .flashcard-nav {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 2rem;
+            margin-top: 1.5rem;
+        }
+
+        .flashcard-btn {
+            background: var(--bg-light);
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .flashcard-btn:hover {
+            background: var(--primary-blue);
+            color: white;
+        }
+
+        .flashcard-counter {
+            font-weight: 600;
+            color: #6B7280;
+        }
+
+        .flip-hint {
+            text-align: center;
+            color: #6B7280;
+            font-size: 0.9rem;
+            margin-top: 1rem;
+        }
+
+        /* Lab Exercise */
+        .lab-header {
+            background: linear-gradient(135deg, var(--pelorous) 0%, #2A8A96 100%);
+            border-radius: 12px;
+            padding: 2rem;
+            color: white;
+            margin-bottom: 2rem;
+        }
+
+        .lab-header h1 {
+            font-size: 1.75rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .lab-meta {
+            display: flex;
+            gap: 2rem;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .lab-steps {
+            background: var(--white);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .lab-step {
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid var(--bg-light);
+            display: none;
+        }
+
+        .lab-step.active {
+            display: block;
+        }
+
+        .step-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .step-number {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--primary-blue);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .step-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .step-content {
+            padding-left: 52px;
+        }
+
+        .copy-block {
+            background: #1E1E1E;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+            position: relative;
+            overflow-x: auto;
+        }
+
+        .copy-block pre {
+            color: #D4D4D4;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background: #3C3C3C;
+            border: none;
+            color: white;
+            padding: 0.5rem 0.75rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .copy-btn:hover {
+            background: var(--primary-blue);
+        }
+
+        .lab-navigation {
+            display: flex;
+            justify-content: space-between;
+            padding: 1.5rem 2rem;
+            border-top: 1px solid var(--bg-light);
+        }
+
+        /* Quiz */
+        .quiz-container {
+            background: var(--white);
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            overflow: hidden;
+        }
+
+        .quiz-header {
+            background: var(--bg-light);
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .quiz-progress {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .quiz-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--light-gray);
+        }
+
+        .quiz-dot.current {
+            background: var(--primary-blue);
+        }
+
+        .quiz-dot.correct {
+            background: var(--success);
+        }
+
+        .quiz-dot.incorrect {
+            background: var(--error);
+        }
+
+        .quiz-question {
+            padding: 2rem;
+            display: none;
+        }
+
+        .quiz-question.active {
+            display: block;
+        }
+
+        .question-number {
+            font-size: 0.85rem;
+            color: #6B7280;
+            margin-bottom: 0.5rem;
+        }
+
+        .question-text {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            line-height: 1.5;
+        }
+
+        .answer-options {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .answer-option {
+            padding: 1rem 1.25rem;
+            border: 2px solid var(--light-gray);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .answer-option:hover:not(.disabled) {
+            border-color: var(--primary-blue);
+            background: rgba(0, 66, 243, 0.03);
+        }
+
+        .answer-option.selected {
+            border-color: var(--primary-blue);
+            background: rgba(0, 66, 243, 0.08);
+        }
+
+        .answer-option.correct {
+            border-color: var(--success);
+            background: rgba(47, 211, 180, 0.1);
+        }
+
+        .answer-option.incorrect {
+            border-color: var(--error);
+            background: rgba(238, 44, 130, 0.08);
+        }
+
+        .answer-option.disabled {
+            cursor: default;
+        }
+
+        .option-letter {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--bg-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .answer-option.selected .option-letter {
+            background: var(--primary-blue);
+            color: white;
+        }
+
+        .answer-option.correct .option-letter {
+            background: var(--success);
+            color: white;
+        }
+
+        .answer-option.incorrect .option-letter {
+            background: var(--error);
+            color: white;
+        }
+
+        .feedback-panel {
+            padding: 1.5rem 2rem;
+            background: var(--bg-light);
+            display: none;
+        }
+
+        .feedback-panel.show {
+            display: block;
+        }
+
+        .feedback-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+        }
+
+        .feedback-correct {
+            color: var(--success);
+        }
+
+        .feedback-incorrect {
+            color: var(--error);
+        }
+
+        .quiz-footer {
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: flex-end;
+            border-top: 1px solid var(--bg-light);
+        }
+
+        /* Study Guide */
+        .study-guide-card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .study-guide-card h2 {
+            font-size: 1.25rem;
+            margin-bottom: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--primary-blue);
+        }
+
+        .term-grid {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .term-item {
+            display: grid;
+            grid-template-columns: 180px 1fr;
+            gap: 1rem;
+            padding: 1rem;
+            background: var(--bg-light);
+            border-radius: 8px;
+        }
+
+        .term-name {
+            font-weight: 600;
+            color: var(--dark-base);
+        }
+
+        .term-def {
+            color: #4B5563;
+        }
+
+        .do-dont-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        .do-column h3 {
+            color: var(--success);
+            margin-bottom: 1rem;
+        }
+
+        .dont-column h3 {
+            color: var(--error);
+            margin-bottom: 1rem;
+        }
+
+        .do-dont-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.5rem;
+            margin-bottom: 0.75rem;
+            font-size: 0.95rem;
+        }
+
+        /* Navigation Buttons */
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            border: none;
+        }
+
+        .btn-primary {
+            background: var(--primary-blue);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #0035C7;
+        }
+
+        .btn-secondary {
+            background: var(--bg-light);
+            color: var(--dark-base);
+        }
+
+        .btn-secondary:hover {
+            background: var(--light-gray);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .content-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--bg-light);
+        }
+
+        /* Quiz Results */
+        .quiz-results {
+            text-align: center;
+            padding: 3rem 2rem;
+        }
+
+        .results-score {
+            font-size: 4rem;
+            font-weight: 700;
+            color: var(--primary-blue);
+            margin-bottom: 0.5rem;
+        }
+
+        .results-label {
+            font-size: 1.25rem;
+            color: #6B7280;
+            margin-bottom: 2rem;
+        }
+
+        .results-breakdown {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            margin-bottom: 2rem;
+        }
+
+        .breakdown-item {
+            text-align: center;
+        }
+
+        .breakdown-value {
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .breakdown-value.correct { color: var(--success); }
+        .breakdown-value.incorrect { color: var(--error); }
+
+        .breakdown-label {
+            font-size: 0.9rem;
+            color: #6B7280;
+        }
+
+        /* Tool Card Grid */
+        .tool-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .tool-card {
+            background: var(--bg-light);
+            border-radius: 12px;
+            padding: 1.5rem;
+            border-left: 4px solid var(--primary-blue);
+        }
+
+        .tool-card.claude { border-left-color: var(--primary-blue); }
+        .tool-card.gemini { border-left-color: var(--pelorous); }
+        .tool-card.gpt { border-left-color: var(--teal); }
+
+        .tool-card h4 {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .tool-card p {
+            font-size: 0.9rem;
+            color: #4B5563;
+            margin-bottom: 0.75rem;
+        }
+
+        .tool-card .best-for {
+            font-size: 0.8rem;
+            color: var(--primary-blue);
+            font-weight: 600;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .sidebar {
+                width: 240px;
+            }
+            .content-area {
+                margin-left: 240px;
+                padding: 1.5rem 2rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                display: none;
+            }
+            .content-area {
+                margin-left: 0;
+                padding: 1rem;
+            }
+            .do-dont-grid {
+                grid-template-columns: 1fr;
+            }
+            .term-item {
+                grid-template-columns: 1fr;
+            }
+            .tool-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="course-header">
+        <div>
+            <div class="course-title">Solo Pilot → Squadron Leader</div>
+            <div class="course-subtitle">Module 8: Systemizing Intelligence</div>
+        </div>
+        <div class="progress-container">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+            </div>
+            <span class="progress-text" id="progressText">0% Complete</span>
+        </div>
+    </header>
+
+    <div class="main-container">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="nav-section">
+                <div class="nav-section-title">Module Content</div>
+                <div class="nav-item active" data-screen="welcome">
+                    <div class="nav-icon">▶</div>
+                    <span class="nav-label">Welcome</span>
+                    <span class="nav-duration">2 min</span>
+                </div>
+                <div class="nav-item" data-screen="video">
+                    <div class="nav-icon">🎬</div>
+                    <span class="nav-label">Video Lesson</span>
+                    <span class="nav-duration">10 min</span>
+                </div>
+                <div class="nav-item" data-screen="lesson-1">
+                    <div class="nav-icon">1</div>
+                    <span class="nav-label">Claude Projects</span>
+                    <span class="nav-duration">6 min</span>
+                </div>
+                <div class="nav-item" data-screen="lesson-2">
+                    <div class="nav-icon">2</div>
+                    <span class="nav-label">Claude Skills</span>
+                    <span class="nav-duration">5 min</span>
+                </div>
+                <div class="nav-item" data-screen="lesson-3">
+                    <div class="nav-icon">3</div>
+                    <span class="nav-label">Gemini Gems</span>
+                    <span class="nav-duration">5 min</span>
+                </div>
+                <div class="nav-item" data-screen="lesson-4">
+                    <div class="nav-icon">4</div>
+                    <span class="nav-label">Custom GPTs</span>
+                    <span class="nav-duration">5 min</span>
+                </div>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Practice & Assessment</div>
+                <div class="nav-item" data-screen="flashcards">
+                    <div class="nav-icon">🗂</div>
+                    <span class="nav-label">Flashcards</span>
+                    <span class="nav-duration">5 min</span>
+                </div>
+                <div class="nav-item" data-screen="lab">
+                    <div class="nav-icon">🧪</div>
+                    <span class="nav-label">Lab Exercise</span>
+                    <span class="nav-duration">35 min</span>
+                </div>
+                <div class="nav-item" data-screen="quiz">
+                    <div class="nav-icon">✓</div>
+                    <span class="nav-label">Knowledge Check</span>
+                    <span class="nav-duration">10 min</span>
+                </div>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Reference</div>
+                <div class="nav-item" data-screen="study-guide">
+                    <div class="nav-icon">📋</div>
+                    <span class="nav-label">Study Guide</span>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Content Area -->
+        <main class="content-area">
+            <!-- Welcome Screen -->
+            <section class="screen active" id="welcome">
+                <div class="welcome-hero">
+                    <span class="module-tag">Module 8 of 11</span>
+                    <h1>Systemizing Intelligence</h1>
+                    <p>Build persistent AI infrastructure that works for you even when you're not actively prompting. Move from Squadron Leader to Squadron Architect.</p>
+                </div>
+
+                <div class="objectives-card">
+                    <h2>🎯 Learning Objectives</h2>
+                    <div class="objective-item">
+                        <span class="objective-level level-retrieval">Retrieval</span>
+                        <span>Identify the three components of a Claude Project and list the four persistence tools available across AI platforms</span>
+                    </div>
+                    <div class="objective-item">
+                        <span class="objective-level level-comprehension">Comprehension</span>
+                        <span>Explain when to use Projects vs. Skills vs. Gems vs. Custom GPTs based on task requirements</span>
+                    </div>
+                    <div class="objective-item">
+                        <span class="objective-level level-analysis">Analysis</span>
+                        <span>Compare persistence tools and select the optimal tool for given workflow scenarios</span>
+                    </div>
+                    <div class="objective-item">
+                        <span class="objective-level level-utilization">Utilization</span>
+                        <span>Build a complete Squadron Playbook with Projects, Skills, and Gems tailored to your role</span>
+                    </div>
+
+                    <div class="time-estimate">
+                        <div class="time-item">
+                            <span>⏱</span>
+                            <span><strong>Total Time:</strong> ~75 minutes</span>
+                        </div>
+                        <div class="time-item">
+                            <span>🧪</span>
+                            <span><strong>Lab:</strong> 35 minutes hands-on</span>
+                        </div>
+                        <div class="time-item">
+                            <span>✓</span>
+                            <span><strong>Quiz:</strong> 7 questions</span>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="start-btn" onclick="navigateTo('video')">
+                    Begin Module
+                    <span>→</span>
+                </button>
+            </section>
+
+            <!-- Video Screen -->
+            <section class="screen" id="video">
+                <div class="video-container">
+                    <div class="video-placeholder">
+                        <button class="play-btn" aria-label="Play video">
+                            <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                        </button>
+                        <p>Video: Systemizing Intelligence (10:00)</p>
+                    </div>
+                </div>
+
+                <div class="lesson-content">
+                    <h2>Video Summary</h2>
+                    <p>This video introduces persistent AI infrastructure—tools that maintain knowledge, instructions, and specialized behaviors across sessions:</p>
+                    <ul>
+                        <li><strong>Claude Projects</strong> — Persistent workspaces with custom instructions, knowledge files, and conversation history</li>
+                        <li><strong>Claude Skills</strong> — Reusable prompt templates you invoke with trigger phrases</li>
+                        <li><strong>Gemini Gems</strong> — Custom AI assistants optimized for Google Workspace</li>
+                        <li><strong>Custom GPTs</strong> — Shareable assistants in ChatGPT you can distribute to teams</li>
+                        <li><strong>Integration</strong> — How to combine tools for maximum efficiency</li>
+                    </ul>
+
+                    <div class="callout callout-tip">
+                        <span class="callout-icon">💡</span>
+                        <div>
+                            <strong>Key Concept:</strong> Don't just use AI—build systems that use AI for you. Infrastructure scales. Individual prompts don't.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="content-nav">
+                    <button class="btn btn-secondary" onclick="navigateTo('welcome')">← Back</button>
+                    <button class="btn btn-primary" onclick="navigateTo('lesson-1')">Continue to Lesson →</button>
+                </div>
+            </section>
+
+            <!-- Lesson 1: Claude Projects -->
+            <section class="screen" id="lesson-1">
+                <div class="lesson-content">
+                    <h1>Claude Projects: Your Mission Archives</h1>
+
+                    <p>Every AI conversation starts with a blank slate. Claude doesn't remember your last conversation, your company, or your preferences. This creates the <strong>"repetition tax"</strong>—you spend the first 2-3 exchanges of every conversation rebuilding context.</p>
+
+                    <p>Claude Projects solve this by creating persistent workspaces with three components:</p>
+
+                    <div class="tool-grid">
+                        <div class="tool-card claude">
+                            <h4>📋 Custom Instructions</h4>
+                            <p>Persistent prompts that shape how Claude behaves in this context. Define your role, preferences, and output formats once.</p>
+                            <span class="best-for">Best for: Behavior rules</span>
+                        </div>
+                        <div class="tool-card claude">
+                            <h4>📁 Knowledge Files</h4>
+                            <p>Documents Claude can reference—PDFs, CSVs, text files. Upload battle cards, account profiles, documentation.</p>
+                            <span class="best-for">Best for: Reference materials</span>
+                        </div>
+                        <div class="tool-card claude">
+                            <h4>💬 Conversation History</h4>
+                            <p>Past chats that inform future responses. Claude builds understanding over time within the Project.</p>
+                            <span class="best-for">Best for: Ongoing context</span>
+                        </div>
+                        <div class="tool-card claude">
+                            <h4>🎯 Project Name</h4>
+                            <p>Clear, specific, action-oriented. "Q4 Competitive Intelligence" not "Work Stuff."</p>
+                            <span class="best-for">Best for: Organization</span>
+                        </div>
+                    </div>
+
+                    <h2>When to Create a Project</h2>
+
+                    <table class="comparison-table">
+                        <thead>
+                            <tr>
+                                <th>Create a Project When...</th>
+                                <th>Use Regular Conversation When...</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>You'll have 5+ conversations on the same topic</td>
+                                <td>It's a one-off question</td>
+                            </tr>
+                            <tr>
+                                <td>You need consistent context across sessions</td>
+                                <td>You're doing quick research</td>
+                            </tr>
+                            <tr>
+                                <td>You have reference documents to upload</td>
+                                <td>You're experimenting/exploring</td>
+                            </tr>
+                            <tr>
+                                <td>The work requires specialized behavior</td>
+                                <td>Context doesn't need to persist</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h2>Custom Instructions Template</h2>
+
+                    <div class="prompt-box good">
+                        <span class="prompt-label">✓ Custom Instructions</span>
+<pre style="color: var(--dark-base); font-size: 0.9rem;">
+You are my [ROLE] for [DOMAIN].
+
+CONTEXT:
+- My role: [Your job title and responsibilities]
+- Key focus areas: [What you work on]
+- Important relationships: [Key stakeholders]
+
+BEHAVIOR:
+- [How to approach tasks in this domain]
+- [What to prioritize or avoid]
+
+TERMINOLOGY:
+- [Industry-specific language rules]
+- [Terms to use or avoid]
+
+OUTPUT PREFERENCES:
+- [Format: bullets, tables, prose]
+- [Length and structure]
+- [Standard sections to include]
+</pre>
+                    </div>
+
+                    <div class="callout callout-warning">
+                        <span class="callout-icon">⚠️</span>
+                        <div>
+                            <strong>Common Pitfall:</strong> Keep Custom Instructions under 500 words. Be specific, not exhaustive. Claude ignores overly long instruction sets.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="content-nav">
+                    <button class="btn btn-secondary" onclick="navigateTo('video')">← Back</button>
+                    <button class="btn btn-primary" onclick="navigateTo('lesson-2')">Continue →</button>
+                </div>
+            </section>
+
+            <!-- Lesson 2: Claude Skills -->
+            <section class="screen" id="lesson-2">
+                <div class="lesson-content">
+                    <h1>Claude Skills: Your Mission Cards</h1>
+
+                    <p>While Projects provide <strong>persistent context</strong>, Skills provide <strong>portable methodology</strong>. They're reusable prompt templates that you can invoke with a simple trigger phrase—like pre-built mission cards for common operations.</p>
+
+                    <h2>Anatomy of a Skill</h2>
+
+                    <div class="prompt-box good">
+                        <span class="prompt-label">✓ Skill Structure</span>
+<pre style="color: var(--dark-base); font-size: 0.9rem;">
+SKILL NAME: Quick Competitive Analysis
+
+TRIGGER: When I say "Quick comp on [COMPANY]"
+
+INSTRUCTIONS:
+1. POSITIONING: Their core value proposition (1 sentence)
+2. STRENGTHS: Top 3 competitive advantages
+3. WEAKNESSES: Top 3 vulnerabilities we can exploit
+4. COUNTER: How we position against each weakness
+5. VERIFY: List claims needing fact-checking
+
+OUTPUT FORMAT:
+Table I can paste into Slack
+</pre>
+                    </div>
+
+                    <h3>Example: Meeting Prep Skill</h3>
+
+                    <div class="prompt-box good">
+                        <span class="prompt-label">✓ Prep Brief Skill</span>
+<pre style="color: var(--dark-base); font-size: 0.9rem;">
+TRIGGER: When I say "Prep me for [MEETING/CLIENT]"
+
+GENERATE:
+1. Context refresh on the subject
+2. Recent relevant history
+3. Key priorities or objectives
+4. Potential challenges or watch-outs
+5. Recommended questions to ask
+
+FORMAT:
+- One page maximum
+- Bullet points
+- Include "Next Steps" section
+</pre>
+                    </div>
+
+                    <h3>Example: Brand Guidelines Skill</h3>
+
+                    <div class="prompt-box good">
+                        <span class="prompt-label">✓ Brand Application Skill</span>
+<pre style="color: var(--dark-base); font-size: 0.9rem;">
+TRIGGER: When I say "Apply brand to [CONTENT]"
+
+REVIEW AND REVISE FOR:
+
+Terminology:
+- Use "users" or "accounts" (never "customers")
+- Use "flexible hours schedules" (not "flex work")
+- Use "Productivity Optimization" (not "Performance")
+
+Tone:
+- Lead with business outcomes, not features
+- Emphasize "Insights, Not Oversight" philosophy
+
+Formatting:
+- No Oxford comma
+- Avoid em-dashes unless necessary
+
+OUTPUT: Revised content with [CHANGED] markers
+</pre>
+                    </div>
+
+                    <p>This kind of Skill ensures brand consistency across all AI-generated content—emails, presentations, documentation. Build it once, apply it everywhere.</p>
+
+                    <h2>Skills vs. Projects: The Decision</h2>
+
+                    <table class="comparison-table">
+                        <thead>
+                            <tr>
+                                <th>Scenario</th>
+                                <th>Use Project</th>
+                                <th>Use Skill</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Ongoing client work</td>
+                                <td>✓</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>Quick formatting task</td>
+                                <td></td>
+                                <td>✓</td>
+                            </tr>
+                            <tr>
+                                <td>Research with documents</td>
+                                <td>✓</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>Repeatable analysis</td>
+                                <td></td>
+                                <td>✓</td>
+                            </tr>
+                            <tr>
+                                <td>Team-shared methodology</td>
+                                <td></td>
+                                <td>✓</td>
+                            </tr>
+                            <tr>
+                                <td>Deep strategic work</td>
+                                <td>✓</td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="callout callout-tip">
+                        <span class="callout-icon">💡</span>
+                        <div>
+                            <strong>Best Practice:</strong> Combine them. Use Skills inside Projects for maximum efficiency. The Project provides context; the Skill provides methodology.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="content-nav">
+                    <button class="btn btn-secondary" onclick="navigateTo('lesson-1')">← Back</button>
+                    <button class="btn btn-primary" onclick="navigateTo('lesson-3')">Continue →</button>
+                </div>
+            </section>
+
+            <!-- Lesson 3: Gemini Gems -->
+            <section class="screen" id="lesson-3">
+                <div class="lesson-content">
+                    <h1>Gemini Gems: Specialized Recon Units</h1>
+
+                    <p>Gemini Gems are custom AI assistants with persistent instructions, optimized for Google Workspace integration. Think of them as specialized reconnaissance units—pre-configured for specific intelligence-gathering missions.</p>
+
+                    <h2>When Gems Excel</h2>
+
+                    <div class="tool-grid">
+                        <div class="tool-card gemini">
+                            <h4>🔍 Real-time Research</h4>
+                            <p>Gems search with grounding—current, verified information Claude's training might miss.</p>
+                            <span class="best-for">Best for: Current data</span>
+                        </div>
+                        <div class="tool-card gemini">
+                            <h4>📄 Google Workspace</h4>
+                            <p>Native integration with Docs, Sheets, and Slides. Export directly without copy-paste friction.</p>
+                            <span class="best-for">Best for: Workspace flows</span>
+                        </div>
+                        <div class="tool-card gemini">
+                            <h4>👥 Collaborative Access</h4>
+                            <p>Share Gems with teammates. Everyone uses the same specialized researcher.</p>
+                            <span class="best-for">Best for: Team research</span>
+                        </div>
+                        <div class="tool-card gemini">
+                            <h4>📰 Current Information</h4>
+                            <p>News, trends, recent data—anything where training cutoffs matter.</p>
+                            <span class="best-for">Best for: Fresh intel</span>
+                        </div>
+                    </div>
+
+                    <h2>Building a Gem</h2>
+
+                    <div class="prompt-box good">
+                        <span class="prompt-label">✓ Market Intel Gem</span>
+<pre style="color: var(--dark-base); font-size: 0.9rem;">
+NAME: Market Intel Researcher
+
+INSTRUCTIONS:
+You are a competitive intelligence researcher for ActivTrak.
+
+YOUR FOCUS:
+- Workforce analytics and employee monitoring software
+- Key competitors: Teramind, Hubstaff, Insightful
+- Industry trends in remote work, productivity, privacy
+
+WHEN RESEARCHING:
+- Always verify claims with multiple sources
+- Include publication dates for statistics
+- Flag anything older than 6 months as outdated
+- Prioritize industry analyst reports
+
+OUTPUT FORMAT:
+- Lead with key findings (3-5 bullets)
+- Detailed analysis follows
+- End with "Confidence Assessment"
+- Include source links for all claims
+</pre>
+                    </div>
+
+                    <div class="callout callout-insight">
+                        <span class="callout-icon">🔄</span>
+                        <div>
+                            <strong>Decision Rule:</strong> Use Gems when you need current, grounded research with Google Workspace integration. Use Claude Projects for deep reasoning with documents.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="content-nav">
+                    <button class="btn btn-secondary" onclick="navigateTo('lesson-2')">← Back</button>
+                    <button class="btn btn-primary" onclick="navigateTo('lesson-4')">Continue →</button>
+                </div>
+            </section>
+
+            <!-- Lesson 4: Custom GPTs -->
+            <section class="screen" id="lesson-4">
+                <div class="lesson-content">
+                    <h1>Custom GPTs: Deployable Specialists</h1>
+
+                    <p>Custom GPTs are persistent assistants you build in ChatGPT that can be <strong>shared with others</strong>. They're like deployable specialists—AI teammates you can distribute to your organization.</p>
+
+                    <h2>The Key Differentiator: Distribution</h2>
+
+                    <p>While Projects, Skills, and Gems are primarily personal tools, Custom GPTs can be shared. Your entire sales team can use the same Battle Card Generator with the same knowledge base.</p>
+
+                    <div class="callout callout-tip">
+                        <span class="callout-icon">💡</span>
+                        <div>
+                            <strong>Use Case:</strong> Build a "Battle Card Generator" GPT, upload competitive intelligence, and share it. Every sales rep gets consistent, accurate competitive positioning.
+                        </div>
+                    </div>
+
+                    <h2>Building a Custom GPT</h2>
+
+                    <table class="comparison-table">
+                        <thead>
+                            <tr>
+                                <th>Component</th>
+                                <th>Purpose</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Name</td>
+                                <td>Clear, professional identifier</td>
+                            </tr>
+                            <tr>
+                                <td>Description</td>
+                                <td>What it does and who it's for</td>
+                            </tr>
+                            <tr>
+                                <td>Instructions</td>
+                                <td>Detailed behavior guidance</td>
+                            </tr>
+                            <tr>
+                                <td>Knowledge</td>
+                                <td>Uploaded reference files</td>
+                            </tr>
+                            <tr>
+                                <td>Capabilities</td>
+                                <td>Enable/disable browsing, DALL-E, code</td>
+                            </tr>
+                            <tr>
+                                <td>Conversation Starters</td>
+                                <td>Suggested first prompts</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h2>The Complete Decision Matrix</h2>
+
+                    <table class="comparison-table">
+                        <thead>
+                            <tr>
+                                <th>Need</th>
+                                <th>Primary Tool</th>
+                                <th>Why</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Deep client work</td>
+                                <td>Claude Project</td>
+                                <td>Context + documents + history</td>
+                            </tr>
+                            <tr>
+                                <td>Quick repeated tasks</td>
+                                <td>Claude Skill</td>
+                                <td>Portable methodology</td>
+                            </tr>
+                            <tr>
+                                <td>Real-time research</td>
+                                <td>Gemini Gem</td>
+                                <td>Grounded, current data</td>
+                            </tr>
+                            <tr>
+                                <td>Team-shared assistant</td>
+                                <td>Custom GPT</td>
+                                <td>Distributable, consistent</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="callout callout-insight">
+                        <span class="callout-icon">🏗️</span>
+                        <div>
+                            <strong>Integration Example:</strong> Gemini Gem gathers current research → Claude Project synthesizes with historical analysis → Claude Skill structures the output → Custom GPT generates shareable battle card. Each tool does what it does best.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="content-nav">
+                    <button class="btn btn-secondary" onclick="navigateTo('lesson-3')">← Back</button>
+                    <button class="btn btn-primary" onclick="navigateTo('flashcards')">Practice with Flashcards →</button>
+                </div>
+            </section>
+
+            <!-- Flashcards Screen -->
+            <section class="screen" id="flashcards">
+                <h1 style="margin-bottom: 0.5rem;">Flashcards</h1>
+                <p style="color: #6B7280; margin-bottom: 2rem;">Review key concepts from this module. Click the card to flip it.</p>
+
+                <div class="flashcard-container">
+                    <div class="flashcard" id="flashcard" onclick="flipCard()">
+                        <div class="flashcard-face flashcard-front">
+                            <h3 id="cardFront">What three components make up a Claude Project?</h3>
+                        </div>
+                        <div class="flashcard-face flashcard-back">
+                            <p id="cardBack">1. Custom Instructions (behavior rules)<br>2. Knowledge Files (reference documents)<br>3. Conversation History (ongoing context)</p>
+                        </div>
+                    </div>
+                    <p class="flip-hint">Click card to flip</p>
+                </div>
+
+                <div class="flashcard-nav">
+                    <button class="flashcard-btn" onclick="prevCard()">←</button>
+                    <span class="flashcard-counter"><span id="cardNum">1</span> / <span id="cardTotal">10</span></span>
+                    <button class="flashcard-btn" onclick="nextCard()">→</button>
+                </div>
+
+                <div class="content-nav">
+                    <button class="btn btn-secondary" onclick="navigateTo('lesson-4')">← Back to Lesson</button>
+                    <button class="btn btn-primary" onclick="navigateTo('lab')">Continue to Lab →</button>
+                </div>
+            </section>
+
+            <!-- Lab Exercise Screen -->
+            <section class="screen" id="lab">
+                <div class="lab-header">
+                    <h1>🧪 Lab Exercise: Build Your Squadron Playbook</h1>
+                    <p>Create a complete set of persistent AI infrastructure tailored to your role.</p>
+                    <div class="lab-meta">
+                        <span>⏱ 30-40 minutes</span>
+                        <span>🛠 Tools: Claude, Gemini</span>
+                    </div>
+                </div>
+
+                <div class="lab-steps">
+                    <div class="lab-step active" id="labStep1">
+                        <div class="step-header">
+                            <div class="step-number">1</div>
+                            <div class="step-title">Workflow Inventory</div>
+                        </div>
+                        <div class="step-content">
+                            <p>Before building, identify what you need. List your <strong>top 5 recurring work tasks</strong> where you use (or could use) AI:</p>
+
+                            <table class="comparison-table">
+                                <thead>
+                                    <tr>
+                                        <th>Task</th>
+                                        <th>Frequency</th>
+                                        <th>Current Pain Point</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><em>Example: Competitive analysis</em></td>
+                                        <td><em>Weekly</em></td>
+                                        <td><em>Rebuilding context every time</em></td>
+                                    </tr>
+                                    <tr>
+                                        <td>1. ________________</td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td>2. ________________</td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td>3. ________________</td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <p><strong>For each task, identify:</strong></p>
+                            <ul>
+                                <li>What background context do you repeatedly explain?</li>
+                                <li>What documents do you frequently reference?</li>
+                                <li>What output format do you always want?</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="lab-step" id="labStep2">
+                        <div class="step-header">
+                            <div class="step-number">2</div>
+                            <div class="step-title">Build Your First Project</div>
+                        </div>
+                        <div class="step-content">
+                            <p>Select one workflow from your inventory that would benefit most from persistent context. Create a new Claude Project.</p>
+
+                            <p><strong>Write Custom Instructions using this template:</strong></p>
+
+                            <div class="copy-block">
+                                <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+                                <pre>You are my [ROLE DESCRIPTION] for [DOMAIN/COMPANY].
+
+CONTEXT:
+- My role: [Your job title and responsibilities]
+- Key focus areas: [What you work on]
+- Important relationships/accounts: [Key stakeholders]
+
+BEHAVIOR:
+- [How Claude should approach tasks in this domain]
+- [What to prioritize]
+- [What to avoid or flag]
+
+TERMINOLOGY:
+- [Industry or company-specific language rules]
+- [Terms to use or avoid]
+
+OUTPUT PREFERENCES:
+- [Preferred format: bullets, tables, prose]
+- [Desired length and structure]
+- [Any standard sections to include]</pre>
+                            </div>
+
+                            <p><strong>Test your Project:</strong> Start a conversation with a realistic request. Does Claude demonstrate awareness of your context? Does output match your format preferences?</p>
+                        </div>
+                    </div>
+
+                    <div class="lab-step" id="labStep3">
+                        <div class="step-header">
+                            <div class="step-number">3</div>
+                            <div class="step-title">Create Two Skills</div>
+                        </div>
+                        <div class="step-content">
+                            <p><strong>Skill 1: Quick Analysis</strong></p>
+
+                            <div class="copy-block">
+                                <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+                                <pre>SKILL NAME: Quick [Analysis Type]
+
+TRIGGER: When I say "Quick [trigger word] on [SUBJECT]"
+
+INSTRUCTIONS:
+1. [First analysis step]
+2. [Second analysis step]
+3. [Third analysis step]
+4. [Summary or recommendation]
+
+OUTPUT FORMAT:
+[Describe structure: table, bullets, sections]</pre>
+                            </div>
+
+                            <p><strong>Skill 2: Prep Brief</strong></p>
+
+                            <div class="copy-block">
+                                <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+                                <pre>SKILL NAME: [Meeting/Task] Prep
+
+TRIGGER: When I say "Prep me for [EVENT/TASK]"
+
+INSTRUCTIONS:
+1. Context refresh on the subject
+2. Recent relevant history
+3. Key priorities or objectives
+4. Potential challenges or watch-outs
+5. Recommended questions or actions
+
+OUTPUT FORMAT:
+- Keep to one page
+- Use bullet points
+- Include "Next Steps" section</pre>
+                            </div>
+
+                            <p><strong>Test both Skills</strong> in a Claude conversation. Do they follow the structure? Are outputs useful?</p>
+                        </div>
+                    </div>
+
+                    <div class="lab-step" id="labStep4">
+                        <div class="step-header">
+                            <div class="step-number">4</div>
+                            <div class="step-title">Build a Gemini Gem</div>
+                        </div>
+                        <div class="step-content">
+                            <p>Go to <a href="https://gemini.google.com" target="_blank">gemini.google.com</a> and create a new Gem for research.</p>
+
+                            <div class="copy-block">
+                                <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+                                <pre>NAME: [Descriptive, role-based name]
+
+INSTRUCTIONS:
+You are a [specialty] researcher for [domain/company].
+
+YOUR FOCUS:
+- [Primary topic area]
+- [Key subjects to track]
+- [Relevant competitors/entities]
+
+WHEN RESEARCHING:
+- [Verification requirements]
+- [Date/recency standards]
+- [Source preferences]
+
+OUTPUT FORMAT:
+- [Structure for findings]
+- [Required sections]
+- [Confidence/verification notes]</pre>
+                            </div>
+
+                            <p><strong>Test your Gem:</strong> Use it for a realistic research query. Does it focus on your domain? Does it cite sources appropriately?</p>
+                        </div>
+                    </div>
+
+                    <div class="lab-step" id="labStep5">
+                        <div class="step-header">
+                            <div class="step-number">5</div>
+                            <div class="step-title">Integration Test</div>
+                        </div>
+                        <div class="step-content">
+                            <p>Test your infrastructure working together. Choose a realistic scenario:</p>
+
+                            <ol>
+                                <li><strong>Start with Gem</strong> (research phase): Query your Gem for current information</li>
+                                <li><strong>Move to Project</strong> (synthesis phase): Take Gem's output and ask your Project to synthesize</li>
+                                <li><strong>Apply Skill</strong> (formatting phase): Use your Skill to structure the final output</li>
+                            </ol>
+
+                            <p><strong>Document your workflow:</strong></p>
+
+                            <div class="copy-block">
+                                <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+                                <pre>WORKFLOW NAME: [Descriptive name]
+
+PURPOSE: [What this workflow produces]
+
+STEPS:
+1. Gem "[Name]": [What it does]
+2. Project "[Name]": [What it does]
+3. Skill "[Name]": [What it does]
+
+OUTPUT: [Final deliverable description]
+
+TIME SAVED: [Estimated vs. manual approach]</pre>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="lab-navigation">
+                        <button class="btn btn-secondary" id="labPrevBtn" onclick="prevLabStep()" style="visibility: hidden;">← Previous Step</button>
+                        <button class="btn btn-primary" id="labNextBtn" onclick="nextLabStep()">Next Step →</button>
+                    </div>
+                </div>
+
+                <div class="content-nav">
+                    <button class="btn btn-secondary" onclick="navigateTo('flashcards')">← Back</button>
+                    <button class="btn btn-primary" onclick="navigateTo('quiz')">Take the Quiz →</button>
+                </div>
+            </section>
+
+            <!-- Quiz Screen -->
+            <section class="screen" id="quiz">
+                <div class="quiz-container">
+                    <div class="quiz-header">
+                        <h2>Knowledge Check</h2>
+                        <div class="quiz-progress">
+                            <div class="quiz-dot current" data-q="0"></div>
+                            <div class="quiz-dot" data-q="1"></div>
+                            <div class="quiz-dot" data-q="2"></div>
+                            <div class="quiz-dot" data-q="3"></div>
+                            <div class="quiz-dot" data-q="4"></div>
+                            <div class="quiz-dot" data-q="5"></div>
+                            <div class="quiz-dot" data-q="6"></div>
+                        </div>
+                    </div>
+
+                    <!-- Question 1 -->
+                    <div class="quiz-question active" data-question="0">
+                        <div class="question-number">Question 1 of 7</div>
+                        <div class="question-text">What are the three components that make up a Claude Project?</div>
+                        <div class="answer-options">
+                            <div class="answer-option" data-answer="a" onclick="selectAnswer(this, 0)">
+                                <span class="option-letter">A</span>
+                                <span>Custom GPTs, Skills, and Conversations</span>
+                            </div>
+                            <div class="answer-option" data-answer="b" onclick="selectAnswer(this, 0)">
+                                <span class="option-letter">B</span>
+                                <span>Custom Instructions, Knowledge Files, and Conversation History</span>
+                            </div>
+                            <div class="answer-option" data-answer="c" onclick="selectAnswer(this, 0)">
+                                <span class="option-letter">C</span>
+                                <span>Templates, Documents, and Chat Logs</span>
+                            </div>
+                            <div class="answer-option" data-answer="d" onclick="selectAnswer(this, 0)">
+                                <span class="option-letter">D</span>
+                                <span>Prompts, Files, and Memory</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Question 2 -->
+                    <div class="quiz-question" data-question="1">
+                        <div class="question-number">Question 2 of 7</div>
+                        <div class="question-text">True or False: You should create a Claude Project for every task you do with AI.</div>
+                        <div class="answer-options">
+                            <div class="answer-option" data-answer="a" onclick="selectAnswer(this, 1)">
+                                <span class="option-letter">A</span>
+                                <span>True</span>
+                            </div>
+                            <div class="answer-option" data-answer="b" onclick="selectAnswer(this, 1)">
+                                <span class="option-letter">B</span>
+                                <span>False</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Question 3 -->
+                    <div class="quiz-question" data-question="2">
+                        <div class="question-number">Question 3 of 7</div>
+                        <div class="question-text">What is the key difference between Claude Skills and Claude Projects?</div>
+                        <div class="answer-options">
+                            <div class="answer-option" data-answer="a" onclick="selectAnswer(this, 2)">
+                                <span class="option-letter">A</span>
+                                <span>Skills are free, Projects require a paid subscription</span>
+                            </div>
+                            <div class="answer-option" data-answer="b" onclick="selectAnswer(this, 2)">
+                                <span class="option-letter">B</span>
+                                <span>Projects provide persistent context, Skills provide portable methodology</span>
+                            </div>
+                            <div class="answer-option" data-answer="c" onclick="selectAnswer(this, 2)">
+                                <span class="option-letter">C</span>
+                                <span>Skills can access the internet, Projects cannot</span>
+                            </div>
+                            <div class="answer-option" data-answer="d" onclick="selectAnswer(this, 2)">
+                                <span class="option-letter">D</span>
+                                <span>Projects are for teams, Skills are for individuals</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Question 4 -->
+                    <div class="quiz-question" data-question="3">
+                        <div class="question-number">Question 4 of 7</div>
+                        <div class="question-text">You're a Customer Success Manager preparing QBR presentations for your top 10 accounts, each with unique history. You also need consistent executive summary formatting. What tool combination is most effective?</div>
+                        <div class="answer-options">
+                            <div class="answer-option" data-answer="a" onclick="selectAnswer(this, 3)">
+                                <span class="option-letter">A</span>
+                                <span>One large Project containing all 10 accounts</span>
+                            </div>
+                            <div class="answer-option" data-answer="b" onclick="selectAnswer(this, 3)">
+                                <span class="option-letter">B</span>
+                                <span>10 separate Projects (one per account) plus one Skill for executive summary formatting</span>
+                            </div>
+                            <div class="answer-option" data-answer="c" onclick="selectAnswer(this, 3)">
+                                <span class="option-letter">C</span>
+                                <span>One Gemini Gem for research and one Custom GPT for summaries</span>
+                            </div>
+                            <div class="answer-option" data-answer="d" onclick="selectAnswer(this, 3)">
+                                <span class="option-letter">D</span>
+                                <span>10 separate Skills, one for each account</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Question 5 -->
+                    <div class="quiz-question" data-question="4">
+                        <div class="question-number">Question 5 of 7</div>
+                        <div class="question-text">When should you use a Gemini Gem instead of a Claude Project?</div>
+                        <div class="answer-options">
+                            <div class="answer-option" data-answer="a" onclick="selectAnswer(this, 4)">
+                                <span class="option-letter">A</span>
+                                <span>When you need deep reasoning with complex analysis</span>
+                            </div>
+                            <div class="answer-option" data-answer="b" onclick="selectAnswer(this, 4)">
+                                <span class="option-letter">B</span>
+                                <span>When you need real-time web research and Google Workspace integration</span>
+                            </div>
+                            <div class="answer-option" data-answer="c" onclick="selectAnswer(this, 4)">
+                                <span class="option-letter">C</span>
+                                <span>When you want to share an assistant with teammates</span>
+                            </div>
+                            <div class="answer-option" data-answer="d" onclick="selectAnswer(this, 4)">
+                                <span class="option-letter">D</span>
+                                <span>When you have large documents to analyze</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Question 6 -->
+                    <div class="quiz-question" data-question="5">
+                        <div class="question-number">Question 6 of 7</div>
+                        <div class="question-text">True or False: The "repetition tax" refers to the cost of having multiple AI subscriptions.</div>
+                        <div class="answer-options">
+                            <div class="answer-option" data-answer="a" onclick="selectAnswer(this, 5)">
+                                <span class="option-letter">A</span>
+                                <span>True</span>
+                            </div>
+                            <div class="answer-option" data-answer="b" onclick="selectAnswer(this, 5)">
+                                <span class="option-letter">B</span>
+                                <span>False</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Question 7 -->
+                    <div class="quiz-question" data-question="6">
+                        <div class="question-number">Question 7 of 7</div>
+                        <div class="question-text">You've built a Project, two Skills, and a Gem for your competitive intelligence workflow. It's been three months. What maintenance should you have completed?</div>
+                        <div class="answer-options">
+                            <div class="answer-option" data-answer="a" onclick="selectAnswer(this, 6)">
+                                <span class="option-letter">A</span>
+                                <span>Nothing—once built, AI infrastructure is self-maintaining</span>
+                            </div>
+                            <div class="answer-option" data-answer="b" onclick="selectAnswer(this, 6)">
+                                <span class="option-letter">B</span>
+                                <span>Weekly: reviewed conversations; Monthly: refreshed knowledge files; Quarterly: evaluated expansion</span>
+                            </div>
+                            <div class="answer-option" data-answer="c" onclick="selectAnswer(this, 6)">
+                                <span class="option-letter">C</span>
+                                <span>Deleted everything and started fresh—AI improves so fast old infrastructure is obsolete</span>
+                            </div>
+                            <div class="answer-option" data-answer="d" onclick="selectAnswer(this, 6)">
+                                <span class="option-letter">D</span>
+                                <span>Only update when something breaks</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Results -->
+                    <div class="quiz-question" data-question="results" style="display: none;">
+                        <div class="quiz-results">
+                            <div class="results-score" id="quizScore">0/7</div>
+                            <div class="results-label">Questions Correct</div>
+                            <div class="results-breakdown">
+                                <div class="breakdown-item">
+                                    <div class="breakdown-value correct" id="correctCount">0</div>
+                                    <div class="breakdown-label">Correct</div>
+                                </div>
+                                <div class="breakdown-item">
+                                    <div class="breakdown-value incorrect" id="incorrectCount">0</div>
+                                    <div class="breakdown-label">Incorrect</div>
+                                </div>
+                            </div>
+                            <p id="resultMessage" style="margin-bottom: 2rem; color: #6B7280;"></p>
+                            <button class="btn btn-primary" onclick="navigateTo('study-guide')">Review Study Guide →</button>
+                        </div>
+                    </div>
+
+                    <div class="feedback-panel" id="feedbackPanel">
+                        <div class="feedback-header" id="feedbackHeader"></div>
+                        <p id="feedbackText"></p>
+                    </div>
+
+                    <div class="quiz-footer">
+                        <button class="btn btn-primary" id="quizNextBtn" onclick="nextQuestion()" disabled>Next Question →</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Study Guide Screen -->
+            <section class="screen" id="study-guide">
+                <h1 style="margin-bottom: 2rem;">📋 Study Guide</h1>
+
+                <div class="study-guide-card">
+                    <h2>🎯 Core Concept</h2>
+                    <p style="font-size: 1.1rem; line-height: 1.7;"><strong>Squadron Architect Model:</strong> Build persistent AI infrastructure that works for you even when you're not actively prompting. Move from giving instructions to building systems. Infrastructure scales. Individual prompts don't.</p>
+                </div>
+
+                <div class="study-guide-card">
+                    <h2>📖 Key Terms</h2>
+                    <div class="term-grid">
+                        <div class="term-item">
+                            <span class="term-name">Claude Project</span>
+                            <span class="term-def">Persistent workspace with Custom Instructions, Knowledge Files, and Conversation History</span>
+                        </div>
+                        <div class="term-item">
+                            <span class="term-name">Claude Skill</span>
+                            <span class="term-def">Reusable prompt template invoked with a trigger phrase ("Quick comp on...")</span>
+                        </div>
+                        <div class="term-item">
+                            <span class="term-name">Gemini Gem</span>
+                            <span class="term-def">Custom AI assistant optimized for real-time research and Google Workspace</span>
+                        </div>
+                        <div class="term-item">
+                            <span class="term-name">Custom GPT</span>
+                            <span class="term-def">Shareable assistant in ChatGPT that can be distributed to teams</span>
+                        </div>
+                        <div class="term-item">
+                            <span class="term-name">Repetition Tax</span>
+                            <span class="term-def">Time wasted rebuilding context every conversation—eliminated by persistence tools</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="study-guide-card">
+                    <h2>✈️ Decision Matrix</h2>
+                    <table class="comparison-table">
+                        <thead>
+                            <tr>
+                                <th>Need</th>
+                                <th>Primary Tool</th>
+                                <th>Why</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Deep client work</td>
+                                <td>Claude Project</td>
+                                <td>Context + documents + history</td>
+                            </tr>
+                            <tr>
+                                <td>Quick repeated tasks</td>
+                                <td>Claude Skill</td>
+                                <td>Portable methodology</td>
+                            </tr>
+                            <tr>
+                                <td>Real-time research</td>
+                                <td>Gemini Gem</td>
+                                <td>Grounded, current data</td>
+                            </tr>
+                            <tr>
+                                <td>Team-shared assistant</td>
+                                <td>Custom GPT</td>
+                                <td>Distributable, consistent</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="study-guide-card">
+                    <h2>✓ Do's and Don'ts</h2>
+                    <div class="do-dont-grid">
+                        <div class="do-column">
+                            <h3>✓ Do</h3>
+                            <div class="do-dont-item">
+                                <span style="color: var(--success);">✓</span>
+                                <span>Create purpose-specific Projects (not mega-Projects)</span>
+                            </div>
+                            <div class="do-dont-item">
+                                <span style="color: var(--success);">✓</span>
+                                <span>Keep Custom Instructions under 500 words</span>
+                            </div>
+                            <div class="do-dont-item">
+                                <span style="color: var(--success);">✓</span>
+                                <span>Refresh knowledge files monthly</span>
+                            </div>
+                            <div class="do-dont-item">
+                                <span style="color: var(--success);">✓</span>
+                                <span>Combine Skills inside Projects</span>
+                            </div>
+                        </div>
+                        <div class="dont-column">
+                            <h3>✗ Don't</h3>
+                            <div class="do-dont-item">
+                                <span style="color: var(--error);">✗</span>
+                                <span>Create Projects for one-off questions</span>
+                            </div>
+                            <div class="do-dont-item">
+                                <span style="color: var(--error);">✗</span>
+                                <span>Write 2,000-word instruction sets</span>
+                            </div>
+                            <div class="do-dont-item">
+                                <span style="color: var(--error);">✗</span>
+                                <span>Upload documents once and forget them</span>
+                            </div>
+                            <div class="do-dont-item">
+                                <span style="color: var(--error);">✗</span>
+                                <span>Use wrong tool for task type</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="study-guide-card">
+                    <h2>🔧 Maintenance Schedule</h2>
+                    <table class="comparison-table">
+                        <thead>
+                            <tr>
+                                <th>Frequency</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Weekly</strong></td>
+                                <td>Review conversations for patterns, update Skills, check Gem accuracy</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Monthly</strong></td>
+                                <td>Refresh knowledge files, audit instructions, archive inactive Projects</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Quarterly</strong></td>
+                                <td>Evaluate expansion opportunities, share patterns with team</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="study-guide-card" style="background: linear-gradient(135deg, var(--dark-navy) 0%, var(--medium-navy) 100%); color: white;">
+                    <h2 style="color: white;">➡️ Next Module Preview</h2>
+                    <p><strong>Module 9: Code Execution (File Creation)</strong></p>
+                    <p style="opacity: 0.9;">Learn to generate deliverables through code—Excel spreadsheets, PowerPoint presentations, PDF reports. Your Projects hold context. Your Skills define process. Code execution produces the artifacts.</p>
+                </div>
+
+                <div class="content-nav">
+                    <button class="btn btn-secondary" onclick="navigateTo('quiz')">← Back to Quiz</button>
+                    <button class="btn btn-success">Module Complete ✓</button>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // Navigation State
+        const screens = ['welcome', 'video', 'lesson-1', 'lesson-2', 'lesson-3', 'lesson-4', 'flashcards', 'lab', 'quiz', 'study-guide'];
+        let currentScreen = 'welcome';
+        let completedScreens = new Set();
+
+        // Flashcard State
+        const flashcards = [
+            {
+                front: "What three components make up a Claude Project?",
+                back: "1. Custom Instructions (behavior rules)\n2. Knowledge Files (reference documents)\n3. Conversation History (ongoing context)"
+            },
+            {
+                front: "When should you create a Claude Project vs. using a regular conversation?",
+                back: "Create a Project when:\n• 5+ conversations on same topic\n• Need consistent context\n• Have reference documents\n• Work requires specialized behavior\n\nUse regular conversation for one-off questions and exploration."
+            },
+            {
+                front: "What is a Claude Skill and how does it differ from a Project?",
+                back: "Skill: Reusable prompt template invoked with trigger phrase\n\nKey Difference:\n• Projects = Persistent context (ongoing work)\n• Skills = Portable methodology (repeatable tasks)\n\nBest practice: Combine them for maximum efficiency."
+            },
+            {
+                front: "What are the four elements of an effective Skill?",
+                back: "1. Clear trigger phrase (\"Quick comp on...\")\n2. Structured instructions\n3. Input placeholders\n4. Output format specification"
+            },
+            {
+                front: "When should you use Gemini Gems instead of Claude Projects?",
+                back: "Use Gems when you need:\n• Real-time web research with current data\n• Native Google Workspace integration\n• Collaborative access\n• Current information (news, trends)\n\nGems excel at grounded research; Projects excel at deep reasoning."
+            },
+            {
+                front: "What is the key differentiator of Custom GPTs vs. other persistence tools?",
+                back: "Distribution capability\n\nCustom GPTs can be shared with others:\n• Team-wide access to same assistant\n• Consistent methodology across users\n• Standardized workflows organization-wide\n\nProjects/Skills/Gems are personal; GPTs are shareable."
+            },
+            {
+                front: "What is the 'repetition tax' and how do persistence tools eliminate it?",
+                back: "Repetition tax: Time spent re-establishing context every conversation (role, preferences, background)\n\nElimination:\n• Custom Instructions remember preferences\n• Knowledge Files contain references\n• Conversation History maintains context\n• Start at 'expert level' instead of zero"
+            },
+            {
+                front: "What's the recommended maintenance schedule for AI infrastructure?",
+                back: "Weekly: Review conversations, update Skills, check Gem accuracy\n\nMonthly: Refresh knowledge files, audit instructions, archive inactive\n\nQuarterly: Evaluate expansion, share patterns with team"
+            },
+            {
+                front: "What are the three Project architecture patterns?",
+                back: "1. Client Hub: One Project per major account\n2. Workflow Station: One Project per recurring workflow\n3. Knowledge Base: Centralized reference Projects"
+            },
+            {
+                front: "Match each tool to its best use case:\n1. Deep client work\n2. Quick repeated tasks\n3. Real-time research\n4. Team-shared assistant",
+                back: "1. Deep client work → Claude Project\n2. Quick repeated tasks → Claude Skill\n3. Real-time research → Gemini Gem\n4. Team-shared assistant → Custom GPT"
+            }
+        ];
+        let currentCard = 0;
+
+        // Lab State
+        let currentLabStep = 1;
+        const totalLabSteps = 5;
+
+        // Quiz State
+        const quizAnswers = ['b', 'b', 'b', 'b', 'b', 'b', 'b'];
+        const quizFeedback = [
+            {
+                correct: "Correct! A Claude Project consists of Custom Instructions (behavior rules), Knowledge Files (reference documents), and Conversation History (ongoing context).",
+                incorrect: "The correct answer is Custom Instructions, Knowledge Files, and Conversation History. These three components create a persistent workspace that eliminates contextual amnesia."
+            },
+            {
+                correct: "Correct! Projects should be used strategically—for ongoing work with 5+ conversations, reference documents, and specialized behavior. One-off questions don't need Projects.",
+                incorrect: "False. Projects require setup and maintenance. Use them for ongoing work with persistent context needs, not every task. One-off questions should use regular conversations."
+            },
+            {
+                correct: "Correct! Projects provide persistent context (for ongoing work in one domain), while Skills provide portable methodology (repeatable tasks across contexts).",
+                incorrect: "Projects provide persistent context; Skills provide portable methodology. Neither is about cost, internet access, or team vs. individual use."
+            },
+            {
+                correct: "Excellent! Separate Projects maintain clean account-specific context, while a shared Skill ensures consistent formatting methodology across all accounts.",
+                incorrect: "The best approach is 10 Projects (one per account for specific context) plus one Skill (for consistent methodology). Mega-Projects cause context confusion; Skills don't store account context."
+            },
+            {
+                correct: "Correct! Gems excel at real-time research with grounding and native Google Workspace integration. Use Claude Projects for deep reasoning with documents.",
+                incorrect: "Gems are best for real-time web research and Google Workspace integration. Deep reasoning is Claude's strength; sharing is Custom GPTs' differentiator."
+            },
+            {
+                correct: "Correct! The repetition tax is the time wasted rebuilding context every conversation—not subscription costs. Persistence tools eliminate this by maintaining context.",
+                incorrect: "The repetition tax refers to time wasted re-explaining context every conversation, not subscription costs. Persistence tools solve this by maintaining context across sessions."
+            },
+            {
+                correct: "Correct! AI infrastructure requires regular maintenance: weekly conversation reviews, monthly knowledge refreshes, quarterly expansion evaluation.",
+                incorrect: "AI infrastructure needs maintenance. Set-and-forget leads to stale outputs. Weekly reviews, monthly refreshes, and quarterly audits keep your infrastructure effective."
+            }
+        ];
+        let currentQuestion = 0;
+        let userAnswers = [];
+        let quizComplete = false;
+
+        // Navigation Functions
+        function navigateTo(screenId) {
+            completedScreens.add(currentScreen);
+
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+
+            document.getElementById(screenId).classList.add('active');
+            document.querySelector(`[data-screen="${screenId}"]`)?.classList.add('active');
+
+            completedScreens.forEach(id => {
+                const navItem = document.querySelector(`[data-screen="${id}"]`);
+                if (navItem && id !== screenId) {
+                    navItem.classList.add('completed');
+                }
+            });
+
+            currentScreen = screenId;
+            updateProgress();
+            window.scrollTo(0, 0);
+        }
+
+        function updateProgress() {
+            const progress = Math.round((completedScreens.size / screens.length) * 100);
+            document.getElementById('progressFill').style.width = `${progress}%`;
+            document.getElementById('progressText').textContent = `${progress}% Complete`;
+        }
+
+        // Flashcard Functions
+        function flipCard() {
+            document.getElementById('flashcard').classList.toggle('flipped');
+        }
+
+        function nextCard() {
+            currentCard = (currentCard + 1) % flashcards.length;
+            updateCard();
+        }
+
+        function prevCard() {
+            currentCard = (currentCard - 1 + flashcards.length) % flashcards.length;
+            updateCard();
+        }
+
+        function updateCard() {
+            document.getElementById('flashcard').classList.remove('flipped');
+            setTimeout(() => {
+                document.getElementById('cardFront').textContent = flashcards[currentCard].front;
+                document.getElementById('cardBack').textContent = flashcards[currentCard].back;
+                document.getElementById('cardNum').textContent = currentCard + 1;
+            }, 150);
+        }
+
+        // Lab Functions
+        function nextLabStep() {
+            if (currentLabStep < totalLabSteps) {
+                document.getElementById(`labStep${currentLabStep}`).classList.remove('active');
+                currentLabStep++;
+                document.getElementById(`labStep${currentLabStep}`).classList.add('active');
+                updateLabNav();
+            }
+        }
+
+        function prevLabStep() {
+            if (currentLabStep > 1) {
+                document.getElementById(`labStep${currentLabStep}`).classList.remove('active');
+                currentLabStep--;
+                document.getElementById(`labStep${currentLabStep}`).classList.add('active');
+                updateLabNav();
+            }
+        }
+
+        function updateLabNav() {
+            document.getElementById('labPrevBtn').style.visibility = currentLabStep > 1 ? 'visible' : 'hidden';
+            document.getElementById('labNextBtn').textContent = currentLabStep < totalLabSteps ? 'Next Step →' : 'Complete Lab ✓';
+            if (currentLabStep === totalLabSteps) {
+                document.getElementById('labNextBtn').onclick = () => navigateTo('quiz');
+            } else {
+                document.getElementById('labNextBtn').onclick = nextLabStep;
+            }
+        }
+
+        // Quiz Functions
+        function selectAnswer(element, questionIndex) {
+            if (quizComplete || userAnswers[questionIndex] !== undefined) return;
+
+            const question = document.querySelector(`[data-question="${questionIndex}"]`);
+            const options = question.querySelectorAll('.answer-option');
+            const selectedAnswer = element.dataset.answer;
+            const isCorrect = selectedAnswer === quizAnswers[questionIndex];
+
+            userAnswers[questionIndex] = selectedAnswer;
+
+            options.forEach(opt => {
+                opt.classList.add('disabled');
+                if (opt.dataset.answer === quizAnswers[questionIndex]) {
+                    opt.classList.add('correct');
+                }
+            });
+
+            if (!isCorrect) {
+                element.classList.add('incorrect');
+            }
+
+            const dot = document.querySelector(`.quiz-dot[data-q="${questionIndex}"]`);
+            dot.classList.remove('current');
+            dot.classList.add(isCorrect ? 'correct' : 'incorrect');
+
+            const feedbackPanel = document.getElementById('feedbackPanel');
+            const feedbackHeader = document.getElementById('feedbackHeader');
+            const feedbackText = document.getElementById('feedbackText');
+
+            feedbackHeader.className = `feedback-header ${isCorrect ? 'feedback-correct' : 'feedback-incorrect'}`;
+            feedbackHeader.innerHTML = isCorrect ? '✓ Correct!' : '✗ Incorrect';
+            feedbackText.textContent = isCorrect ? quizFeedback[questionIndex].correct : quizFeedback[questionIndex].incorrect;
+            feedbackPanel.classList.add('show');
+
+            document.getElementById('quizNextBtn').disabled = false;
+        }
+
+        function nextQuestion() {
+            if (currentQuestion < quizAnswers.length - 1) {
+                document.querySelector(`[data-question="${currentQuestion}"]`).classList.remove('active');
+                currentQuestion++;
+                document.querySelector(`[data-question="${currentQuestion}"]`).classList.add('active');
+
+                document.querySelector(`.quiz-dot[data-q="${currentQuestion}"]`).classList.add('current');
+
+                document.getElementById('feedbackPanel').classList.remove('show');
+                document.getElementById('quizNextBtn').disabled = true;
+
+                if (currentQuestion === quizAnswers.length - 1) {
+                    document.getElementById('quizNextBtn').textContent = 'See Results →';
+                }
+            } else {
+                showResults();
+            }
+        }
+
+        function showResults() {
+            quizComplete = true;
+            const correct = userAnswers.filter((a, i) => a === quizAnswers[i]).length;
+            const incorrect = quizAnswers.length - correct;
+
+            document.querySelector(`[data-question="${currentQuestion}"]`).classList.remove('active');
+            document.querySelector('[data-question="results"]').style.display = 'block';
+            document.querySelector('[data-question="results"]').classList.add('active');
+
+            document.getElementById('quizScore').textContent = `${correct}/${quizAnswers.length}`;
+            document.getElementById('correctCount').textContent = correct;
+            document.getElementById('incorrectCount').textContent = incorrect;
+
+            let message = '';
+            if (correct === quizAnswers.length) {
+                message = "Excellent! You've achieved Squadron Architect level. Ready for Module 9!";
+            } else if (correct >= 5) {
+                message = "Good foundation! Review the tool selection concepts before continuing.";
+            } else if (correct >= 3) {
+                message = "Review the video and flashcards, then retake the quiz.";
+            } else {
+                message = "Schedule time to review the module content before proceeding.";
+            }
+            document.getElementById('resultMessage').textContent = message;
+
+            document.getElementById('feedbackPanel').classList.remove('show');
+            document.querySelector('.quiz-footer').style.display = 'none';
+        
+            // SCORM reporting
+            const scorePercent = Math.round((correct / quizAnswers.length) * 100);
+            const passed = scorePercent >= 70;
+
+            if (typeof setSCORMScore === 'function') {
+                setSCORMScore(scorePercent);
+            }
+            if (typeof setSCORMStatus === 'function') {
+                setSCORMStatus(passed ? 'passed' : 'failed');
+            }
+
+            // Celebration confetti for passing
+            if (passed && typeof confetti === 'function') {
+                confetti({
+                    particleCount: 100,
+                    spread: 70,
+                    origin: { y: 0.6 },
+                    colors: ['#2ED4B5', '#1657A0', '#FFC83B', '#19316A']
+                });
+
+                setTimeout(() => {
+                    confetti({
+                        particleCount: 50,
+                        angle: 60,
+                        spread: 55,
+                        origin: { x: 0 },
+                        colors: ['#2ED4B5', '#1657A0', '#FFC83B']
+                    });
+                }, 250);
+
+                setTimeout(() => {
+                    confetti({
+                        particleCount: 50,
+                        angle: 120,
+                        spread: 55,
+                        origin: { x: 1 },
+                        colors: ['#2ED4B5', '#1657A0', '#FFC83B']
+                    });
+                }, 400);
+            }
+
+            // Close popup window after completion
+            if (window.opener !== null) {
+                setTimeout(() => {
+                    const shouldClose = confirm('Module completed! Close this window?');
+                    if (shouldClose) {
+                        window.close();
+                    }
+                }, 3000);
+            }
+        }
+
+        // Copy to clipboard
+        function copyToClipboard(button) {
+            const codeBlock = button.parentElement.querySelector('pre');
+            navigator.clipboard.writeText(codeBlock.textContent).then(() => {
+                button.textContent = 'Copied!';
+                setTimeout(() => button.textContent = 'Copy', 2000);
+            });
+        }
+
+        // Initialize nav click handlers
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', () => {
+                const screen = item.dataset.screen;
+                if (screen) navigateTo(screen);
+            });
+        });
+
+        // Initialize
+        document.getElementById('cardTotal').textContent = flashcards.length;
+    </script>
+</body>
+</html>

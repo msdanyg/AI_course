@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solo Pilot to Squadron Leader | ActivTrak</title>
+    <script src="scorm_api.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sofia+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-blue: #0042F3;
+            --pelorous: #33A7B5;
+            --teal: #2FD3B4;
+            --violet-red: #EE2C82;
+            --dark-base: #252D38;
+            --light-gray: #D9D9D9;
+            --bg-light: #F8F9FA;
+            --white: #FFFFFF;
+            --success: #2FD3B4;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Sofia Sans', sans-serif;
+            background: var(--bg-light);
+            color: var(--dark-base);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, #384B76 100%);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .progress-bar-container {
+            background: rgba(255,255,255,0.2);
+            height: 8px;
+            border-radius: 4px;
+            margin-top: 1.5rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: var(--teal);
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        .progress-text {
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .intro {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .intro h2 {
+            color: var(--primary-blue);
+            margin-bottom: 1rem;
+        }
+
+        .modules-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .module-card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            transition: transform 0.2s, box-shadow 0.2s;
+            cursor: pointer;
+            border-left: 4px solid var(--light-gray);
+            position: relative;
+        }
+
+        .module-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+        }
+
+        .module-card.completed {
+            border-left-color: var(--success);
+        }
+
+        .module-card.current {
+            border-left-color: var(--primary-blue);
+        }
+
+        .module-number {
+            display: inline-block;
+            background: var(--bg-light);
+            color: var(--dark-base);
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+        }
+
+        .module-card.completed .module-number {
+            background: #DCFCE7;
+            color: #166534;
+        }
+
+        .module-card.current .module-number {
+            background: rgba(0, 66, 243, 0.1);
+            color: var(--primary-blue);
+        }
+
+        .module-card h3 {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .module-card p {
+            font-size: 0.9rem;
+            color: #6B7280;
+        }
+
+        .status-icon {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+        }
+
+        .module-card.completed .status-icon {
+            background: var(--success);
+            color: white;
+        }
+
+        .iframe-container {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--white);
+            z-index: 1000;
+        }
+
+        .iframe-container.active {
+            display: block;
+        }
+
+        .iframe-header {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, #384B76 100%);
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .iframe-header h2 {
+            font-size: 1.2rem;
+        }
+
+        .back-btn {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .back-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .module-iframe {
+            width: 100%;
+            height: calc(100vh - 60px);
+            border: none;
+        }
+
+        .complete-course-btn {
+            display: block;
+            width: 100%;
+            max-width: 400px;
+            margin: 2rem auto;
+            padding: 1rem 2rem;
+            background: var(--primary-blue);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .complete-course-btn:hover {
+            background: #0035C7;
+        }
+
+        .complete-course-btn:disabled {
+            background: var(--light-gray);
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    <!-- Main Course Menu -->
+    <div id="courseMenu">
+        <header class="header">
+            <h1>Solo Pilot to Squadron Leader</h1>
+            <p>Practical AI for Knowledge Work</p>
+            <div class="progress-bar-container">
+                <div class="progress-bar-fill" id="progressFill" style="width: 0%"></div>
+            </div>
+            <div class="progress-text"><span id="completedCount">0</span> of 12 modules completed</div>
+        </header>
+
+        <div class="container">
+            <div class="intro">
+                <h2>Welcome, Squadron Leader</h2>
+                <p>This course transforms you from a casual AI user into an AI Architect capable of orchestrating Claude, Gemini and Granola. Complete all 12 modules to earn your certification.</p>
+                <p style="margin-top: 1rem;"><strong>Core Principle:</strong> "AI drafts. Humans send." You clear missions for takeoff and own what leaves the runway.</p>
+            </div>
+
+            <div class="modules-grid" id="modulesGrid">
+                <!-- Modules will be inserted here by JavaScript -->
+            </div>
+
+            <button class="complete-course-btn" id="completeCourseBtn" onclick="completeCourse()" disabled>
+                Complete Course & Get Certified
+            </button>
+        </div>
+    </div>
+
+    <!-- Module Viewer -->
+    <div class="iframe-container" id="moduleViewer">
+        <div class="iframe-header">
+            <button class="back-btn" onclick="closeModule()">← Back to Course</button>
+            <h2 id="moduleTitle">Module</h2>
+            <button class="back-btn" onclick="markComplete()">Mark Complete ✓</button>
+        </div>
+        <iframe id="moduleFrame" class="module-iframe" src=""></iframe>
+    </div>
+
+    <script>
+        // Module data
+        const modules = [
+            { num: 0, title: "Pre-Flight Check", subtitle: "Setup, Policy & Boundaries", file: "modules/module_0.html" },
+            { num: 1, title: "The Cognitive Shift", subtitle: "Understanding the Reasoning Engine", file: "modules/module_1.html" },
+            { num: 2, title: "Model Selection", subtitle: "The Thinking Protocol", file: "modules/module_2.html" },
+            { num: 3, title: "Prompt Architecture", subtitle: "Advanced Prompt Architecture (XML)", file: "modules/module_3.html" },
+            { num: 4, title: "Agentic Data Analysis", subtitle: "The No Math Rule", file: "modules/module_4.html" },
+            { num: 5, title: "The Sensory System", subtitle: "Gemini & Granola", file: "modules/module_5.html" },
+            { num: 6, title: "Decision Hygiene", subtitle: "Beating Sycophancy", file: "modules/module_6.html" },
+            { num: 7, title: "The Hybrid Agent", subtitle: "Mac, Mobile & Docs", file: "modules/module_7.html" },
+            { num: 8, title: "Systemizing Intelligence", subtitle: "Projects, GPTs and Gems", file: "modules/module_8.html" },
+            { num: 9, title: "Code Execution", subtitle: "File Creation (Excel, PPT, PDF)", file: "modules/module_9.html" },
+            { num: 10, title: "Future Frontiers", subtitle: "Agents & MCP", file: "modules/module_10.html" },
+            { num: 11, title: "Capstone & Governance", subtitle: "Accountability & Certification", file: "modules/module_11.html" }
+        ];
+
+        // Track completion state
+        let completedModules = new Set();
+        let currentModule = null;
+
+        // Load saved progress from localStorage (fallback) and SCORM
+        function loadProgress() {
+            try {
+                const saved = localStorage.getItem('squadron_progress');
+                if (saved) {
+                    completedModules = new Set(JSON.parse(saved));
+                }
+            } catch (e) {
+                console.log('No saved progress found');
+            }
+            updateUI();
+        }
+
+        // Save progress
+        function saveProgress() {
+            try {
+                localStorage.setItem('squadron_progress', JSON.stringify([...completedModules]));
+            } catch (e) {
+                console.log('Could not save to localStorage');
+            }
+
+            // Update SCORM progress
+            const progress = Math.round((completedModules.size / modules.length) * 100);
+            setSCORMProgress(progress);
+        }
+
+        // Render module cards
+        function renderModules() {
+            const grid = document.getElementById('modulesGrid');
+            grid.innerHTML = '';
+
+            modules.forEach((mod, index) => {
+                const isCompleted = completedModules.has(mod.num);
+                const isCurrent = index === 0 || completedModules.has(modules[index - 1].num);
+
+                const card = document.createElement('div');
+                card.className = `module-card ${isCompleted ? 'completed' : ''} ${!isCompleted && isCurrent ? 'current' : ''}`;
+                card.onclick = () => openModule(mod);
+
+                card.innerHTML = `
+                    <span class="module-number">Module ${mod.num}</span>
+                    <h3>${mod.title}</h3>
+                    <p>${mod.subtitle}</p>
+                    ${isCompleted ? '<div class="status-icon">✓</div>' : ''}
+                `;
+
+                grid.appendChild(card);
+            });
+        }
+
+        // Update UI elements
+        function updateUI() {
+            renderModules();
+
+            const count = completedModules.size;
+            document.getElementById('completedCount').textContent = count;
+            document.getElementById('progressFill').style.width = `${(count / modules.length) * 100}%`;
+
+            // Enable complete button when all modules done
+            document.getElementById('completeCourseBtn').disabled = count < modules.length;
+        }
+
+        // Open a module
+        function openModule(mod) {
+            currentModule = mod;
+            document.getElementById('moduleTitle').textContent = `Module ${mod.num}: ${mod.title}`;
+            document.getElementById('moduleFrame').src = mod.file;
+            document.getElementById('moduleViewer').classList.add('active');
+            document.getElementById('courseMenu').style.display = 'none';
+        }
+
+        // Close module viewer
+        function closeModule() {
+            document.getElementById('moduleViewer').classList.remove('active');
+            document.getElementById('courseMenu').style.display = 'block';
+            document.getElementById('moduleFrame').src = '';
+            currentModule = null;
+        }
+
+        // Mark current module as complete
+        function markComplete() {
+            if (currentModule) {
+                completedModules.add(currentModule.num);
+                saveProgress();
+                updateUI();
+                closeModule();
+            }
+        }
+
+        // Complete the entire course
+        function completeCourse() {
+            if (completedModules.size >= modules.length) {
+                // Calculate a score (100% for completing all modules)
+                const score = 100;
+                setSCORMScore(score);
+                setSCORMPassed(true);
+
+                alert('Congratulations, Squadron Leader! You have completed the course and earned your certification.');
+            }
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            loadProgress();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,1134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bonus: SARA | Solo Pilot to Squadron Leader</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sofia+Sans:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+    <style>
+        :root {
+            /* ActivTrak Brand Colors */
+            --dark-navy: #14203F;
+            --medium-navy: #19316A;
+            --blue: #1657A0;
+            --teal: #2ED4B5;
+            --yellow: #FFC83B;
+            --white: #FFFFFF;
+
+            /* Legacy aliases for compatibility */
+            --primary-blue: #19316A;
+            --pelorous: #1657A0;
+            --dark-base: #14203F;
+            --light-gray: #D9D9D9;
+            --bg-light: #F8F9FA;
+            --success: #2ED4B5;
+            --error: #EE2C82;
+            --warning: #F5A623;
+
+            /* Module-specific colors */
+            --module-accent: #8B5CF6;
+            --module-accent-light: #EDE9FE;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Sofia Sans', sans-serif;
+            background: var(--bg-light);
+            color: var(--dark-base);
+            line-height: 1.6;
+        }
+
+        .course-header {
+            background: linear-gradient(135deg, var(--dark-navy) 0%, var(--medium-navy) 100%);
+            color: white;
+            padding: 1rem 2rem;
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .course-title { font-size: 1.1rem; font-weight: 600; }
+        .course-subtitle { font-size: 0.85rem; opacity: 0.9; }
+
+        .progress-container { display: flex; align-items: center; gap: 1rem; }
+        .progress-bar { width: 200px; height: 8px; background: rgba(255,255,255,0.3); border-radius: 4px; overflow: hidden; }
+        .progress-fill { height: 100%; background: var(--teal); border-radius: 4px; transition: width 0.5s ease; }
+        .progress-text { font-size: 0.85rem; }
+
+        .main-container { display: flex; margin-top: 60px; min-height: calc(100vh - 60px); }
+
+        .sidebar {
+            width: 280px; background: var(--white); border-right: 1px solid var(--light-gray);
+            position: fixed; top: 60px; bottom: 0; left: 0; overflow-y: auto; padding: 1.5rem 0;
+        }
+        .nav-section { padding: 0 1rem; margin-bottom: 1.5rem; }
+        .nav-section-title { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; color: #6B7280; margin-bottom: 0.75rem; padding: 0 0.75rem; }
+
+        .nav-item { display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem; border-radius: 8px; cursor: pointer; transition: all 0.2s; margin-bottom: 0.25rem; }
+        .nav-item:hover { background: var(--bg-light); }
+        .nav-item.active { background: var(--module-accent-light); color: var(--module-accent); }
+        .nav-icon { width: 28px; height: 28px; border-radius: 50%; background: var(--light-gray); display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 600; flex-shrink: 0; }
+        .nav-item.active .nav-icon { background: var(--module-accent); color: white; }
+        .nav-label { font-size: 0.9rem; font-weight: 500; }
+        .nav-duration { font-size: 0.75rem; color: #6B7280; margin-left: auto; }
+
+        .content-area { flex: 1; margin-left: 280px; padding: 2rem 3rem; max-width: 1000px; }
+
+        .screen { display: none; }
+        .screen.active { display: block; animation: fadeIn 0.4s ease; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Welcome Screen */
+        .welcome-hero {
+            background: linear-gradient(135deg, var(--module-accent) 0%, #6D28D9 100%);
+            border-radius: 16px; padding: 3rem; color: white; margin-bottom: 2rem;
+            position: relative; overflow: hidden;
+        }
+        .welcome-hero::before { content: ''; position: absolute; top: -50%; right: -20%; width: 400px; height: 400px; background: rgba(255,255,255,0.1); border-radius: 50%; }
+        .welcome-hero h1 { font-size: 2.5rem; font-weight: 700; margin-bottom: 0.5rem; position: relative; }
+        .welcome-hero .module-tag { display: inline-block; background: rgba(255,255,255,0.2); padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.85rem; margin-bottom: 1rem; }
+        .welcome-hero p { font-size: 1.1rem; opacity: 0.95; max-width: 600px; position: relative; }
+
+        .objectives-card { background: var(--white); border-radius: 12px; padding: 2rem; margin-bottom: 2rem; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        .objectives-card h2 { font-size: 1.25rem; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.5rem; }
+        .objective-item { display: flex; align-items: flex-start; gap: 1rem; padding: 1rem 0; border-bottom: 1px solid var(--bg-light); }
+        .objective-item:last-child { border-bottom: none; }
+        .objective-level { font-size: 0.7rem; text-transform: uppercase; padding: 0.25rem 0.5rem; border-radius: 4px; font-weight: 600; flex-shrink: 0; }
+        .level-retrieval { background: #E0F2FE; color: #0369A1; }
+        .level-comprehension { background: #FEF3C7; color: #B45309; }
+        .level-utilization { background: #D1FAE5; color: #047857; }
+
+        .time-estimate { display: flex; gap: 2rem; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--bg-light); }
+        .time-item { display: flex; align-items: center; gap: 0.5rem; color: #6B7280; }
+
+        .start-btn {
+            background: var(--module-accent); color: white; border: none; padding: 1rem 2rem;
+            border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer;
+            transition: all 0.2s; display: inline-flex; align-items: center; gap: 0.5rem;
+        }
+        .start-btn:hover { background: #7C3AED; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3); }
+
+        /* Lesson Content */
+        .lesson-content { background: var(--white); border-radius: 12px; padding: 2.5rem; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        .lesson-content h1 { font-size: 2rem; margin-bottom: 1.5rem; color: var(--dark-base); }
+        .lesson-content h2 { font-size: 1.5rem; margin: 2rem 0 1rem; color: var(--dark-base); padding-top: 1.5rem; border-top: 1px solid var(--bg-light); }
+        .lesson-content h3 { font-size: 1.2rem; margin: 1.5rem 0 0.75rem; color: var(--module-accent); }
+        .lesson-content p { margin-bottom: 1rem; font-size: 1.05rem; line-height: 1.8; }
+        .lesson-content ul, .lesson-content ol { margin: 1rem 0 1rem 1.5rem; }
+        .lesson-content li { margin-bottom: 0.5rem; line-height: 1.7; }
+
+        .callout { padding: 1.25rem 1.5rem; border-radius: 8px; margin: 1.5rem 0; display: flex; gap: 1rem; }
+        .callout-icon { font-size: 1.5rem; flex-shrink: 0; }
+        .callout-insight { background: var(--module-accent-light); border-left: 4px solid var(--module-accent); }
+        .callout-warning { background: rgba(245, 166, 35, 0.1); border-left: 4px solid var(--warning); }
+        .callout-tip { background: rgba(47, 211, 180, 0.1); border-left: 4px solid var(--teal); }
+
+        .comparison-table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; border-radius: 8px; overflow: hidden; }
+        .comparison-table th { background: var(--dark-base); color: white; padding: 1rem; text-align: left; font-weight: 600; }
+        .comparison-table td { padding: 1rem; border-bottom: 1px solid var(--bg-light); }
+        .comparison-table tr:nth-child(even) { background: var(--bg-light); }
+
+        .code-block { background: #1E1E1E; border-radius: 8px; padding: 1.5rem; margin: 1.5rem 0; overflow-x: auto; }
+        .code-block pre { color: #D4D4D4; font-family: 'Fira Code', monospace; font-size: 0.9rem; line-height: 1.6; white-space: pre-wrap; word-break: break-word; }
+
+        /* Role Cards */
+        .role-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; margin: 2rem 0; }
+        .role-card { background: var(--white); border-radius: 12px; padding: 1.5rem; border: 2px solid var(--light-gray); transition: all 0.3s; }
+        .role-card:hover { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(0,0,0,0.1); border-color: var(--module-accent); }
+        .role-card h4 { font-size: 1.1rem; margin-bottom: 0.5rem; color: var(--dark-base); display: flex; align-items: center; gap: 0.5rem; }
+        .role-card p { font-size: 0.9rem; color: #6B7280; line-height: 1.6; margin: 0; }
+        .role-badge { width: 40px; height: 40px; border-radius: 50%; background: var(--module-accent); color: white; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8rem; margin-bottom: 1rem; }
+
+        /* Video */
+        .video-container { background: var(--dark-base); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 2rem; position: relative; overflow: hidden; }
+
+        /* Flashcards */
+        .flashcard-container { perspective: 1000px; margin: 2rem 0; }
+        .flashcard { background: var(--white); border-radius: 16px; min-height: 300px; position: relative; transform-style: preserve-3d; transition: transform 0.6s; cursor: pointer; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+        .flashcard.flipped { transform: rotateY(180deg); }
+        .flashcard-front, .flashcard-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 16px; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 2rem; text-align: center; }
+        .flashcard-front { background: linear-gradient(135deg, var(--module-accent) 0%, #6D28D9 100%); color: white; }
+        .flashcard-back { background: var(--white); transform: rotateY(180deg); border: 2px solid var(--module-accent); }
+        .flashcard-question { font-size: 1.3rem; font-weight: 600; line-height: 1.5; }
+        .flashcard-answer { font-size: 1.1rem; line-height: 1.7; color: var(--dark-base); }
+        .flashcard-hint { font-size: 0.85rem; opacity: 0.8; margin-top: 1rem; }
+        .flashcard-nav { display: flex; justify-content: center; gap: 1rem; margin-top: 1.5rem; }
+        .flashcard-btn { background: var(--bg-light); border: none; padding: 0.75rem 1.5rem; border-radius: 8px; cursor: pointer; font-weight: 500; transition: all 0.2s; }
+        .flashcard-btn:hover { background: var(--light-gray); }
+        .flashcard-counter { text-align: center; color: #6B7280; margin-top: 1rem; }
+
+        /* Quiz */
+        .quiz-question { background: var(--white); border-radius: 12px; padding: 2rem; margin-bottom: 1.5rem; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        .quiz-question h3 { font-size: 1.1rem; margin-bottom: 1.5rem; color: var(--dark-base); }
+        .quiz-options { display: flex; flex-direction: column; gap: 0.75rem; }
+        .quiz-option { display: flex; align-items: center; gap: 1rem; padding: 1rem 1.25rem; border: 2px solid var(--light-gray); border-radius: 8px; cursor: pointer; transition: all 0.2s; }
+        .quiz-option:hover { border-color: var(--module-accent); background: var(--module-accent-light); }
+        .quiz-option.selected { border-color: var(--module-accent); background: var(--module-accent-light); }
+        .quiz-option.correct { border-color: var(--success); background: rgba(47, 211, 180, 0.1); }
+        .quiz-option.incorrect { border-color: var(--error); background: rgba(238, 44, 130, 0.1); }
+        .quiz-radio { width: 20px; height: 20px; border: 2px solid var(--light-gray); border-radius: 50%; flex-shrink: 0; position: relative; }
+        .quiz-option.selected .quiz-radio { border-color: var(--module-accent); }
+        .quiz-option.selected .quiz-radio::after { content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 10px; height: 10px; background: var(--module-accent); border-radius: 50%; }
+        .quiz-feedback { margin-top: 1rem; padding: 1rem; border-radius: 8px; display: none; }
+        .quiz-feedback.show { display: block; }
+        .quiz-feedback.correct { background: rgba(47, 211, 180, 0.1); border-left: 4px solid var(--success); }
+        .quiz-feedback.incorrect { background: rgba(238, 44, 130, 0.1); border-left: 4px solid var(--error); }
+
+        .submit-btn { background: var(--module-accent); color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+        .submit-btn:hover { background: #7C3AED; }
+
+        .quiz-results-panel { display: none; background: var(--dark-base); color: var(--white); border-radius: 12px; padding: 2rem; margin: 2rem 0; border: 2px solid var(--teal); text-align: center; }
+        .quiz-results-panel h2 { color: var(--white); margin-bottom: 1rem; }
+        .quiz-score-display { font-size: 2.5rem; font-weight: 700; margin-bottom: 0.5rem; }
+        .quiz-status-msg { font-size: 1.1rem; margin-bottom: 1.5rem; }
+        .retake-btn { background: transparent; color: var(--teal); border: 2px solid var(--teal); padding: 0.75rem 1.5rem; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+        .retake-btn:hover { background: var(--teal); color: var(--dark-base); }
+
+        /* Lab */
+        .lab-step { background: var(--white); border-radius: 12px; padding: 1.5rem; margin-bottom: 1rem; border-left: 4px solid var(--module-accent); }
+        .lab-step-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; }
+        .lab-step-number { width: 32px; height: 32px; border-radius: 50%; background: var(--module-accent); color: white; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0; }
+        .lab-step h4 { font-size: 1rem; }
+        .lab-checklist { list-style: none; margin: 1rem 0 0 0; padding: 0; }
+        .lab-checklist li { display: flex; align-items: flex-start; gap: 0.75rem; padding: 0.5rem 0; }
+        .lab-checkbox { width: 20px; height: 20px; border: 2px solid var(--light-gray); border-radius: 4px; flex-shrink: 0; cursor: pointer; transition: all 0.2s; }
+        .lab-checkbox.checked { background: var(--success); border-color: var(--success); }
+
+        /* Study Guide */
+        .study-section { background: var(--white); border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        .study-section h3 { font-size: 1.1rem; margin-bottom: 1rem; color: var(--module-accent); display: flex; align-items: center; gap: 0.5rem; }
+        .key-terms { display: grid; gap: 0.75rem; }
+        .term-item { display: grid; grid-template-columns: 160px 1fr; gap: 1rem; padding: 0.75rem; background: var(--bg-light); border-radius: 8px; }
+        .term-name { font-weight: 600; color: var(--module-accent); }
+
+        .mantra-card { background: linear-gradient(135deg, var(--module-accent) 0%, #6D28D9 100%); border-radius: 12px; padding: 2rem; color: white; text-align: center; margin: 2rem 0; }
+        .mantra-card blockquote { font-size: 1.3rem; font-weight: 600; font-style: italic; margin: 0; }
+
+        /* Navigation Buttons */
+        .nav-buttons { display: flex; justify-content: space-between; margin-top: 2rem; padding-top: 2rem; border-top: 1px solid var(--light-gray); }
+        .nav-btn { display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.5rem; border-radius: 8px; font-weight: 500; cursor: pointer; transition: all 0.2s; }
+        .nav-btn.prev { background: var(--bg-light); border: none; color: var(--dark-base); }
+        .nav-btn.next { background: var(--module-accent); border: none; color: white; }
+        .nav-btn:hover { transform: translateX(2px); }
+        .nav-btn.prev:hover { transform: translateX(-2px); }
+
+        /* Completion */
+        .completion-hero { text-align: center; padding: 3rem; }
+        .completion-icon { width: 100px; height: 100px; border-radius: 50%; background: linear-gradient(135deg, var(--success) 0%, var(--teal) 100%); display: flex; align-items: center; justify-content: center; margin: 0 auto 2rem; font-size: 3rem; }
+        .completion-hero h1 { font-size: 2rem; margin-bottom: 1rem; }
+        .completion-stats { display: flex; justify-content: center; gap: 3rem; margin: 2rem 0; }
+        .stat-item { text-align: center; }
+        .stat-value { font-size: 2rem; font-weight: 700; color: var(--module-accent); }
+        .stat-label { font-size: 0.9rem; color: #6B7280; }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .sidebar { width: 240px; }
+            .content-area { margin-left: 240px; padding: 1.5rem 2rem; }
+            .role-grid { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 768px) {
+            .sidebar { display: none; }
+            .content-area { margin-left: 0; padding: 1rem; }
+            .welcome-hero { padding: 2rem; }
+            .welcome-hero h1 { font-size: 1.75rem; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="course-header">
+        <div>
+            <div class="course-title">Solo Pilot to Squadron Leader</div>
+            <div class="course-subtitle">Bonus: SARA</div>
+        </div>
+        <div class="progress-container">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+            </div>
+            <span class="progress-text" id="progressText">0% complete</span>
+        </div>
+    </header>
+
+    <div class="main-container">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="nav-section">
+                <div class="nav-section-title">Module Content</div>
+                <div class="nav-item active" data-screen="welcome">
+                    <div class="nav-icon">1</div>
+                    <span class="nav-label">Overview</span>
+                    <span class="nav-duration">2 min</span>
+                </div>
+                <div class="nav-item" data-screen="video">
+                    <div class="nav-icon">2</div>
+                    <span class="nav-label">Video</span>
+                    <span class="nav-duration">15 min</span>
+                </div>
+                <div class="nav-item" data-screen="lesson">
+                    <div class="nav-icon">3</div>
+                    <span class="nav-label">Reading</span>
+                    <span class="nav-duration">8 min</span>
+                </div>
+                <div class="nav-item" data-screen="flashcards">
+                    <div class="nav-icon">4</div>
+                    <span class="nav-label">Flashcards</span>
+                    <span class="nav-duration">3 min</span>
+                </div>
+                <div class="nav-item" data-screen="lab">
+                    <div class="nav-icon">5</div>
+                    <span class="nav-label">Lab Exercise</span>
+                    <span class="nav-duration">15 min</span>
+                </div>
+                <div class="nav-item" data-screen="quiz">
+                    <div class="nav-icon">6</div>
+                    <span class="nav-label">Knowledge Check</span>
+                    <span class="nav-duration">5 min</span>
+                </div>
+                <div class="nav-item" data-screen="study-guide">
+                    <div class="nav-icon">7</div>
+                    <span class="nav-label">Study Guide</span>
+                    <span class="nav-duration">Review</span>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Content Area -->
+        <main class="content-area">
+
+            <!-- Welcome Screen -->
+            <section class="screen active" id="welcome">
+                <div class="welcome-hero">
+                    <div class="module-tag">Bonus Module</div>
+                    <h1>SARA</h1>
+                    <p>Your Mission-Specific Command Center. A Claude Project pre-built for ActivTrak's revenue teams — competitive intel, positioning and messaging on demand.</p>
+                </div>
+
+                <div class="objectives-card">
+                    <h2>Learning Objectives</h2>
+                    <div class="objective-item">
+                        <span class="objective-level level-retrieval">Retrieval</span>
+                        <span>Identify what SARA is, what intelligence files it contains and what makes it different from a regular Claude chat</span>
+                    </div>
+                    <div class="objective-item">
+                        <span class="objective-level level-comprehension">Comprehension</span>
+                        <span>Explain what SARA can and cannot do for each revenue role (AE, SDR, CSM, SE)</span>
+                    </div>
+                    <div class="objective-item">
+                        <span class="objective-level level-utilization">Utilization</span>
+                        <span>Use SARA to handle a competitive objection and feed it external context for positioning-aligned output</span>
+                    </div>
+
+                    <div class="time-estimate">
+                        <div class="time-item">
+                            <span>~45 minutes total</span>
+                        </div>
+                        <div class="time-item">
+                            <span>Tools: Claude (SARA Project access)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="start-btn" onclick="navigateTo('video')">
+                    Start Module
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M5 12h14M12 5l7 7-7 7"/>
+                    </svg>
+                </button>
+            </section>
+
+            <!-- Video Screen -->
+            <section class="screen" id="video">
+                <div class="video-container">
+                    <video controls width="100%" style="max-width: 900px; border-radius: 8px;">
+                        <source src="SARA Walkthrough.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+                <div class="lesson-content">
+                    <h2>Meet SARA: The Revenue Team's Command Center</h2>
+                    <p>This video walks through what SARA is, how it works and real examples of how AEs, SDRs, CSMs and SEs are using it today. You'll see live demonstrations of competitive positioning, objection handling and context feeding.</p>
+                </div>
+                <div class="nav-buttons">
+                    <button class="nav-btn prev" onclick="navigateTo('welcome')">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                        Overview
+                    </button>
+                    <button class="nav-btn next" onclick="navigateTo('lesson')">
+                        Continue Reading
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                    </button>
+                </div>
+            </section>
+
+            <!-- Lesson Screen -->
+            <section class="screen" id="lesson">
+                <div class="lesson-content">
+                    <h1>SARA: Your Mission-Specific Command Center</h1>
+
+                    <div class="callout callout-insight">
+                        <div class="callout-icon">!</div>
+                        <div>
+                            <strong>Connection to Module 4</strong><br>
+                            Module 4 taught you to build your own Mission Headquarters from scratch. SARA is a Headquarters that's already built, stocked and operational. Same concept, real-world example.
+                        </div>
+                    </div>
+
+                    <h2>What SARA Actually Is</h2>
+                    <p>SARA (Sales Assistant Response Agent) is a Claude Project purpose-built for ActivTrak's revenue teams. Rather than hunting down a PMM or digging through enablement folders, you query SARA in natural language and get positioning-aligned outputs in seconds.</p>
+
+                    <p>Inside the Project:</p>
+                    <ul>
+                        <li><strong>Custom instructions</strong> define how SARA should respond, what language to use and what to avoid</li>
+                        <li><strong>Project files</strong> contain battlecards, case studies, competitive analysis, positioning guides and approved messaging from the GTM hub</li>
+                        <li><strong>Guardrails</strong> prevent SARA from inventing information or answering questions outside its scope</li>
+                    </ul>
+
+                    <p>The critical distinction: a regular Claude chat gives you whatever the internet says about ActivTrak. SARA gives you what <em>we</em> say about ActivTrak, grounded in our approved positioning.</p>
+
+                    <h2>Five Core Capabilities</h2>
+
+                    <div class="role-grid">
+                        <div class="role-card">
+                            <div class="role-badge">1</div>
+                            <h4>Live Call Assistance</h4>
+                            <p>Prospect mentions a competitor mid-call? Open SARA on your second screen, type the scenario and get positioning angles in seconds while your rep keeps talking.</p>
+                        </div>
+                        <div class="role-card">
+                            <div class="role-badge">2</div>
+                            <h4>Objection Handling</h4>
+                            <p>"We just implemented Workday." Type the objection into SARA and get complementary positioning that frames ActivTrak alongside existing tools, not against them.</p>
+                        </div>
+                        <div class="role-card">
+                            <div class="role-badge">3</div>
+                            <h4>Outbound Messaging</h4>
+                            <p>SDR sequences, cold email drafts, follow-up templates — all aligned with ActivTrak's positioning language from the start.</p>
+                        </div>
+                        <div class="role-card">
+                            <div class="role-badge">4</div>
+                            <h4>Discovery Questions</h4>
+                            <p>Preparing for a competitive evaluation? Get discovery questions specific to the competitor, use case and buyer persona.</p>
+                        </div>
+                    </div>
+
+                    <div class="callout callout-tip">
+                        <div class="callout-icon">*</div>
+                        <div>
+                            <strong>Context Feeding — The Fifth Capability</strong><br>
+                            SARA's most powerful feature: paste raw information from any source (Granola transcripts, Slack threads, support center articles, meeting notes) and ask SARA to reframe it through ActivTrak's positioning. Your raw input becomes positioning-aligned output.
+                        </div>
+                    </div>
+
+                    <h2>What SARA Cannot Do</h2>
+
+                    <table class="comparison-table">
+                        <tr>
+                            <th>SARA Can Do</th>
+                            <th>SARA Cannot Do</th>
+                        </tr>
+                        <tr>
+                            <td>Competitive positioning</td>
+                            <td>Product documentation</td>
+                        </tr>
+                        <tr>
+                            <td>Objection handling</td>
+                            <td>QBR deck creation</td>
+                        </tr>
+                        <tr>
+                            <td>Discovery question generation</td>
+                            <td>CRM integration</td>
+                        </tr>
+                        <tr>
+                            <td>Outbound messaging alignment</td>
+                            <td>Replace human judgment</td>
+                        </tr>
+                        <tr>
+                            <td>Case study lookup</td>
+                            <td>Access real-time market data</td>
+                        </tr>
+                        <tr>
+                            <td>Context reframing</td>
+                            <td>Upload new files (centrally managed)</td>
+                        </tr>
+                    </table>
+
+                    <div class="callout callout-warning">
+                        <div class="callout-icon">!</div>
+                        <div>
+                            <strong>Intelligence Files Are Not Real-Time</strong><br>
+                            SARA's project files are manually maintained. If a feature launched today, SARA may not know about it yet. The files are updated regularly, but there's always a small lag. Always verify critical details.
+                        </div>
+                    </div>
+
+                    <h2>How Different Roles Use SARA</h2>
+
+                    <div class="role-grid">
+                        <div class="role-card">
+                            <div class="role-badge">AE</div>
+                            <h4>Account Executives</h4>
+                            <p>Mid-call competitive intel, discovery question generation, proposal language refinement and business case framing.</p>
+                        </div>
+                        <div class="role-card">
+                            <div class="role-badge">SDR</div>
+                            <h4>Sales Development</h4>
+                            <p>Cold call objection handling, outbound sequence creation and persona-aligned messaging. Faster than searching enablement folders.</p>
+                        </div>
+                        <div class="role-card">
+                            <div class="role-badge">CSM</div>
+                            <h4>Customer Success</h4>
+                            <p>Renewal positioning, expansion value stories, case study lookup and communication reframing for customer conversations.</p>
+                        </div>
+                        <div class="role-card">
+                            <div class="role-badge">SE</div>
+                            <h4>Sales Engineering</h4>
+                            <p>Technical positioning against competitors, demo talking points and differentiation summaries in positioning language.</p>
+                        </div>
+                    </div>
+
+                    <h2>Getting Started</h2>
+
+                    <p>Two things to do right now:</p>
+                    <ol>
+                        <li><strong>Star the SARA Project</strong> in Claude so it shows up on your left sidebar for quick access</li>
+                        <li><strong>Ask SARA how it can help you:</strong> Open a new chat and type <em>"I'm a [your role]. How can you help me?"</em></li>
+                    </ol>
+
+                    <p>Think of SARA as an always-available intern who has read every battlecard, every case study and every positioning doc we've ever produced. The intern doesn't know everything — but they're very hardworking, very smart and ready to go the moment you walk in.</p>
+
+                    <p><strong>AI drafts. Humans send. You clear missions for takeoff and own what leaves the runway.</strong></p>
+                </div>
+
+                <div class="nav-buttons">
+                    <button class="nav-btn prev" onclick="navigateTo('video')">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                        Video
+                    </button>
+                    <button class="nav-btn next" onclick="navigateTo('flashcards')">
+                        Review Flashcards
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                    </button>
+                </div>
+            </section>
+
+            <!-- Flashcards Screen -->
+            <section class="screen" id="flashcards">
+                <h1 style="margin-bottom: 2rem;">Flashcards</h1>
+
+                <div class="flashcard-container">
+                    <div class="flashcard" id="flashcard" onclick="flipCard()">
+                        <div class="flashcard-front">
+                            <div class="flashcard-question" id="flashcardQuestion"></div>
+                            <div class="flashcard-hint">Click to reveal answer</div>
+                        </div>
+                        <div class="flashcard-back">
+                            <div class="flashcard-answer" id="flashcardAnswer"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flashcard-nav">
+                    <button class="flashcard-btn" onclick="prevCard()">Previous</button>
+                    <button class="flashcard-btn" onclick="flipCard()">Flip</button>
+                    <button class="flashcard-btn" onclick="nextCard()">Next</button>
+                </div>
+                <div class="flashcard-counter" id="flashcardCounter"></div>
+
+                <div class="nav-buttons">
+                    <button class="nav-btn prev" onclick="navigateTo('lesson')">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                        Reading
+                    </button>
+                    <button class="nav-btn next" onclick="navigateTo('lab')">
+                        Start Lab Exercise
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                    </button>
+                </div>
+            </section>
+
+            <!-- Lab Screen -->
+            <section class="screen" id="lab">
+                <div class="lesson-content">
+                    <h1>Lab Exercise: Meet Your Command Center</h1>
+                    <p><strong>Duration:</strong> 15-20 minutes | <strong>Tools:</strong> Claude (SARA Project access)</p>
+
+                    <div class="callout callout-insight">
+                        <div class="callout-icon">!</div>
+                        <div>
+                            <strong>Objective</strong><br>
+                            Open SARA, test its capabilities for your specific role, practice feeding it external context and discover its boundaries firsthand.
+                        </div>
+                    </div>
+
+                    <h2>Step 1: Open SARA (2 min)</h2>
+                    <div class="lab-step">
+                        <div class="lab-step-header">
+                            <div class="lab-step-number">1</div>
+                            <h4>Navigate to SARA</h4>
+                        </div>
+                        <p>Go to <strong>claude.ai</strong>. In the left sidebar, find the <strong>SARA</strong> Project. Star it for quick access. Start a <strong>new chat</strong> inside the Project.</p>
+                    </div>
+
+                    <h2>Step 2: Orientation (3 min)</h2>
+                    <div class="lab-step">
+                        <div class="lab-step-header">
+                            <div class="lab-step-number">2</div>
+                            <h4>Ask SARA How It Can Help</h4>
+                        </div>
+                        <p>Type this prompt:</p>
+                        <div class="code-block">
+                            <pre>I'm a [your role: AE / SDR / CSM / SE]. How can you help me?</pre>
+                        </div>
+                        <p>Review the response. Does it describe competitive positioning support? Does it mention specific files it has access to?</p>
+                    </div>
+
+                    <h2>Step 3: Role-Based Scenario (5 min)</h2>
+                    <div class="lab-step">
+                        <div class="lab-step-header">
+                            <div class="lab-step-number">3</div>
+                            <h4>Run a Real Scenario</h4>
+                        </div>
+                        <p>Based on your role, paste one of these:</p>
+                        <div class="code-block">
+                            <pre>AE: "I'm on a call with a prospect who uses Teramind. What are the top 3 positioning angles and discovery questions?"
+
+SDR: "A prospect said they just implemented Workday and aren't looking at new vendors. How do I position ActivTrak as complementary?"
+
+CSM: "A customer is considering switching to Hubstaff at renewal. Give me a renewal positioning brief."
+
+SE: "I need to demo against Insightful. What are our strongest technical differentiators?"</pre>
+                        </div>
+                        <p>Evaluate: Does the output use ActivTrak positioning language? Is it specific enough for a real conversation?</p>
+                    </div>
+
+                    <h2>Step 4: Feed External Context (5 min)</h2>
+                    <div class="lab-step">
+                        <div class="lab-step-header">
+                            <div class="lab-step-number">4</div>
+                            <h4>Context Feeding</h4>
+                        </div>
+                        <p>Find a real piece of text from your work (Slack message, meeting notes, support article). Paste it into SARA:</p>
+                        <div class="code-block">
+                            <pre>Reframe the following through ActivTrak's competitive positioning. I need to use this in a [email / call / presentation]:
+
+[Paste your text here]</pre>
+                        </div>
+                        <p>Evaluate: Did SARA maintain the facts but align the language with ActivTrak positioning?</p>
+                    </div>
+
+                    <h2>Step 5: Boundary Test (3 min)</h2>
+                    <div class="lab-step">
+                        <div class="lab-step-header">
+                            <div class="lab-step-number">5</div>
+                            <h4>Test SARA's Limits</h4>
+                        </div>
+                        <p>Ask SARA something outside its scope:</p>
+                        <div class="code-block">
+                            <pre>Build me a complete QBR deck for my customer including their specific usage data and ROI calculations.</pre>
+                        </div>
+                        <p>Observe: Does it attempt a full deck or redirect you appropriately?</p>
+                    </div>
+
+                    <h2>Success Criteria</h2>
+                    <ul class="lab-checklist">
+                        <li><span class="lab-checkbox" onclick="toggleCheck(this)"></span>Opened SARA and received an orientation response</li>
+                        <li><span class="lab-checkbox" onclick="toggleCheck(this)"></span>Ran a role-based scenario and received positioning-aligned output</li>
+                        <li><span class="lab-checkbox" onclick="toggleCheck(this)"></span>Fed external context and received reframed output</li>
+                        <li><span class="lab-checkbox" onclick="toggleCheck(this)"></span>Tested a boundary and understood SARA's limitations</li>
+                        <li><span class="lab-checkbox" onclick="toggleCheck(this)"></span>Identified one weekly workflow where SARA adds value</li>
+                    </ul>
+                </div>
+
+                <div class="nav-buttons">
+                    <button class="nav-btn prev" onclick="navigateTo('flashcards')">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                        Flashcards
+                    </button>
+                    <button class="nav-btn next" onclick="navigateTo('quiz')">
+                        Take the Quiz
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                    </button>
+                </div>
+            </section>
+
+            <!-- Quiz Screen -->
+            <section class="screen" id="quiz">
+                <h1 style="margin-bottom: 2rem;">Knowledge Check</h1>
+
+                <div class="quiz-question" data-correct="2">
+                    <h3>1. What is SARA primarily designed to do?</h3>
+                    <div class="quiz-options">
+                        <div class="quiz-option" onclick="selectOption(this)">
+                            <div class="quiz-radio"></div>
+                            <span>Replace the ActivTrak support center for product documentation</span>
+                        </div>
+                        <div class="quiz-option" onclick="selectOption(this)">
+                            <div class="quiz-radio"></div>
+                            <span>Build QBR slide decks for customer success managers</span>
+                        </div>
+                        <div class="quiz-option" onclick="selectOption(this)">
+                            <div class="quiz-radio"></div>
+                            <span>Provide positioning-aligned competitive intelligence and messaging support for revenue teams</span>
+                        </div>
+                        <div class="quiz-option" onclick="selectOption(this)">
+                            <div class="quiz-radio"></div>
+                            <span>Automate CRM data entry for account executives</span>
+                        </div>
+                    </div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-correct="2">
+                    <h3>2. An SDR receives the objection "We just implemented Workday" during a cold call. What is the best way to use SARA?</h3>
+                    <div class="quiz-options">
+                        <div class="quiz-option" onclick="selectOption(this)">
+                            <div class="quiz-radio"></div>
+                            <span>Ask SARA to call the prospect back with a rebuttal</span>
+                        </div>
+                        <div class="quiz-option" onclick="selectOption(this)">
+                            <div class="quiz-radio"></div>
+                            <span>Search SARA for Workday's product documentation</span>
+                        </div>
+                        <div class="quiz-option" onclick="selectOption(this)">
+                            <div class="quiz-radio"></div>
+                            <span>Type the objection into SARA and ask for complementary positioning showing how ActivTrak works alongside Workday</span>
+                        </div>
+                        <div class="quiz-option" onclick="selectOption(this)">
+                            <div class="quiz-radio"></div>
+                            <span>Ask SARA to remove Workday from the prospect's tech stack</span>
+                        </div>
+                    </div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-correct="1">
+                    <h3>3. True or False: SARA can only produce useful output if you provide additional context beyond your question.</h3>
+                    <div class="quiz-options">
+                        <div class="quiz-option" onclick="selectOption(this)">
+                            <div class="quiz-radio"></div>
+                            <span>True — SARA requires external context for every response</span>
+                        </div>
+                        <div class="quiz-option" onclick="selectOption(this)">
+                            <div class="quiz-radio"></div>
+                            <span>False — SARA has pre-loaded intelligence files and works well on its own, but output improves with specific context</span>
+                        </div>
+                        <div class="quiz-option" onclick="selectOption(this)">
+                            <div class="quiz-radio"></div>
+                            <span>True — SARA has no built-in knowledge</span>
+                        </div>
+                        <div class="quiz-option" onclick="selectOption(this)">
+                            <div class="quiz-radio"></div>
+                            <span>False — Additional context makes no difference to SARA's responses</span>
+                        </div>
+                    </div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-correct="2">
+                    <h3>4. Which of the following is NOT a recommended use of SARA?</h3>
+                    <div class="quiz-options">
+                        <div class="quiz-option" onclick="selectOption(this)">
+                            <div class="quiz-radio"></div>
+                            <span>Generating discovery questions before a competitive evaluation</span>
+                        </div>
+                        <div class="quiz-option" onclick="selectOption(this)">
+                            <div class="quiz-radio"></div>
+                            <span>Drafting outbound email sequences with ActivTrak-aligned language</span>
+                        </div>
+                        <div class="quiz-option" onclick="selectOption(this)">
+                            <div class="quiz-radio"></div>
+                            <span>Creating comprehensive product documentation for the support center</span>
+                        </div>
+                        <div class="quiz-option" onclick="selectOption(this)">
+                            <div class="quiz-radio"></div>
+                            <span>Looking up approved case studies for a specific industry</span>
+                        </div>
+                    </div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-correct="1">
+                    <h3>5. You have raw notes from a Granola meeting transcript about a prospect's remote work challenges. How should you use SARA?</h3>
+                    <div class="quiz-options">
+                        <div class="quiz-option" onclick="selectOption(this)">
+                            <div class="quiz-radio"></div>
+                            <span>Upload the entire transcript as a new file to SARA's knowledge base</span>
+                        </div>
+                        <div class="quiz-option" onclick="selectOption(this)">
+                            <div class="quiz-radio"></div>
+                            <span>Copy the relevant section and paste it into a SARA chat asking it to reframe through ActivTrak positioning</span>
+                        </div>
+                        <div class="quiz-option" onclick="selectOption(this)">
+                            <div class="quiz-radio"></div>
+                            <span>Ask SARA to schedule a follow-up meeting with the prospect</span>
+                        </div>
+                        <div class="quiz-option" onclick="selectOption(this)">
+                            <div class="quiz-radio"></div>
+                            <span>Delete the transcript and ask SARA to generate a summary from memory</span>
+                        </div>
+                    </div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div style="text-align: center; margin-top: 2rem;">
+                    <button id="submit-quiz-btn" class="submit-btn" onclick="checkQuiz()">Check Answers</button>
+                </div>
+
+                <div id="quiz-results" class="quiz-results-panel">
+                    <h2>Quiz Results</h2>
+                    <div id="quiz-score" class="quiz-score-display"></div>
+                    <div id="quiz-status" class="quiz-status-msg"></div>
+                    <button class="retake-btn" onclick="resetQuiz()">Retake Quiz</button>
+                </div>
+
+                <div class="nav-buttons">
+                    <button class="nav-btn prev" onclick="navigateTo('lab')">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                        Lab Exercise
+                    </button>
+                    <button class="nav-btn next" onclick="navigateTo('study-guide')">
+                        View Study Guide
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                    </button>
+                </div>
+            </section>
+
+            <!-- Study Guide Screen -->
+            <section class="screen" id="study-guide">
+                <h1 style="margin-bottom: 2rem;">Quick Reference Study Guide</h1>
+
+                <div class="mantra-card">
+                    <blockquote>"SARA knows how we talk about the product. Claude knows how the internet talks about the product."</blockquote>
+                </div>
+
+                <div class="study-section">
+                    <h3>What SARA Is</h3>
+                    <p>SARA (Sales Assistant Response Agent) is a Claude Project pre-configured with competitive intelligence, positioning guides, battlecards and case studies. It's a Mission-Specific Command Center — walk in and it's ready.</p>
+                </div>
+
+                <div class="study-section">
+                    <h3>Can Do vs. Can't Do</h3>
+                    <table class="comparison-table">
+                        <tr>
+                            <th>SARA Can Do</th>
+                            <th>SARA Cannot Do</th>
+                        </tr>
+                        <tr><td>Competitive positioning</td><td>Product documentation</td></tr>
+                        <tr><td>Objection handling</td><td>QBR deck creation</td></tr>
+                        <tr><td>Discovery question generation</td><td>CRM integration</td></tr>
+                        <tr><td>Outbound messaging alignment</td><td>Replace human judgment</td></tr>
+                        <tr><td>Case study lookup</td><td>Upload new files (centrally managed)</td></tr>
+                    </table>
+                </div>
+
+                <div class="study-section">
+                    <h3>Quick-Start Prompts by Role</h3>
+                    <div class="key-terms">
+                        <div class="term-item">
+                            <span class="term-name">AE</span>
+                            <span>I'm evaluating against [competitor]. What are our top 3 positioning angles?</span>
+                        </div>
+                        <div class="term-item">
+                            <span class="term-name">SDR</span>
+                            <span>Prospect said [objection]. Give me complementary positioning.</span>
+                        </div>
+                        <div class="term-item">
+                            <span class="term-name">CSM</span>
+                            <span>Customer considering [competitor] at renewal. Draft a positioning brief.</span>
+                        </div>
+                        <div class="term-item">
+                            <span class="term-name">SE</span>
+                            <span>I need technical differentiators vs. [competitor] for a demo.</span>
+                        </div>
+                        <div class="term-item">
+                            <span class="term-name">Context Feed</span>
+                            <span>Reframe the following through ActivTrak positioning: [paste text]</span>
+                        </div>
+                        <div class="term-item">
+                            <span class="term-name">First Time</span>
+                            <span>I'm a [your role]. How can you help me?</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="study-section">
+                    <h3>Key Reminders</h3>
+                    <ul>
+                        <li>Star the SARA Project for quick sidebar access</li>
+                        <li>More context in = sharper output</li>
+                        <li>Intelligence files are centrally maintained — don't upload your own</li>
+                        <li>AI drafts. Humans send.</li>
+                    </ul>
+                </div>
+
+                <div class="nav-buttons">
+                    <button class="nav-btn prev" onclick="navigateTo('quiz')">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                        Knowledge Check
+                    </button>
+                    <button class="nav-btn next" onclick="navigateTo('complete')">
+                        Complete Module
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                    </button>
+                </div>
+            </section>
+
+            <!-- Completion Screen -->
+            <section class="screen" id="complete">
+                <div class="completion-hero">
+                    <div class="completion-icon">&#10003;</div>
+                    <h1>Bonus Module Complete!</h1>
+                    <p>You've met SARA — your Mission-Specific Command Center. You now know how to get positioning-aligned intelligence on demand.</p>
+
+                    <div class="completion-stats">
+                        <div class="stat-item">
+                            <div class="stat-value">5</div>
+                            <div class="stat-label">Capabilities</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">4</div>
+                            <div class="stat-label">Roles Covered</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">1</div>
+                            <div class="stat-label">Command Center</div>
+                        </div>
+                    </div>
+
+                    <div class="callout callout-tip" style="text-align: left; margin: 2rem 0;">
+                        <div class="callout-icon">!</div>
+                        <div>
+                            <strong>Your Action Item</strong><br>
+                            Star the SARA Project in Claude right now. Then ask it: "How can you help me?" Feed it something real from your week and see what comes back.
+                        </div>
+                    </div>
+
+                    <p style="opacity: 0.8; margin-top: 1rem;">You've completed all sections of this module. Close this window or navigate back to review any section.</p>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <script>
+        // Navigation
+        function navigateTo(screenId) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+
+            document.getElementById(screenId).classList.add('active');
+            document.querySelector(`[data-screen="${screenId}"]`)?.classList.add('active');
+
+            updateProgress();
+            window.scrollTo(0, 0);
+        }
+
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', () => {
+                navigateTo(item.dataset.screen);
+            });
+        });
+
+        // Progress tracking
+        const screens = ['welcome', 'video', 'lesson', 'flashcards', 'lab', 'quiz', 'study-guide', 'complete'];
+        function updateProgress() {
+            const activeScreen = document.querySelector('.screen.active');
+            if (activeScreen) {
+                const currentIndex = screens.indexOf(activeScreen.id);
+                const progress = Math.round((currentIndex / (screens.length - 1)) * 100);
+                document.getElementById('progressFill').style.width = progress + '%';
+                document.getElementById('progressText').textContent = progress + '% complete';
+            }
+        }
+
+        // Flashcards
+        const flashcards = [
+            {
+                q: "What is SARA and what type of tool is it?",
+                a: "SARA (Sales Assistant Response Agent) is a Claude Project pre-configured for revenue teams. It contains custom instructions for positioning, plus uploaded battlecards, case studies and messaging documents. Squadron Metaphor: A 'Mission-Specific Command Center' that's already built and operational."
+            },
+            {
+                q: "What are the five core things SARA can help with?",
+                a: "(1) Live call support with competitive intel, (2) Objection handling with complementary positioning, (3) Outbound messaging creation with ActivTrak-aligned language, (4) Discovery question generation for competitive scenarios, (5) Context feeding — reframing raw notes through ActivTrak positioning."
+            },
+            {
+                q: "What are SARA's limitations?",
+                a: "SARA is NOT a product documentation tool (use the support center). It is NOT a QBR builder. It cannot replace human judgment — 'AI drafts, humans send.' Its intelligence files are manually maintained, so very new features may not be reflected yet."
+            },
+            {
+                q: "What is 'context feeding' and why does it make SARA more effective?",
+                a: "Context feeding means copying text from external sources (Granola transcripts, Slack threads, support center articles) and pasting it into SARA with instructions to reframe through ActivTrak positioning. More context = sharper output. Squadron Metaphor: 'Field Data Feeds' flowing into the Command Center."
+            },
+            {
+                q: "How do different revenue roles use SARA differently?",
+                a: "AEs: mid-call competitive intel and proposal language. SDRs: cold call objection handling and outbound sequences. CSMs: renewal positioning and case study lookup. SEs: technical differentiation and demo talking points. Same Command Center, different mission profiles."
+            }
+        ];
+
+        let currentCard = 0;
+
+        function showCard() {
+            document.getElementById('flashcardQuestion').textContent = flashcards[currentCard].q;
+            document.getElementById('flashcardAnswer').textContent = flashcards[currentCard].a;
+            document.getElementById('flashcardCounter').textContent = (currentCard + 1) + ' of ' + flashcards.length;
+            document.getElementById('flashcard').classList.remove('flipped');
+        }
+
+        function flipCard() {
+            document.getElementById('flashcard').classList.toggle('flipped');
+        }
+
+        function nextCard() {
+            currentCard = (currentCard + 1) % flashcards.length;
+            showCard();
+        }
+
+        function prevCard() {
+            currentCard = (currentCard - 1 + flashcards.length) % flashcards.length;
+            showCard();
+        }
+
+        showCard();
+
+        // Quiz
+        function selectOption(option) {
+            const question = option.closest('.quiz-question');
+            question.querySelectorAll('.quiz-option').forEach(o => o.classList.remove('selected'));
+            option.classList.add('selected');
+        }
+
+        function checkQuiz() {
+            const questions = document.querySelectorAll('.quiz-question');
+            let correct = 0;
+
+            questions.forEach((q, i) => {
+                const correctIndex = parseInt(q.dataset.correct);
+                const options = q.querySelectorAll('.quiz-option');
+                const selected = q.querySelector('.quiz-option.selected');
+                const feedback = q.querySelector('.quiz-feedback');
+
+                options.forEach((o, j) => {
+                    o.classList.remove('correct', 'incorrect');
+                    if (j === correctIndex) {
+                        o.classList.add('correct');
+                    } else if (o.classList.contains('selected')) {
+                        o.classList.add('incorrect');
+                    }
+                });
+
+                if (selected && Array.from(options).indexOf(selected) === correctIndex) {
+                    correct++;
+                    feedback.className = 'quiz-feedback show correct';
+                    feedback.textContent = 'Correct!';
+                } else {
+                    feedback.className = 'quiz-feedback show incorrect';
+                    feedback.textContent = 'Review the correct answer highlighted in green.';
+                }
+            });
+
+            // SCORM reporting
+            const scorePercent = Math.round((correct / questions.length) * 100);
+            const passed = scorePercent >= 70;
+
+            if (typeof setSCORMScore === 'function') {
+                setSCORMScore(scorePercent);
+            }
+            if (typeof setSCORMStatus === 'function') {
+                setSCORMStatus(passed ? 'passed' : 'failed');
+            }
+
+            // Display inline results
+            const resultsDiv = document.getElementById('quiz-results');
+            const scoreDiv = document.getElementById('quiz-score');
+            const statusDiv = document.getElementById('quiz-status');
+
+            scoreDiv.textContent = correct + ' / ' + questions.length + ' (' + scorePercent + '%)';
+            scoreDiv.style.color = passed ? '#2ED4B5' : '#F87171';
+
+            if (scorePercent === 100) {
+                statusDiv.innerHTML = '<span style="color: #2ED4B5;">Perfect Score! You\'ve mastered SARA.</span>';
+            } else if (passed) {
+                statusDiv.innerHTML = '<span style="color: #2ED4B5;">Passed! Strong understanding. Review any missed concepts.</span>';
+            } else {
+                statusDiv.innerHTML = '<span style="color: #F87171;">Not yet passing (70% required). Review the lesson and try again.</span>';
+            }
+
+            resultsDiv.style.display = 'block';
+            document.getElementById('submit-quiz-btn').style.display = 'none';
+            resultsDiv.scrollIntoView({ behavior: 'smooth' });
+
+            // Celebration confetti for passing
+            if (passed && typeof confetti === 'function') {
+                confetti({
+                    particleCount: 100,
+                    spread: 70,
+                    origin: { y: 0.6 },
+                    colors: ['#2ED4B5', '#1657A0', '#FFC83B', '#19316A']
+                });
+
+                setTimeout(() => {
+                    confetti({
+                        particleCount: 50,
+                        angle: 60,
+                        spread: 55,
+                        origin: { x: 0 },
+                        colors: ['#2ED4B5', '#1657A0', '#FFC83B']
+                    });
+                }, 250);
+
+                setTimeout(() => {
+                    confetti({
+                        particleCount: 50,
+                        angle: 120,
+                        spread: 55,
+                        origin: { x: 1 },
+                        colors: ['#2ED4B5', '#1657A0', '#FFC83B']
+                    });
+                }, 400);
+            }
+
+            // Close popup window after completion
+            if (window.opener !== null) {
+                setTimeout(() => {
+                    const shouldClose = confirm('Module completed! Close this window?');
+                    if (shouldClose) {
+                        window.close();
+                    }
+                }, 3000);
+            }
+        }
+
+        // Reset quiz for retake
+        function resetQuiz() {
+            document.querySelectorAll('.quiz-option').forEach(o => {
+                o.classList.remove('selected', 'correct', 'incorrect');
+            });
+            document.querySelectorAll('.quiz-feedback').forEach(f => {
+                f.className = 'quiz-feedback';
+                f.textContent = '';
+            });
+            document.getElementById('quiz-results').style.display = 'none';
+            document.getElementById('submit-quiz-btn').style.display = 'inline-block';
+            window.scrollTo(0, document.getElementById('quiz').offsetTop);
+        }
+
+        // Lab checkboxes
+        function toggleCheck(checkbox) {
+            checkbox.classList.toggle('checked');
+        }
+
+        // Initialize
+        updateProgress();
+    </script>
+</body>
+</html>

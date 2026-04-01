@@ -1,0 +1,2082 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module 5: The Sensory System | Solo Pilot to Squadron Leader</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sofia+Sans:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-blue: #0042F3;
+            --pelorous: #33A7B5;
+            --teal: #2FD3B4;
+            --violet-red: #EE2C82;
+            --dark-base: #252D38;
+            --light-gray: #D9D9D9;
+            --bg-light: #F8F9FA;
+            --white: #FFFFFF;
+            --success: #2FD3B4;
+            --error: #EE2C82;
+            --warning: #F5A623;
+            --module-accent: #0EA5E9; /* Sky blue for sensory/perception theme */
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Sofia Sans', sans-serif;
+            background: var(--bg-light);
+            color: var(--dark-base);
+            line-height: 1.6;
+        }
+
+        /* Header */
+        .course-header {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, #384B76 100%);
+            color: white;
+            padding: 1rem 2rem;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .course-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .course-subtitle {
+            font-size: 0.85rem;
+            opacity: 0.9;
+        }
+
+        .progress-container {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .progress-bar {
+            width: 200px;
+            height: 8px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--teal);
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        .progress-text {
+            font-size: 0.85rem;
+        }
+
+        /* Main Layout */
+        .main-container {
+            display: flex;
+            margin-top: 60px;
+            min-height: calc(100vh - 60px);
+        }
+
+        /* Sidebar Navigation */
+        .sidebar {
+            width: 280px;
+            background: var(--white);
+            border-right: 1px solid var(--light-gray);
+            position: fixed;
+            top: 60px;
+            bottom: 0;
+            left: 0;
+            overflow-y: auto;
+            padding: 1.5rem 0;
+        }
+
+        .nav-section {
+            padding: 0 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .nav-section-title {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #6B7280;
+            margin-bottom: 0.75rem;
+            padding: 0 0.75rem;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 0.25rem;
+        }
+
+        .nav-item:hover {
+            background: var(--bg-light);
+        }
+
+        .nav-item.active {
+            background: rgba(14, 165, 233, 0.1);
+            color: var(--module-accent);
+        }
+
+        .nav-item.completed .nav-icon {
+            background: var(--success);
+            color: white;
+        }
+
+        .nav-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: var(--light-gray);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .nav-item.active .nav-icon {
+            background: var(--module-accent);
+            color: white;
+        }
+
+        .nav-label {
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .nav-duration {
+            font-size: 0.75rem;
+            color: #6B7280;
+            margin-left: auto;
+        }
+
+        /* Content Area */
+        .content-area {
+            flex: 1;
+            margin-left: 280px;
+            padding: 2rem 3rem;
+            max-width: 1000px;
+        }
+
+        /* Screen Sections */
+        .screen {
+            display: none;
+        }
+
+        .screen.active {
+            display: block;
+            animation: fadeIn 0.4s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Welcome Screen */
+        .welcome-hero {
+            background: linear-gradient(135deg, var(--module-accent) 0%, #0284C7 100%);
+            border-radius: 16px;
+            padding: 3rem;
+            color: white;
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .welcome-hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 400px;
+            height: 400px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+        }
+
+        .welcome-hero h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            position: relative;
+        }
+
+        .welcome-hero .module-tag {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            margin-bottom: 1rem;
+        }
+
+        .welcome-hero p {
+            font-size: 1.1rem;
+            opacity: 0.95;
+            max-width: 600px;
+            position: relative;
+        }
+
+        .objectives-card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .objectives-card h2 {
+            font-size: 1.25rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .objective-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--bg-light);
+        }
+
+        .objective-item:last-child {
+            border-bottom: none;
+        }
+
+        .objective-level {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .level-retrieval { background: #E0F2FE; color: #0369A1; }
+        .level-comprehension { background: #FEF3C7; color: #B45309; }
+        .level-analysis { background: #FCE7F3; color: #BE185D; }
+        .level-utilization { background: #D1FAE5; color: #047857; }
+
+        .time-estimate {
+            display: flex;
+            gap: 2rem;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--bg-light);
+        }
+
+        .time-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #6B7280;
+        }
+
+        .start-btn {
+            background: var(--module-accent);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .start-btn:hover {
+            background: #0284C7;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(14, 165, 233, 0.3);
+        }
+
+        /* Lesson Content */
+        .lesson-content {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 2.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .lesson-content h1 {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            color: var(--dark-base);
+        }
+
+        .lesson-content h2 {
+            font-size: 1.5rem;
+            margin: 2rem 0 1rem;
+            color: var(--dark-base);
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--bg-light);
+        }
+
+        .lesson-content h3 {
+            font-size: 1.2rem;
+            margin: 1.5rem 0 0.75rem;
+            color: var(--module-accent);
+        }
+
+        .lesson-content p {
+            margin-bottom: 1rem;
+            font-size: 1.05rem;
+            line-height: 1.8;
+        }
+
+        .lesson-content ul, .lesson-content ol {
+            margin: 1rem 0 1rem 1.5rem;
+        }
+
+        .lesson-content li {
+            margin-bottom: 0.5rem;
+            line-height: 1.7;
+        }
+
+        .callout {
+            padding: 1.25rem 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+            display: flex;
+            gap: 1rem;
+        }
+
+        .callout-icon {
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .callout-insight {
+            background: rgba(14, 165, 233, 0.08);
+            border-left: 4px solid var(--module-accent);
+        }
+
+        .callout-warning {
+            background: rgba(238, 44, 130, 0.08);
+            border-left: 4px solid var(--violet-red);
+        }
+
+        .callout-tip {
+            background: rgba(47, 211, 180, 0.1);
+            border-left: 4px solid var(--teal);
+        }
+
+        .callout-gemini {
+            background: rgba(66, 133, 244, 0.08);
+            border-left: 4px solid #4285F4;
+        }
+
+        .callout-granola {
+            background: rgba(139, 69, 19, 0.08);
+            border-left: 4px solid #8B4513;
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .comparison-table th {
+            background: var(--dark-base);
+            color: white;
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .comparison-table td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--bg-light);
+        }
+
+        .comparison-table tr:nth-child(even) {
+            background: var(--bg-light);
+        }
+
+        /* Code Blocks */
+        .code-block {
+            background: #1E1E1E;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            overflow-x: auto;
+            position: relative;
+        }
+
+        .code-block pre {
+            color: #D4D4D4;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        .code-block .keyword { color: #569CD6; }
+        .code-block .string { color: #CE9178; }
+        .code-block .comment { color: #6A9955; }
+        .code-block .function { color: #DCDCAA; }
+        .code-block .number { color: #B5CEA8; }
+
+        .code-label {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background: var(--module-accent);
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        /* Squadron Cards */
+        .squadron-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .squadron-card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 2px solid var(--light-gray);
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .squadron-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+        }
+
+        .squadron-card.claude {
+            border-color: var(--primary-blue);
+        }
+
+        .squadron-card.gemini {
+            border-color: #4285F4;
+        }
+
+        .squadron-card.granola {
+            border-color: #8B4513;
+        }
+
+        .squadron-icon {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            margin: 0 auto 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.75rem;
+        }
+
+        .squadron-card.claude .squadron-icon {
+            background: rgba(0, 66, 243, 0.1);
+        }
+
+        .squadron-card.gemini .squadron-icon {
+            background: rgba(66, 133, 244, 0.1);
+        }
+
+        .squadron-card.granola .squadron-icon {
+            background: rgba(139, 69, 19, 0.1);
+        }
+
+        .squadron-card h4 {
+            font-size: 1.1rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .squadron-role {
+            font-size: 0.85rem;
+            color: #6B7280;
+            margin-bottom: 1rem;
+        }
+
+        .squadron-card p {
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        /* Pipeline Diagram */
+        .pipeline-container {
+            background: var(--bg-light);
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .pipeline-steps {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+        }
+
+        .pipeline-steps::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 10%;
+            right: 10%;
+            height: 4px;
+            background: linear-gradient(90deg, #4285F4 0%, #8B4513 50%, var(--primary-blue) 100%);
+            transform: translateY(-50%);
+            z-index: 0;
+        }
+
+        .pipeline-step {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 1.25rem;
+            width: 28%;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .pipeline-step-number {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--module-accent);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            margin: 0 auto 0.75rem;
+        }
+
+        .pipeline-step h5 {
+            font-size: 0.95rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .pipeline-step p {
+            font-size: 0.8rem;
+            color: #6B7280;
+            margin: 0;
+        }
+
+        /* Fact Brief Template */
+        .fact-brief-template {
+            background: var(--white);
+            border: 2px dashed var(--module-accent);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .fact-brief-template h4 {
+            color: var(--module-accent);
+            margin-bottom: 1rem;
+            font-size: 1rem;
+        }
+
+        .fact-brief-section {
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--bg-light);
+        }
+
+        .fact-brief-section:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .fact-brief-section h5 {
+            font-size: 0.85rem;
+            color: #6B7280;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Video Player */
+        .video-container {
+            background: var(--dark-base);
+            border-radius: 12px;
+            aspect-ratio: 16/9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .video-placeholder {
+            text-align: center;
+            color: white;
+        }
+
+        .play-btn {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: var(--module-accent);
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            margin-bottom: 1rem;
+        }
+
+        .play-btn:hover {
+            transform: scale(1.1);
+            background: #0284C7;
+        }
+
+        .play-btn svg {
+            width: 32px;
+            height: 32px;
+            fill: white;
+            margin-left: 4px;
+        }
+
+        /* Flashcards */
+        .flashcard-container {
+            perspective: 1000px;
+            margin: 2rem 0;
+        }
+
+        .flashcard {
+            background: var(--white);
+            border-radius: 16px;
+            min-height: 300px;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.6s;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+
+        .flashcard.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .flashcard-front, .flashcard-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 16px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .flashcard-front {
+            background: linear-gradient(135deg, var(--module-accent) 0%, #0284C7 100%);
+            color: white;
+        }
+
+        .flashcard-back {
+            background: var(--white);
+            transform: rotateY(180deg);
+            border: 2px solid var(--module-accent);
+        }
+
+        .flashcard-question {
+            font-size: 1.3rem;
+            font-weight: 600;
+            line-height: 1.5;
+        }
+
+        .flashcard-answer {
+            font-size: 1.1rem;
+            line-height: 1.7;
+            color: var(--dark-base);
+        }
+
+        .flashcard-hint {
+            font-size: 0.85rem;
+            opacity: 0.8;
+            margin-top: 1rem;
+        }
+
+        .flashcard-nav {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .flashcard-btn {
+            background: var(--bg-light);
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .flashcard-btn:hover {
+            background: var(--light-gray);
+        }
+
+        .flashcard-counter {
+            text-align: center;
+            color: #6B7280;
+            margin-top: 1rem;
+        }
+
+        /* Quiz Styles */
+        .quiz-question {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .quiz-question h3 {
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+            color: var(--dark-base);
+        }
+
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .quiz-option {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem 1.25rem;
+            border: 2px solid var(--light-gray);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .quiz-option:hover {
+            border-color: var(--module-accent);
+            background: rgba(14, 165, 233, 0.05);
+        }
+
+        .quiz-option.selected {
+            border-color: var(--module-accent);
+            background: rgba(14, 165, 233, 0.1);
+        }
+
+        .quiz-option.correct {
+            border-color: var(--success);
+            background: rgba(47, 211, 180, 0.1);
+        }
+
+        .quiz-option.incorrect {
+            border-color: var(--error);
+            background: rgba(238, 44, 130, 0.1);
+        }
+
+        .quiz-radio {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--light-gray);
+            border-radius: 50%;
+            flex-shrink: 0;
+            position: relative;
+        }
+
+        .quiz-option.selected .quiz-radio {
+            border-color: var(--module-accent);
+        }
+
+        .quiz-option.selected .quiz-radio::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 10px;
+            height: 10px;
+            background: var(--module-accent);
+            border-radius: 50%;
+        }
+
+        .quiz-feedback {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .quiz-feedback.show {
+            display: block;
+        }
+
+        .quiz-feedback.correct {
+            background: rgba(47, 211, 180, 0.1);
+            border-left: 4px solid var(--success);
+        }
+
+        .quiz-feedback.incorrect {
+            background: rgba(238, 44, 130, 0.1);
+            border-left: 4px solid var(--error);
+        }
+
+        .submit-btn {
+            background: var(--module-accent);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .submit-btn:hover {
+            background: #0284C7;
+        }
+
+        .submit-btn:disabled {
+            background: var(--light-gray);
+            cursor: not-allowed;
+        }
+
+        /* Lab Exercise */
+        .lab-step {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            border-left: 4px solid var(--module-accent);
+        }
+
+        .lab-step-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .lab-step-number {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--module-accent);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .lab-step h4 {
+            font-size: 1rem;
+        }
+
+        .lab-checklist {
+            list-style: none;
+            margin: 1rem 0 0 0;
+            padding: 0;
+        }
+
+        .lab-checklist li {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            padding: 0.5rem 0;
+        }
+
+        .lab-checkbox {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--light-gray);
+            border-radius: 4px;
+            flex-shrink: 0;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .lab-checkbox.checked {
+            background: var(--success);
+            border-color: var(--success);
+        }
+
+        /* Study Guide */
+        .study-section {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .study-section h3 {
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            color: var(--module-accent);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .key-terms {
+            display: grid;
+            gap: 0.75rem;
+        }
+
+        .term-item {
+            display: grid;
+            grid-template-columns: 180px 1fr;
+            gap: 1rem;
+            padding: 0.75rem;
+            background: var(--bg-light);
+            border-radius: 8px;
+        }
+
+        .term-name {
+            font-weight: 600;
+            color: var(--module-accent);
+        }
+
+        .mantra-card {
+            background: linear-gradient(135deg, var(--module-accent) 0%, #0284C7 100%);
+            border-radius: 12px;
+            padding: 2rem;
+            color: white;
+            text-align: center;
+            margin: 2rem 0;
+        }
+
+        .mantra-card blockquote {
+            font-size: 1.3rem;
+            font-weight: 600;
+            font-style: italic;
+            margin: 0;
+        }
+
+        /* Navigation Buttons */
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--light-gray);
+        }
+
+        .nav-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .nav-btn.prev {
+            background: var(--bg-light);
+            border: none;
+            color: var(--dark-base);
+        }
+
+        .nav-btn.next {
+            background: var(--module-accent);
+            border: none;
+            color: white;
+        }
+
+        .nav-btn:hover {
+            transform: translateX(2px);
+        }
+
+        .nav-btn.prev:hover {
+            transform: translateX(-2px);
+        }
+
+        /* Completion Screen */
+        .completion-hero {
+            text-align: center;
+            padding: 3rem;
+        }
+
+        .completion-icon {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--success) 0%, var(--teal) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 2rem;
+            font-size: 3rem;
+        }
+
+        .completion-hero h1 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .completion-stats {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            margin: 2rem 0;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--module-accent);
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: #6B7280;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .sidebar {
+                width: 240px;
+            }
+            .content-area {
+                margin-left: 240px;
+                padding: 1.5rem 2rem;
+            }
+            .squadron-grid {
+                grid-template-columns: 1fr;
+            }
+            .pipeline-steps {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            .pipeline-steps::before {
+                display: none;
+            }
+            .pipeline-step {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                display: none;
+            }
+            .content-area {
+                margin-left: 0;
+                padding: 1rem;
+            }
+            .welcome-hero {
+                padding: 2rem;
+            }
+            .welcome-hero h1 {
+                font-size: 1.75rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="course-header">
+        <div>
+            <div class="course-title">Solo Pilot to Squadron Leader</div>
+            <div class="course-subtitle">Module 5: The Sensory System</div>
+        </div>
+        <div class="progress-container">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+            </div>
+            <span class="progress-text" id="progressText">0% complete</span>
+        </div>
+    </header>
+
+    <div class="main-container">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="nav-section">
+                <div class="nav-section-title">Module Content</div>
+                <div class="nav-item active" data-screen="welcome">
+                    <div class="nav-icon">1</div>
+                    <span class="nav-label">Overview</span>
+                    <span class="nav-duration">2 min</span>
+                </div>
+                <div class="nav-item" data-screen="video">
+                    <div class="nav-icon">2</div>
+                    <span class="nav-label">Video Lesson</span>
+                    <span class="nav-duration">11 min</span>
+                </div>
+                <div class="nav-item" data-screen="lesson">
+                    <div class="nav-icon">3</div>
+                    <span class="nav-label">Reading</span>
+                    <span class="nav-duration">15 min</span>
+                </div>
+                <div class="nav-item" data-screen="flashcards">
+                    <div class="nav-icon">4</div>
+                    <span class="nav-label">Flashcards</span>
+                    <span class="nav-duration">5 min</span>
+                </div>
+            </div>
+            <div class="nav-section">
+                <div class="nav-section-title">Practice</div>
+                <div class="nav-item" data-screen="lab">
+                    <div class="nav-icon">5</div>
+                    <span class="nav-label">Lab Exercise</span>
+                    <span class="nav-duration">30 min</span>
+                </div>
+                <div class="nav-item" data-screen="quiz">
+                    <div class="nav-icon">6</div>
+                    <span class="nav-label">Knowledge Check</span>
+                    <span class="nav-duration">10 min</span>
+                </div>
+            </div>
+            <div class="nav-section">
+                <div class="nav-section-title">Reference</div>
+                <div class="nav-item" data-screen="study-guide">
+                    <div class="nav-icon">7</div>
+                    <span class="nav-label">Study Guide</span>
+                    <span class="nav-duration">Review</span>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Content Area -->
+        <main class="content-area">
+            <!-- Welcome Screen -->
+            <section class="screen active" id="welcome">
+                <div class="welcome-hero">
+                    <span class="module-tag">Module 5 of 12</span>
+                    <h1>The Sensory System</h1>
+                    <p>Giving Claude Eyes and Ears with Gemini & Granola</p>
+                </div>
+
+                <div class="objectives-card">
+                    <h2>Learning Objectives</h2>
+                    <div class="objective-item">
+                        <span class="objective-level level-retrieval">Retrieval</span>
+                        <span>Identify the three components of the complete Squadron (Claude, Gemini, Granola) and their distinct roles</span>
+                    </div>
+                    <div class="objective-item">
+                        <span class="objective-level level-comprehension">Comprehension</span>
+                        <span>Explain why Claude needs external tools for current information and meeting context</span>
+                    </div>
+                    <div class="objective-item">
+                        <span class="objective-level level-analysis">Analysis</span>
+                        <span>Evaluate when to use Gemini vs. Claude for different research and reasoning tasks</span>
+                    </div>
+                    <div class="objective-item">
+                        <span class="objective-level level-utilization">Utilization</span>
+                        <span>Execute the complete "Intelligence Pipeline" workflow from Gemini research to Claude synthesis</span>
+                    </div>
+
+                    <div class="time-estimate">
+                        <div class="time-item">
+                            <span>Total Time:</span>
+                            <strong>~75 minutes</strong>
+                        </div>
+                        <div class="time-item">
+                            <span>Tools Needed:</span>
+                            <strong>Claude, Gemini, Granola (optional)</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="start-btn" onclick="navigateTo('video')">
+                    Begin Module
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M5 12h14M12 5l7 7-7 7"/>
+                    </svg>
+                </button>
+            </section>
+
+            <!-- Video Screen -->
+            <section class="screen" id="video">
+                <div class="video-container">
+                    <div class="video-placeholder">
+                        <button class="play-btn">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M8 5v14l11-7z"/>
+                            </svg>
+                        </button>
+                        <p>Module 5: The Sensory System (11:00)</p>
+                    </div>
+                </div>
+
+                <div class="lesson-content">
+                    <h2>Video Overview</h2>
+                    <p>This video introduces the complete Squadron architecture: Claude (Mission Control), Gemini (Recon & Radar) and Granola (Flight Recorder). You'll learn how to combine these tools into an intelligence pipeline that brings current information and historical context to Claude's reasoning.</p>
+
+                    <h3>Key Topics Covered</h3>
+                    <ul>
+                        <li><strong>The Blind Strategist Problem</strong> - Why Claude needs external tools for current information</li>
+                        <li><strong>Grounding with Google Search</strong> - How Gemini provides real-time web access with citations</li>
+                        <li><strong>The Fact Brief</strong> - Structured handoff from Gemini research to Claude synthesis</li>
+                        <li><strong>Granola as Flight Recorder</strong> - Capturing meeting context for AI processing</li>
+                        <li><strong>The Complete Pipeline</strong> - Intelligence gathering, context injection and strategic synthesis</li>
+                    </ul>
+                </div>
+
+                <div class="nav-buttons">
+                    <button class="nav-btn prev" onclick="navigateTo('welcome')">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M19 12H5M12 19l-7-7 7-7"/>
+                        </svg>
+                        Overview
+                    </button>
+                    <button class="nav-btn next" onclick="navigateTo('lesson')">
+                        Continue to Reading
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M5 12h14M12 5l7 7-7 7"/>
+                        </svg>
+                    </button>
+                </div>
+            </section>
+
+            <!-- Lesson Screen -->
+            <section class="screen" id="lesson">
+                <div class="lesson-content">
+                    <h1>The Sensory System: Giving Claude Eyes and Ears</h1>
+
+                    <p>In Module 4, you learned to make Claude's calculations trustworthy through code execution. But there's another reliability challenge we haven't addressed: <strong>Claude is brilliant, but blind</strong>.</p>
+
+                    <h2>Part 1: The Blind Strategist Problem</h2>
+
+                    <p>Imagine having access to the world's best strategic advisor. They've studied every business book, analyzed countless case studies and can reason through complex problems with remarkable clarity. There's just one catch: they've been in a sealed room since January 2025, with no access to news, market updates or current events.</p>
+
+                    <div class="callout callout-warning">
+                        <div class="callout-icon">!</div>
+                        <div>
+                            <strong>The Critical Limitation</strong><br>
+                            Claude's knowledge has a training cutoff. Ask about yesterday's news, current pricing or recent product updates, and you'll get either outdated information or confident-sounding guesses. Neither is acceptable for professional work.
+                        </div>
+                    </div>
+
+                    <p>This is "The Blind Strategist Problem." Claude can reason powerfully about information you provide, but it cannot:</p>
+                    <ul>
+                        <li>Browse the web or access current information</li>
+                        <li>Check today's stock prices, news or weather</li>
+                        <li>Verify if a company still exists or what they're currently charging</li>
+                        <li>Know what happened in your meeting last week</li>
+                    </ul>
+
+                    <h2>Part 2: The Squadron Comes Together</h2>
+
+                    <p>This is where your AI Squadron reaches full operational capability. Each tool has a specialized role:</p>
+
+                    <div class="squadron-grid">
+                        <div class="squadron-card claude">
+                            <div class="squadron-icon">🎯</div>
+                            <h4>Claude</h4>
+                            <div class="squadron-role">Mission Control</div>
+                            <p>Deep reasoning, strategic synthesis, content generation. Works with information you provide.</p>
+                        </div>
+                        <div class="squadron-card gemini">
+                            <div class="squadron-icon">📡</div>
+                            <h4>Gemini</h4>
+                            <div class="squadron-role">Recon & Radar</div>
+                            <p>Real-time web research with source citations. Grounded in current information.</p>
+                        </div>
+                        <div class="squadron-card granola">
+                            <div class="squadron-icon">📼</div>
+                            <h4>Granola</h4>
+                            <div class="squadron-role">Flight Recorder</div>
+                            <p>Meeting capture and institutional memory. Preserves context for later analysis.</p>
+                        </div>
+                    </div>
+
+                    <h2>Part 3: Gemini as Recon & Radar</h2>
+
+                    <h3>Grounding with Google Search</h3>
+                    <p>Gemini's superpower is "Grounding with Google Search"—the ability to access current web information and cite its sources. When you ask Gemini about a competitor's pricing, it doesn't guess. It searches, finds current information and tells you where it found it.</p>
+
+                    <div class="callout callout-gemini">
+                        <div class="callout-icon">📡</div>
+                        <div>
+                            <strong>Why This Matters</strong><br>
+                            Claude would try to answer a competitive question from training data. Gemini can retrieve today's actual pricing page.
+                        </div>
+                    </div>
+
+                    <h3>The Double Check Feature</h3>
+                    <p>Gemini includes a "Double Check" button that highlights which statements are backed by sources. Green highlighting means the claim links to a found source. Orange means the statement couldn't be verified. This helps you distinguish between grounded facts and AI-generated additions.</p>
+
+                    <h2>Part 4: The Fact Brief</h2>
+
+                    <p>When you have verified research from Gemini, you need a structured way to hand it to Claude. The Fact Brief is your formal intelligence report.</p>
+
+                    <div class="fact-brief-template">
+                        <h4>Fact Brief Template</h4>
+                        <div class="fact-brief-section">
+                            <h5>Header</h5>
+                            <p><strong>Topic:</strong> [Subject of research]<br>
+                            <strong>Research Date:</strong> [Today's date]<br>
+                            <strong>Source Tool:</strong> Gemini Advanced</p>
+                        </div>
+                        <div class="fact-brief-section">
+                            <h5>Verified Facts</h5>
+                            <p>Organized by category, each fact includes:<br>
+                            • The information<br>
+                            • Source URL</p>
+                        </div>
+                        <div class="fact-brief-section">
+                            <h5>Needs Verification</h5>
+                            <p>Statements from research that lacked strong source support</p>
+                        </div>
+                        <div class="fact-brief-section">
+                            <h5>Research Gaps</h5>
+                            <p>Information you couldn't find but might need</p>
+                        </div>
+                    </div>
+
+                    <h2>Part 5: Granola as Flight Recorder</h2>
+
+                    <p>Meeting context often determines whether AI output is relevant or generic. Granola captures this context automatically.</p>
+
+                    <div class="callout callout-granola">
+                        <div class="callout-icon">📼</div>
+                        <div>
+                            <strong>Local-First Architecture</strong><br>
+                            Granola processes audio on your Mac—recordings never leave your device. This addresses privacy concerns about cloud-based meeting capture.
+                        </div>
+                    </div>
+
+                    <h3>Annotation Weighting</h3>
+                    <p>When you type notes during a Granola-captured meeting, you're signaling importance. Granola's AI weights sections where you annotated more heavily, surfacing what mattered to you rather than just what was discussed longest.</p>
+
+                    <h2>Part 6: The Complete Intelligence Pipeline</h2>
+
+                    <div class="pipeline-container">
+                        <div class="pipeline-steps">
+                            <div class="pipeline-step">
+                                <div class="pipeline-step-number">1</div>
+                                <h5>Gemini Research</h5>
+                                <p>Gather current intelligence with sources. Create Fact Brief.</p>
+                            </div>
+                            <div class="pipeline-step">
+                                <div class="pipeline-step-number">2</div>
+                                <h5>Granola Context</h5>
+                                <p>Export relevant meeting history and stakeholder context.</p>
+                            </div>
+                            <div class="pipeline-step">
+                                <div class="pipeline-step-number">3</div>
+                                <h5>Claude Synthesis</h5>
+                                <p>Combine inputs for strategic reasoning and deliverables.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h3>When to Use Each Tool</h3>
+                    <table class="comparison-table">
+                        <tr>
+                            <th>Need</th>
+                            <th>Tool</th>
+                            <th>Why</th>
+                        </tr>
+                        <tr>
+                            <td>Current pricing or news</td>
+                            <td>Gemini</td>
+                            <td>Real-time web access with citations</td>
+                        </tr>
+                        <tr>
+                            <td>Recent product updates</td>
+                            <td>Gemini</td>
+                            <td>Can search for announcements by date</td>
+                        </tr>
+                        <tr>
+                            <td>Meeting context</td>
+                            <td>Granola</td>
+                            <td>Captures what was actually discussed</td>
+                        </tr>
+                        <tr>
+                            <td>Strategic recommendation</td>
+                            <td>Claude</td>
+                            <td>Deep reasoning with provided context</td>
+                        </tr>
+                        <tr>
+                            <td>Content creation</td>
+                            <td>Claude</td>
+                            <td>Superior writing and synthesis</td>
+                        </tr>
+                    </table>
+
+                    <h2>Key Takeaways</h2>
+                    <ol>
+                        <li><strong>Claude is powerful but blind.</strong> It needs you to provide current information and context.</li>
+                        <li><strong>Gemini grounds research in reality.</strong> Use it for anything time-sensitive with Double Check verification.</li>
+                        <li><strong>The Fact Brief prevents hallucination.</strong> Structured handoff ensures Claude works with verified facts.</li>
+                        <li><strong>Granola captures institutional memory.</strong> Meeting context transforms generic advice into tailored strategy.</li>
+                        <li><strong>The Squadron multiplies capability.</strong> Each tool does what it's best at—together they're more powerful than any single tool.</li>
+                    </ol>
+
+                    <div class="mantra-card">
+                        <blockquote>"Never ask Claude what you can ground with Gemini—but always let Claude think about what Gemini found."</blockquote>
+                    </div>
+                </div>
+
+                <div class="nav-buttons">
+                    <button class="nav-btn prev" onclick="navigateTo('video')">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M19 12H5M12 19l-7-7 7-7"/>
+                        </svg>
+                        Video
+                    </button>
+                    <button class="nav-btn next" onclick="navigateTo('flashcards')">
+                        Practice with Flashcards
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M5 12h14M12 5l7 7-7 7"/>
+                        </svg>
+                    </button>
+                </div>
+            </section>
+
+            <!-- Flashcards Screen -->
+            <section class="screen" id="flashcards">
+                <h1 style="margin-bottom: 2rem;">Flashcard Review</h1>
+
+                <div class="flashcard-container">
+                    <div class="flashcard" id="flashcard" onclick="flipCard()">
+                        <div class="flashcard-front">
+                            <div class="flashcard-question" id="flashcardQuestion">
+                                What is "The Blind Strategist Problem"?
+                            </div>
+                            <div class="flashcard-hint">Click to reveal answer</div>
+                        </div>
+                        <div class="flashcard-back">
+                            <div class="flashcard-answer" id="flashcardAnswer">
+                                Claude's inability to access real-time information. Like a brilliant strategist in a sealed room, Claude can reason powerfully but only with information you provide—it cannot browse the web, check current prices or know recent events.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flashcard-nav">
+                    <button class="flashcard-btn" onclick="prevCard()">Previous</button>
+                    <button class="flashcard-btn" onclick="flipCard()">Flip Card</button>
+                    <button class="flashcard-btn" onclick="nextCard()">Next</button>
+                </div>
+                <div class="flashcard-counter">
+                    <span id="cardCounter">Card 1 of 8</span>
+                </div>
+
+                <div class="nav-buttons">
+                    <button class="nav-btn prev" onclick="navigateTo('lesson')">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M19 12H5M12 19l-7-7 7-7"/>
+                        </svg>
+                        Reading
+                    </button>
+                    <button class="nav-btn next" onclick="navigateTo('lab')">
+                        Continue to Lab
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M5 12h14M12 5l7 7-7 7"/>
+                        </svg>
+                    </button>
+                </div>
+            </section>
+
+            <!-- Lab Screen -->
+            <section class="screen" id="lab">
+                <div class="lesson-content">
+                    <h1>Lab Exercise: The Intelligence Pipeline</h1>
+                    <p><strong>Duration:</strong> 25-30 minutes | <strong>Tools:</strong> Claude, Gemini</p>
+
+                    <div class="callout callout-insight">
+                        <div class="callout-icon">🎯</div>
+                        <div>
+                            <strong>Objective</strong><br>
+                            Practice the complete Squadron workflow: gather intelligence with Gemini, process context like Granola captures, and synthesize with Claude.
+                        </div>
+                    </div>
+
+                    <h2>Scenario</h2>
+                    <p>You're a Customer Success Manager at ActivTrak preparing for an important client meeting. The client has mentioned they're also evaluating Hubstaff. You need to gather competitive intelligence, process meeting context and create a preparation brief.</p>
+
+                    <h2>Part 1: Gemini Research Mission (10 min)</h2>
+
+                    <div class="lab-step">
+                        <div class="lab-step-header">
+                            <div class="lab-step-number">1</div>
+                            <h4>Conduct Competitive Research</h4>
+                        </div>
+                        <p>Open Gemini (gemini.google.com) and use this research prompt:</p>
+                        <div class="code-block">
+                            <span class="code-label">Prompt</span>
+                            <pre>I need competitive intelligence on Hubstaff for a client conversation. Please research and provide:
+
+1. Hubstaff's current pricing tiers and what's included in each
+2. Their most recent product updates or feature announcements (last 6 months)
+3. Key strengths customers mention in reviews
+4. Common complaints or weaknesses from customer feedback
+5. How they position themselves against competitors
+
+For each fact, note the source. Format as a structured fact brief with clear sections.</pre>
+                        </div>
+                    </div>
+
+                    <div class="lab-step">
+                        <div class="lab-step-header">
+                            <div class="lab-step-number">2</div>
+                            <h4>Verify with Double Check</h4>
+                        </div>
+                        <p>After receiving the response:</p>
+                        <ul class="lab-checklist">
+                            <li><span class="lab-checkbox" onclick="toggleCheck(this)"></span>Click the Double Check button</li>
+                            <li><span class="lab-checkbox" onclick="toggleCheck(this)"></span>Note which claims are grounded (green) vs. unverified (orange)</li>
+                            <li><span class="lab-checkbox" onclick="toggleCheck(this)"></span>Move unverified claims to your "Needs Verification" section</li>
+                        </ul>
+                    </div>
+
+                    <h2>Part 2: Processing Meeting Context (10 min)</h2>
+
+                    <div class="lab-step">
+                        <div class="lab-step-header">
+                            <div class="lab-step-number">3</div>
+                            <h4>Review Simulated Meeting Notes</h4>
+                        </div>
+                        <p>The lab includes sample "Granola-style" meeting notes from previous client conversations. Open a new Claude conversation and use the context extraction prompt from the lab materials to analyze stakeholder dynamics, buying signals and concerns.</p>
+                    </div>
+
+                    <h2>Part 3: Squadron Synthesis (10 min)</h2>
+
+                    <div class="lab-step">
+                        <div class="lab-step-header">
+                            <div class="lab-step-number">4</div>
+                            <h4>Create Combined Brief</h4>
+                        </div>
+                        <p>Open a new Claude conversation and combine your Fact Brief with the meeting context analysis. Request a pre-meeting preparation brief with:</p>
+                        <ul class="lab-checklist">
+                            <li><span class="lab-checkbox" onclick="toggleCheck(this)"></span>Situation summary</li>
+                            <li><span class="lab-checkbox" onclick="toggleCheck(this)"></span>Competitive positioning based on verified facts</li>
+                            <li><span class="lab-checkbox" onclick="toggleCheck(this)"></span>Stakeholder-specific strategies</li>
+                            <li><span class="lab-checkbox" onclick="toggleCheck(this)"></span>Objection responses</li>
+                            <li><span class="lab-checkbox" onclick="toggleCheck(this)"></span>Meeting agenda recommendation</li>
+                        </ul>
+                    </div>
+
+                    <h2>Success Criteria</h2>
+                    <ul class="lab-checklist">
+                        <li><span class="lab-checkbox" onclick="toggleCheck(this)"></span>Created a structured Fact Brief from Gemini research</li>
+                        <li><span class="lab-checkbox" onclick="toggleCheck(this)"></span>Identified which claims are grounded vs. need verification</li>
+                        <li><span class="lab-checkbox" onclick="toggleCheck(this)"></span>Processed meeting context to extract strategic insights</li>
+                        <li><span class="lab-checkbox" onclick="toggleCheck(this)"></span>Executed the verified handoff (Fact Brief + Context to Claude)</li>
+                        <li><span class="lab-checkbox" onclick="toggleCheck(this)"></span>Produced client-ready deliverables based on verified information</li>
+                    </ul>
+                </div>
+
+                <div class="nav-buttons">
+                    <button class="nav-btn prev" onclick="navigateTo('flashcards')">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M19 12H5M12 19l-7-7 7-7"/>
+                        </svg>
+                        Flashcards
+                    </button>
+                    <button class="nav-btn next" onclick="navigateTo('quiz')">
+                        Take the Quiz
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M5 12h14M12 5l7 7-7 7"/>
+                        </svg>
+                    </button>
+                </div>
+            </section>
+
+            <!-- Quiz Screen -->
+            <section class="screen" id="quiz">
+                <h1 style="margin-bottom: 2rem;">Knowledge Check</h1>
+
+                <div class="quiz-question" data-correct="1">
+                    <h3>1. What is "The Blind Strategist Problem"?</h3>
+                    <div class="quiz-options">
+                        <div class="quiz-option" onclick="selectOption(this)">
+                            <div class="quiz-radio"></div>
+                            <span>Claude cannot process images or visual content</span>
+                        </div>
+                        <div class="quiz-option" onclick="selectOption(this)">
+                            <div class="quiz-radio"></div>
+                            <span>Claude lacks real-time access to web information and current events</span>
+                        </div>
+                        <div class="quiz-option" onclick="selectOption(this)">
+                            <div class="quiz-radio"></div>
+                            <span>Claude cannot understand complex strategic questions</span>
+                        </div>
+                        <div class="quiz-option" onclick="selectOption(this)">
+                            <div class="quiz-radio"></div>
+                            <span>Claude's knowledge is encrypted and inaccessible</span>
+                        </div>
+                    </div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-correct="1">
+                    <h3>2. What is "Grounding with Google Search" in Gemini?</h3>
+                    <div class="quiz-options">
+                        <div class="quiz-option" onclick="selectOption(this)">
+                            <div class="quiz-radio"></div>
+                            <span>A feature that connects Gemini to Google Drive</span>
+                        </div>
+                        <div class="quiz-option" onclick="selectOption(this)">
+                            <div class="quiz-radio"></div>
+                            <span>Gemini's ability to retrieve current web information and provide source citations</span>
+                        </div>
+                        <div class="quiz-option" onclick="selectOption(this)">
+                            <div class="quiz-radio"></div>
+                            <span>A search engine built into the Gemini interface</span>
+                        </div>
+                        <div class="quiz-option" onclick="selectOption(this)">
+                            <div class="quiz-radio"></div>
+                            <span>A way to verify Gemini's training data accuracy</span>
+                        </div>
+                    </div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-correct="1">
+                    <h3>3. What is a "Fact Brief"?</h3>
+                    <div class="quiz-options">
+                        <div class="quiz-option" onclick="selectOption(this)">
+                            <div class="quiz-radio"></div>
+                            <span>A short summary of a conversation</span>
+                        </div>
+                        <div class="quiz-option" onclick="selectOption(this)">
+                            <div class="quiz-radio"></div>
+                            <span>A structured document containing verified research with sources for handoff to Claude</span>
+                        </div>
+                        <div class="quiz-option" onclick="selectOption(this)">
+                            <div class="quiz-radio"></div>
+                            <span>A template for writing meeting notes</span>
+                        </div>
+                        <div class="quiz-option" onclick="selectOption(this)">
+                            <div class="quiz-radio"></div>
+                            <span>A checklist for verifying AI outputs</span>
+                        </div>
+                    </div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-correct="1">
+                    <h3>4. In the Squadron Framework, what role does each tool play?</h3>
+                    <div class="quiz-options">
+                        <div class="quiz-option" onclick="selectOption(this)">
+                            <div class="quiz-radio"></div>
+                            <span>Claude = Research, Gemini = Analysis, Granola = Storage</span>
+                        </div>
+                        <div class="quiz-option" onclick="selectOption(this)">
+                            <div class="quiz-radio"></div>
+                            <span>Claude = Mission Control (reasoning), Gemini = Recon & Radar (research), Granola = Flight Recorder (memory)</span>
+                        </div>
+                        <div class="quiz-option" onclick="selectOption(this)">
+                            <div class="quiz-radio"></div>
+                            <span>All three tools perform the same functions interchangeably</span>
+                        </div>
+                        <div class="quiz-option" onclick="selectOption(this)">
+                            <div class="quiz-radio"></div>
+                            <span>Claude = Writing, Gemini = Search, Granola = Calendar</span>
+                        </div>
+                    </div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-correct="1">
+                    <h3>5. A CSM needs current competitive pricing. Which approach follows the Squadron workflow?</h3>
+                    <div class="quiz-options">
+                        <div class="quiz-option" onclick="selectOption(this)">
+                            <div class="quiz-radio"></div>
+                            <span>Ask Claude directly for the pricing information</span>
+                        </div>
+                        <div class="quiz-option" onclick="selectOption(this)">
+                            <div class="quiz-radio"></div>
+                            <span>Use Gemini to research pricing, create a Fact Brief, then give it to Claude for strategy</span>
+                        </div>
+                        <div class="quiz-option" onclick="selectOption(this)">
+                            <div class="quiz-radio"></div>
+                            <span>Search Google manually and paste raw results into Claude</span>
+                        </div>
+                        <div class="quiz-option" onclick="selectOption(this)">
+                            <div class="quiz-radio"></div>
+                            <span>Ask Gemini to create a complete competitive strategy</span>
+                        </div>
+                    </div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div style="text-align: center; margin-top: 2rem;">
+                    <button class="submit-btn" onclick="checkQuiz()">Check Answers</button>
+                </div>
+
+                <div class="nav-buttons">
+                    <button class="nav-btn prev" onclick="navigateTo('lab')">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M19 12H5M12 19l-7-7 7-7"/>
+                        </svg>
+                        Lab Exercise
+                    </button>
+                    <button class="nav-btn next" onclick="navigateTo('study-guide')">
+                        View Study Guide
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M5 12h14M12 5l7 7-7 7"/>
+                        </svg>
+                    </button>
+                </div>
+            </section>
+
+            <!-- Study Guide Screen -->
+            <section class="screen" id="study-guide">
+                <h1 style="margin-bottom: 2rem;">Quick Reference Study Guide</h1>
+
+                <div class="mantra-card">
+                    <blockquote>"Claude reasons; Gemini grounds; Granola remembers."</blockquote>
+                </div>
+
+                <div class="study-section">
+                    <h3>Key Terms</h3>
+                    <div class="key-terms">
+                        <div class="term-item">
+                            <span class="term-name">Blind Strategist Problem</span>
+                            <span>Claude's lack of real-time web access; works with frozen training data</span>
+                        </div>
+                        <div class="term-item">
+                            <span class="term-name">Grounding</span>
+                            <span>Gemini's ability to retrieve current web info with source citations</span>
+                        </div>
+                        <div class="term-item">
+                            <span class="term-name">Double Check</span>
+                            <span>Gemini feature that highlights source-backed vs. unverified claims</span>
+                        </div>
+                        <div class="term-item">
+                            <span class="term-name">Fact Brief</span>
+                            <span>Structured document for verified research handoff to Claude</span>
+                        </div>
+                        <div class="term-item">
+                            <span class="term-name">Flight Recorder</span>
+                            <span>Granola's role capturing meeting "black box" data</span>
+                        </div>
+                        <div class="term-item">
+                            <span class="term-name">Context Injection</span>
+                            <span>Pasting Granola transcripts into Claude for processing</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="study-section">
+                    <h3>The Three-Tool Squadron</h3>
+                    <table class="comparison-table">
+                        <tr>
+                            <th>Tool</th>
+                            <th>Squadron Role</th>
+                            <th>Best For</th>
+                        </tr>
+                        <tr>
+                            <td><strong>Claude</strong></td>
+                            <td>Mission Control</td>
+                            <td>Deep reasoning, strategy, content generation</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Gemini</strong></td>
+                            <td>Recon & Radar</td>
+                            <td>Current research, fact verification, citations</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Granola</strong></td>
+                            <td>Flight Recorder</td>
+                            <td>Meeting capture, institutional memory</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="study-section">
+                    <h3>The Intelligence Pipeline</h3>
+                    <div class="pipeline-container" style="margin: 0;">
+                        <div class="pipeline-steps">
+                            <div class="pipeline-step">
+                                <div class="pipeline-step-number">1</div>
+                                <h5>Gemini Research</h5>
+                                <p>Gather facts with sources</p>
+                            </div>
+                            <div class="pipeline-step">
+                                <div class="pipeline-step-number">2</div>
+                                <h5>Granola Context</h5>
+                                <p>Export meeting history</p>
+                            </div>
+                            <div class="pipeline-step">
+                                <div class="pipeline-step-number">3</div>
+                                <h5>Claude Synthesis</h5>
+                                <p>Generate deliverables</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="study-section">
+                    <h3>When to Use Each Tool</h3>
+                    <table class="comparison-table">
+                        <tr>
+                            <th>Need</th>
+                            <th>Use</th>
+                        </tr>
+                        <tr>
+                            <td>Current pricing, news, updates</td>
+                            <td>Gemini</td>
+                        </tr>
+                        <tr>
+                            <td>Source-cited research</td>
+                            <td>Gemini</td>
+                        </tr>
+                        <tr>
+                            <td>Meeting context and history</td>
+                            <td>Granola</td>
+                        </tr>
+                        <tr>
+                            <td>Strategic recommendation</td>
+                            <td>Claude (with Fact Brief)</td>
+                        </tr>
+                        <tr>
+                            <td>Content creation</td>
+                            <td>Claude</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="nav-buttons">
+                    <button class="nav-btn prev" onclick="navigateTo('quiz')">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M19 12H5M12 19l-7-7 7-7"/>
+                        </svg>
+                        Quiz
+                    </button>
+                    <button class="nav-btn next" onclick="navigateTo('complete')">
+                        Complete Module
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M5 12h14M12 5l7 7-7 7"/>
+                        </svg>
+                    </button>
+                </div>
+            </section>
+
+            <!-- Completion Screen -->
+            <section class="screen" id="complete">
+                <div class="completion-hero">
+                    <div class="completion-icon">✓</div>
+                    <h1>Module 5 Complete!</h1>
+                    <p>You've mastered the complete Squadron architecture. You now know how to combine Claude's reasoning with Gemini's grounding and Granola's memory.</p>
+
+                    <div class="completion-stats">
+                        <div class="stat-item">
+                            <div class="stat-value">3</div>
+                            <div class="stat-label">Tools Mastered</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">1</div>
+                            <div class="stat-label">Pipeline Learned</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">100%</div>
+                            <div class="stat-label">Squadron Ready</div>
+                        </div>
+                    </div>
+
+                    <div class="callout callout-tip" style="text-align: left; margin: 2rem 0;">
+                        <div class="callout-icon">💡</div>
+                        <div>
+                            <strong>Key Takeaway</strong><br>
+                            Never ask Claude what you can ground with Gemini—but always let Claude think about what Gemini found. The Squadron is stronger together.
+                        </div>
+                    </div>
+
+                    <button class="start-btn" onclick="alert('Proceeding to Module 6: Artifacts & Exports')">
+                        Continue to Module 6
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M5 12h14M12 5l7 7-7 7"/>
+                        </svg>
+                    </button>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // Navigation
+        function navigateTo(screenId) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+
+            document.getElementById(screenId).classList.add('active');
+            document.querySelector(`[data-screen="${screenId}"]`)?.classList.add('active');
+
+            updateProgress();
+            window.scrollTo(0, 0);
+        }
+
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', () => {
+                navigateTo(item.dataset.screen);
+            });
+        });
+
+        // Progress tracking
+        const screens = ['welcome', 'video', 'lesson', 'flashcards', 'lab', 'quiz', 'study-guide', 'complete'];
+        function updateProgress() {
+            const activeScreen = document.querySelector('.screen.active');
+            const currentIndex = screens.indexOf(activeScreen?.id || 'welcome');
+            const progress = Math.round((currentIndex / (screens.length - 1)) * 100);
+            document.getElementById('progressFill').style.width = progress + '%';
+            document.getElementById('progressText').textContent = progress + '% complete';
+        }
+
+        // Flashcards
+        const flashcards = [
+            {
+                q: "What is \"The Blind Strategist Problem\"?",
+                a: "Claude's inability to access real-time information. Like a brilliant strategist in a sealed room, Claude can reason powerfully but only with information you provide—it cannot browse the web, check current prices or know recent events."
+            },
+            {
+                q: "What is \"Grounding with Google Search\"?",
+                a: "Gemini's ability to access current web information and cite its sources. Unlike Claude's frozen knowledge, Gemini can retrieve today's pricing, recent announcements and current reviews—then provide links to verify each claim."
+            },
+            {
+                q: "What is a Fact Brief?",
+                a: "A structured document for transferring verified research from Gemini to Claude. Contains: Verified Facts (with sources), items Needing Verification, and Research Gaps. Ensures Claude works with grounded information."
+            },
+            {
+                q: "What does Gemini's Double Check feature do?",
+                a: "Highlights which statements are backed by sources (green) vs. which couldn't be verified (orange). Helps distinguish between grounded facts and AI-generated additions that may need verification."
+            },
+            {
+                q: "What is Granola's \"annotation weighting\" feature?",
+                a: "When you type notes during a meeting, Granola weights those sections more heavily in its summary. Your annotations signal importance, surfacing what mattered to you rather than just what was discussed longest."
+            },
+            {
+                q: "What are the three components of the complete Squadron?",
+                a: "Claude (Mission Control) for reasoning and synthesis, Gemini (Recon & Radar) for grounded research with citations, and Granola (Flight Recorder) for meeting capture and institutional memory."
+            },
+            {
+                q: "When should you use Gemini vs. Claude?",
+                a: "Use Gemini for anything time-sensitive: current pricing, recent news, product updates. Use Claude for strategic reasoning, content creation and synthesis—after providing it with Gemini's grounded research."
+            },
+            {
+                q: "What is the complete Intelligence Pipeline workflow?",
+                a: "1) Gemini research with sources → Create Fact Brief. 2) Granola context → Export relevant meeting history. 3) Claude synthesis → Combine inputs for strategic deliverables."
+            }
+        ];
+
+        let currentCard = 0;
+
+        function flipCard() {
+            document.getElementById('flashcard').classList.toggle('flipped');
+        }
+
+        function showCard(index) {
+            const card = document.getElementById('flashcard');
+            card.classList.remove('flipped');
+            document.getElementById('flashcardQuestion').textContent = flashcards[index].q;
+            document.getElementById('flashcardAnswer').textContent = flashcards[index].a;
+            document.getElementById('cardCounter').textContent = `Card ${index + 1} of ${flashcards.length}`;
+        }
+
+        function nextCard() {
+            currentCard = (currentCard + 1) % flashcards.length;
+            showCard(currentCard);
+        }
+
+        function prevCard() {
+            currentCard = (currentCard - 1 + flashcards.length) % flashcards.length;
+            showCard(currentCard);
+        }
+
+        // Quiz
+        function selectOption(option) {
+            const question = option.closest('.quiz-question');
+            question.querySelectorAll('.quiz-option').forEach(o => o.classList.remove('selected'));
+            option.classList.add('selected');
+        }
+
+        function checkQuiz() {
+            const questions = document.querySelectorAll('.quiz-question');
+            let correct = 0;
+
+            questions.forEach((q, i) => {
+                const correctIndex = parseInt(q.dataset.correct);
+                const options = q.querySelectorAll('.quiz-option');
+                const selected = q.querySelector('.quiz-option.selected');
+                const feedback = q.querySelector('.quiz-feedback');
+
+                options.forEach((o, j) => {
+                    o.classList.remove('correct', 'incorrect');
+                    if (j === correctIndex) {
+                        o.classList.add('correct');
+                    } else if (o.classList.contains('selected')) {
+                        o.classList.add('incorrect');
+                    }
+                });
+
+                if (selected && Array.from(options).indexOf(selected) === correctIndex) {
+                    correct++;
+                    feedback.className = 'quiz-feedback show correct';
+                    feedback.textContent = 'Correct!';
+                } else {
+                    feedback.className = 'quiz-feedback show incorrect';
+                    feedback.textContent = 'Review the correct answer highlighted in green.';
+                }
+            });
+
+            alert(`You got ${correct} out of ${questions.length} correct!`);
+        }
+
+        // Lab checkboxes
+        function toggleCheck(checkbox) {
+            checkbox.classList.toggle('checked');
+        }
+
+        // Initialize
+        updateProgress();
+    </script>
+</body>
+</html>

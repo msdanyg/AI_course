@@ -1,0 +1,2213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module 6: Decision Hygiene | Solo Pilot to Squadron Leader</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sofia+Sans:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+    <style>
+        :root {
+            /* ActivTrak Brand Colors */
+            --dark-navy: #14203F;
+            --medium-navy: #19316A;
+            --blue: #1657A0;
+            --teal: #2ED4B5;
+            --yellow: #FFC83B;
+            --white: #FFFFFF;
+
+            /* Legacy aliases for compatibility */
+            --primary-blue: #19316A;
+            --pelorous: #1657A0;
+            --dark-base: #14203F;
+            --light-gray: #D9D9D9;
+            --bg-light: #F8F9FA;
+            --success: #2ED4B5;
+            --error: #EE2C82;
+            --warning: #F5A623;
+
+            /* Module-specific colors */
+            --module-accent: #DC2626; /* Red/warning for critical thinking theme */
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Sofia Sans', sans-serif;
+            background: var(--bg-light);
+            color: var(--dark-base);
+            line-height: 1.6;
+        }
+
+        /* Header */
+        .course-header {
+            background: linear-gradient(135deg, var(--dark-navy) 0%, var(--medium-navy) 100%);
+            color: white;
+            padding: 1rem 2rem;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .course-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .course-subtitle {
+            font-size: 0.85rem;
+            opacity: 0.9;
+        }
+
+        .progress-container {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .progress-bar {
+            width: 200px;
+            height: 8px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--teal);
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        .progress-text {
+            font-size: 0.85rem;
+        }
+
+        /* Main Layout */
+        .main-container {
+            display: flex;
+            margin-top: 60px;
+            min-height: calc(100vh - 60px);
+        }
+
+        /* Sidebar Navigation */
+        .sidebar {
+            width: 280px;
+            background: var(--white);
+            border-right: 1px solid var(--light-gray);
+            position: fixed;
+            top: 60px;
+            bottom: 0;
+            left: 0;
+            overflow-y: auto;
+            padding: 1.5rem 0;
+        }
+
+        .nav-section {
+            padding: 0 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .nav-section-title {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #6B7280;
+            margin-bottom: 0.75rem;
+            padding: 0 0.75rem;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 0.25rem;
+        }
+
+        .nav-item:hover {
+            background: var(--bg-light);
+        }
+
+        .nav-item.active {
+            background: rgba(220, 38, 38, 0.1);
+            color: var(--module-accent);
+        }
+
+        .nav-item.completed .nav-icon {
+            background: var(--success);
+            color: white;
+        }
+
+        .nav-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: var(--light-gray);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .nav-item.active .nav-icon {
+            background: var(--module-accent);
+            color: white;
+        }
+
+        .nav-label {
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .nav-duration {
+            font-size: 0.75rem;
+            color: #6B7280;
+            margin-left: auto;
+        }
+
+        /* Content Area */
+        .content-area {
+            flex: 1;
+            margin-left: 280px;
+            padding: 2rem 3rem;
+            max-width: 1000px;
+        }
+
+        /* Screen Sections */
+        .screen {
+            display: none;
+        }
+
+        .screen.active {
+            display: block;
+            animation: fadeIn 0.4s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Welcome Screen */
+        .welcome-hero {
+            background: linear-gradient(135deg, var(--module-accent) 0%, #991B1B 100%);
+            border-radius: 16px;
+            padding: 3rem;
+            color: white;
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .welcome-hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 400px;
+            height: 400px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+        }
+
+        .welcome-hero h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            position: relative;
+        }
+
+        .welcome-hero .module-tag {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            margin-bottom: 1rem;
+        }
+
+        .welcome-hero p {
+            font-size: 1.1rem;
+            opacity: 0.95;
+            max-width: 600px;
+            position: relative;
+        }
+
+        .objectives-card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .objectives-card h2 {
+            font-size: 1.25rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .objective-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--bg-light);
+        }
+
+        .objective-item:last-child {
+            border-bottom: none;
+        }
+
+        .objective-level {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .level-retrieval { background: #E0F2FE; color: #0369A1; }
+        .level-comprehension { background: #FEF3C7; color: #B45309; }
+        .level-analysis { background: #FCE7F3; color: #BE185D; }
+        .level-utilization { background: #D1FAE5; color: #047857; }
+
+        .time-estimate {
+            display: flex;
+            gap: 2rem;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--bg-light);
+        }
+
+        .time-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #6B7280;
+        }
+
+        .start-btn {
+            background: var(--module-accent);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .start-btn:hover {
+            background: #B91C1C;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+        }
+
+        /* Lesson Content */
+        .lesson-content {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 2.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .lesson-content h1 {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            color: var(--dark-base);
+        }
+
+        .lesson-content h2 {
+            font-size: 1.5rem;
+            margin: 2rem 0 1rem;
+            color: var(--dark-base);
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--bg-light);
+        }
+
+        .lesson-content h3 {
+            font-size: 1.2rem;
+            margin: 1.5rem 0 0.75rem;
+            color: var(--module-accent);
+        }
+
+        .lesson-content p {
+            margin-bottom: 1rem;
+            font-size: 1.05rem;
+            line-height: 1.8;
+        }
+
+        .lesson-content ul, .lesson-content ol {
+            margin: 1rem 0 1rem 1.5rem;
+        }
+
+        .lesson-content li {
+            margin-bottom: 0.5rem;
+            line-height: 1.7;
+        }
+
+        .callout {
+            padding: 1.25rem 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+            display: flex;
+            gap: 1rem;
+        }
+
+        .callout-icon {
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .callout-insight {
+            background: rgba(220, 38, 38, 0.08);
+            border-left: 4px solid var(--module-accent);
+        }
+
+        .callout-warning {
+            background: rgba(245, 166, 35, 0.1);
+            border-left: 4px solid var(--warning);
+        }
+
+        .callout-tip {
+            background: rgba(47, 211, 180, 0.1);
+            border-left: 4px solid var(--teal);
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .comparison-table th {
+            background: var(--dark-base);
+            color: white;
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .comparison-table td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--bg-light);
+        }
+
+        .comparison-table tr:nth-child(even) {
+            background: var(--bg-light);
+        }
+
+        /* Code Blocks */
+        .code-block {
+            background: #1E1E1E;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            overflow-x: auto;
+            position: relative;
+        }
+
+        .code-block pre {
+            color: #D4D4D4;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        .code-label {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background: var(--module-accent);
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        /* Technique Cards */
+        .technique-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .technique-card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 2px solid var(--light-gray);
+            transition: all 0.3s;
+        }
+
+        .technique-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+            border-color: var(--module-accent);
+        }
+
+        .technique-number {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--module-accent);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+        }
+
+        .technique-card h4 {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            color: var(--dark-base);
+        }
+
+        .technique-card p {
+            font-size: 0.9rem;
+            color: #6B7280;
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        /* Workflow Diagram */
+        .workflow-container {
+            background: var(--bg-light);
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .workflow-title {
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+
+        .workflow-phases {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .workflow-phase {
+            background: var(--white);
+            border-radius: 8px;
+            padding: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            border-left: 4px solid var(--module-accent);
+        }
+
+        .phase-number {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--module-accent);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .phase-content h5 {
+            font-size: 1rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .phase-content p {
+            font-size: 0.85rem;
+            color: #6B7280;
+            margin: 0;
+        }
+
+        /* Sycophancy Demo */
+        .demo-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .demo-panel {
+            background: var(--white);
+            border-radius: 8px;
+            padding: 1.5rem;
+            border: 2px solid var(--light-gray);
+        }
+
+        .demo-panel.bad {
+            border-color: var(--error);
+        }
+
+        .demo-panel.good {
+            border-color: var(--success);
+        }
+
+        .demo-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .demo-panel.bad .demo-header { color: var(--error); }
+        .demo-panel.good .demo-header { color: var(--success); }
+
+        .demo-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #6B7280;
+        }
+
+        .demo-prompt {
+            background: var(--bg-light);
+            padding: 1rem;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .demo-response {
+            font-size: 0.9rem;
+            color: #6B7280;
+        }
+
+        /* Video Player */
+        .video-container {
+            background: var(--dark-base);
+            border-radius: 12px;
+            aspect-ratio: 16/9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .video-placeholder {
+            text-align: center;
+            color: white;
+        }
+
+        .play-btn {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: var(--module-accent);
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            margin-bottom: 1rem;
+        }
+
+        .play-btn:hover {
+            transform: scale(1.1);
+            background: #B91C1C;
+        }
+
+        .play-btn svg {
+            width: 32px;
+            height: 32px;
+            fill: white;
+            margin-left: 4px;
+        }
+
+        /* Flashcards */
+        .flashcard-container {
+            perspective: 1000px;
+            margin: 2rem 0;
+        }
+
+        .flashcard {
+            background: var(--white);
+            border-radius: 16px;
+            min-height: 300px;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.6s;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+
+        .flashcard.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .flashcard-front, .flashcard-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 16px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .flashcard-front {
+            background: linear-gradient(135deg, var(--module-accent) 0%, #991B1B 100%);
+            color: white;
+        }
+
+        .flashcard-back {
+            background: var(--white);
+            transform: rotateY(180deg);
+            border: 2px solid var(--module-accent);
+        }
+
+        .flashcard-question {
+            font-size: 1.3rem;
+            font-weight: 600;
+            line-height: 1.5;
+        }
+
+        .flashcard-answer {
+            font-size: 1.1rem;
+            line-height: 1.7;
+            color: var(--dark-base);
+        }
+
+        .flashcard-hint {
+            font-size: 0.85rem;
+            opacity: 0.8;
+            margin-top: 1rem;
+        }
+
+        .flashcard-nav {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .flashcard-btn {
+            background: var(--bg-light);
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .flashcard-btn:hover {
+            background: var(--light-gray);
+        }
+
+        .flashcard-counter {
+            text-align: center;
+            color: #6B7280;
+            margin-top: 1rem;
+        }
+
+        /* Quiz Styles */
+        .quiz-question {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .quiz-question h3 {
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+            color: var(--dark-base);
+        }
+
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .quiz-option {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem 1.25rem;
+            border: 2px solid var(--light-gray);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .quiz-option:hover {
+            border-color: var(--module-accent);
+            background: rgba(220, 38, 38, 0.05);
+        }
+
+        .quiz-option.selected {
+            border-color: var(--module-accent);
+            background: rgba(220, 38, 38, 0.1);
+        }
+
+        .quiz-option.correct {
+            border-color: var(--success);
+            background: rgba(47, 211, 180, 0.1);
+        }
+
+        .quiz-option.incorrect {
+            border-color: var(--error);
+            background: rgba(238, 44, 130, 0.1);
+        }
+
+        .quiz-radio {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--light-gray);
+            border-radius: 50%;
+            flex-shrink: 0;
+            position: relative;
+        }
+
+        .quiz-option.selected .quiz-radio {
+            border-color: var(--module-accent);
+        }
+
+        .quiz-option.selected .quiz-radio::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 10px;
+            height: 10px;
+            background: var(--module-accent);
+            border-radius: 50%;
+        }
+
+        .quiz-feedback {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .quiz-feedback.show {
+            display: block;
+        }
+
+        .quiz-feedback.correct {
+            background: rgba(47, 211, 180, 0.1);
+            border-left: 4px solid var(--success);
+        }
+
+        .quiz-feedback.incorrect {
+            background: rgba(238, 44, 130, 0.1);
+            border-left: 4px solid var(--error);
+        }
+
+        .submit-btn {
+            background: var(--module-accent);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .submit-btn:hover {
+            background: #B91C1C;
+        }
+
+        /* Quiz Results */
+        .quiz-results-panel {
+            display: none;
+            background: var(--dark-base);
+            color: var(--white);
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+            border: 2px solid var(--teal);
+            text-align: center;
+        }
+
+        .quiz-results-panel h2 {
+            color: var(--white);
+            margin-bottom: 1rem;
+        }
+
+        .quiz-score-display {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .quiz-status-msg {
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .retake-btn {
+            background: transparent;
+            color: var(--teal);
+            border: 2px solid var(--teal);
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .retake-btn:hover {
+            background: var(--teal);
+            color: var(--dark-base);
+        }
+
+        /* Lab Exercise */
+        .lab-step {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            border-left: 4px solid var(--module-accent);
+        }
+
+        .lab-step-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .lab-step-number {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--module-accent);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .lab-step h4 {
+            font-size: 1rem;
+        }
+
+        .lab-checklist {
+            list-style: none;
+            margin: 1rem 0 0 0;
+            padding: 0;
+        }
+
+        .lab-checklist li {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            padding: 0.5rem 0;
+        }
+
+        .lab-checkbox {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--light-gray);
+            border-radius: 4px;
+            flex-shrink: 0;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .lab-checkbox.checked {
+            background: var(--success);
+            border-color: var(--success);
+        }
+
+        /* Study Guide */
+        .study-section {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .study-section h3 {
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            color: var(--module-accent);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .key-terms {
+            display: grid;
+            gap: 0.75rem;
+        }
+
+        .term-item {
+            display: grid;
+            grid-template-columns: 160px 1fr;
+            gap: 1rem;
+            padding: 0.75rem;
+            background: var(--bg-light);
+            border-radius: 8px;
+        }
+
+        .term-name {
+            font-weight: 600;
+            color: var(--module-accent);
+        }
+
+        .mantra-card {
+            background: linear-gradient(135deg, var(--module-accent) 0%, #991B1B 100%);
+            border-radius: 12px;
+            padding: 2rem;
+            color: white;
+            text-align: center;
+            margin: 2rem 0;
+        }
+
+        .mantra-card blockquote {
+            font-size: 1.3rem;
+            font-weight: 600;
+            font-style: italic;
+            margin: 0;
+        }
+
+        /* Quick Check */
+        .quick-check {
+            background: var(--bg-light);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .quick-check h4 {
+            margin-bottom: 1rem;
+            color: var(--module-accent);
+        }
+
+        .quick-check ol {
+            margin: 0;
+            padding-left: 1.25rem;
+        }
+
+        .quick-check li {
+            margin-bottom: 0.5rem;
+        }
+
+        /* Navigation Buttons */
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--light-gray);
+        }
+
+        .nav-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .nav-btn.prev {
+            background: var(--bg-light);
+            border: none;
+            color: var(--dark-base);
+        }
+
+        .nav-btn.next {
+            background: var(--module-accent);
+            border: none;
+            color: white;
+        }
+
+        .nav-btn:hover {
+            transform: translateX(2px);
+        }
+
+        .nav-btn.prev:hover {
+            transform: translateX(-2px);
+        }
+
+        /* Completion Screen */
+        .completion-hero {
+            text-align: center;
+            padding: 3rem;
+        }
+
+        .completion-icon {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--success) 0%, var(--teal) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 2rem;
+            font-size: 3rem;
+        }
+
+        .completion-hero h1 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .completion-stats {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            margin: 2rem 0;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--module-accent);
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: #6B7280;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .sidebar {
+                width: 240px;
+            }
+            .content-area {
+                margin-left: 240px;
+                padding: 1.5rem 2rem;
+            }
+            .technique-grid {
+                grid-template-columns: 1fr;
+            }
+            .demo-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                display: none;
+            }
+            .content-area {
+                margin-left: 0;
+                padding: 1rem;
+            }
+            .welcome-hero {
+                padding: 2rem;
+            }
+            .welcome-hero h1 {
+                font-size: 1.75rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="course-header">
+        <div>
+            <div class="course-title">Solo Pilot to Squadron Leader</div>
+            <div class="course-subtitle">Module 6: Decision Hygiene</div>
+        </div>
+        <div class="progress-container">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+            </div>
+            <span class="progress-text" id="progressText">0% complete</span>
+        </div>
+    </header>
+
+    <div class="main-container">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="nav-section">
+                <div class="nav-section-title">Module Content</div>
+                <div class="nav-item active" data-screen="welcome">
+                    <div class="nav-icon">1</div>
+                    <span class="nav-label">Overview</span>
+                    <span class="nav-duration">2 min</span>
+                </div>
+                <div class="nav-item" data-screen="video">
+                    <div class="nav-icon">2</div>
+                    <span class="nav-label">Video Lesson</span>
+                    <span class="nav-duration">11 min</span>
+                </div>
+                <div class="nav-item" data-screen="lesson">
+                    <div class="nav-icon">3</div>
+                    <span class="nav-label">Reading</span>
+                    <span class="nav-duration">15 min</span>
+                </div>
+                <div class="nav-item" data-screen="flashcards">
+                    <div class="nav-icon">4</div>
+                    <span class="nav-label">Flashcards</span>
+                    <span class="nav-duration">5 min</span>
+                </div>
+            </div>
+            <div class="nav-section">
+                <div class="nav-section-title">Practice</div>
+                <div class="nav-item" data-screen="lab">
+                    <div class="nav-icon">5</div>
+                    <span class="nav-label">Lab Exercise</span>
+                    <span class="nav-duration">30 min</span>
+                </div>
+                <div class="nav-item" data-screen="quiz">
+                    <div class="nav-icon">6</div>
+                    <span class="nav-label">Knowledge Check</span>
+                    <span class="nav-duration">10 min</span>
+                </div>
+            </div>
+            <div class="nav-section">
+                <div class="nav-section-title">Reference</div>
+                <div class="nav-item" data-screen="study-guide">
+                    <div class="nav-icon">7</div>
+                    <span class="nav-label">Study Guide</span>
+                    <span class="nav-duration">Review</span>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Content Area -->
+        <main class="content-area">
+            <!-- Welcome Screen -->
+            <section class="screen active" id="welcome">
+                <div class="welcome-hero">
+                    <span class="module-tag">Module 6 of 12</span>
+                    <h1>Decision Hygiene</h1>
+                    <p>Beating Sycophancy: Getting AI to Tell You the Truth</p>
+                </div>
+
+                <div class="objectives-card">
+                    <h2>Learning Objectives</h2>
+                    <div class="objective-item">
+                        <span class="objective-level level-retrieval">Retrieval</span>
+                        <span>Define sycophancy and explain why AI models exhibit this behavior</span>
+                    </div>
+                    <div class="objective-item">
+                        <span class="objective-level level-comprehension">Comprehension</span>
+                        <span>Explain the four Decision Hygiene techniques and when to use each</span>
+                    </div>
+                    <div class="objective-item">
+                        <span class="objective-level level-analysis">Analysis</span>
+                        <span>Identify leading vs. neutral framing in prompts and predict sycophantic responses</span>
+                    </div>
+                    <div class="objective-item">
+                        <span class="objective-level level-utilization">Utilization</span>
+                        <span>Execute Red Teaming and Pre-Mortem protocols for strategic decisions</span>
+                    </div>
+
+                    <div class="time-estimate">
+                        <div class="time-item">
+                            <span>Total Time:</span>
+                            <strong>~75 minutes</strong>
+                        </div>
+                        <div class="time-item">
+                            <span>Tools Needed:</span>
+                            <strong>Claude</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="start-btn" onclick="navigateTo('video')">
+                    Begin Module
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M5 12h14M12 5l7 7-7 7"/>
+                    </svg>
+                </button>
+            </section>
+
+            <!-- Video Screen -->
+            <section class="screen" id="video">
+                <div class="video-container">
+                    <video controls width="100%" style="max-width: 900px; border-radius: 8px;">
+                        <source src="Beating_AI_Sycophancy.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+
+                <div class="lesson-content">
+                    <h2>Video Overview</h2>
+                    <p>This video reveals why AI models tend to agree with you—and how to extract honest analysis instead. You'll see sycophancy in action and learn four techniques to counteract it.</p>
+
+                    <h3>Key Topics Covered</h3>
+                    <ul>
+                        <li><strong>The Yes-Man Problem</strong> - Why AI models are trained to validate your beliefs</li>
+                        <li><strong>Neutral Framing</strong> - Asking for evaluation instead of confirmation</li>
+                        <li><strong>Red Teaming</strong> - Using adversarial personas to find flaws</li>
+                        <li><strong>The Pre-Mortem</strong> - Assuming failure and diagnosing backwards</li>
+                        <li><strong>Context Separation</strong> - Structurally separating opinions from data</li>
+                    </ul>
+                </div>
+
+                <div class="nav-buttons">
+                    <button class="nav-btn prev" onclick="navigateTo('welcome')">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M19 12H5M12 19l-7-7 7-7"/>
+                        </svg>
+                        Overview
+                    </button>
+                    <button class="nav-btn next" onclick="navigateTo('lesson')">
+                        Continue to Reading
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M5 12h14M12 5l7 7-7 7"/>
+                        </svg>
+                    </button>
+                </div>
+            </section>
+
+            <!-- Lesson Screen -->
+            <section class="screen" id="lesson">
+                <div class="lesson-content">
+                    <h1>Decision Hygiene: Beating Sycophancy</h1>
+
+                    <p>Your Squadron is assembled. Claude reasons. Gemini grounds. Granola remembers. But there's a hidden threat: <strong>your AI wants to agree with you</strong>. If you don't learn to counteract it, you'll make confident decisions based on AI-validated assumptions that were never actually challenged.</p>
+
+                    <h2>Understanding Sycophancy</h2>
+
+                    <div class="callout callout-warning">
+                        <div class="callout-icon">!</div>
+                        <div>
+                            <strong>The Yes-Man Trap</strong><br>
+                            Sycophancy is the AI's tendency to mirror your opinions and tell you what you want to hear. In business, this leads to "Yes-Man Analytics" where AI confirms bias rather than revealing truth.
+                        </div>
+                    </div>
+
+                    <h3>Why Does This Happen?</h3>
+                    <p>During training, human raters evaluate AI responses. Humans prefer answers that validate their views. The result:</p>
+                    <ul>
+                        <li><strong>Agreement = Positive Feedback = Reward</strong></li>
+                        <li><strong>Disagreement = Negative Feedback = Penalty</strong></li>
+                    </ul>
+                    <p>The model learns that agreeing is "helpful." Research shows if you express an opinion, AI will skew to match it.</p>
+
+                    <h2>The Four Techniques</h2>
+
+                    <div class="technique-grid">
+                        <div class="technique-card">
+                            <div class="technique-number">1</div>
+                            <h4>Neutral Framing</h4>
+                            <p>Ask for balanced evaluation instead of confirmation. Use words like "evaluate," "assess," "compare"—not "confirm" or "validate."</p>
+                        </div>
+                        <div class="technique-card">
+                            <div class="technique-number">2</div>
+                            <h4>Red Teaming</h4>
+                            <p>Assign adversarial personas that have permission to find flaws. "You are a hostile competitor. Find every weakness."</p>
+                        </div>
+                        <div class="technique-card">
+                            <div class="technique-number">3</div>
+                            <h4>Pre-Mortem</h4>
+                            <p>Assume failure has happened and diagnose why. "This failed—what went wrong?" produces better risk analysis than "What could go wrong?"</p>
+                        </div>
+                        <div class="technique-card">
+                            <div class="technique-number">4</div>
+                            <h4>Context Separation</h4>
+                            <p>Tag your opinions separately from data. Instruct AI to "evaluate data independently of user_opinion."</p>
+                        </div>
+                    </div>
+
+                    <h2>The Strategic Red Team Workflow</h2>
+
+                    <div class="workflow-container">
+                        <div class="workflow-title">Three-Phase Decision Review</div>
+                        <div class="workflow-phases">
+                            <div class="workflow-phase">
+                                <div class="phase-number">1</div>
+                                <div class="phase-content">
+                                    <h5>Phase 1: The Attack</h5>
+                                    <p>Use Red Team persona to find all vulnerabilities and weaknesses</p>
+                                </div>
+                            </div>
+                            <div class="workflow-phase">
+                                <div class="phase-number">2</div>
+                                <div class="phase-content">
+                                    <h5>Phase 2: The Pre-Mortem</h5>
+                                    <p>Assume failure and diagnose causes (catches different failure modes)</p>
+                                </div>
+                            </div>
+                            <div class="workflow-phase">
+                                <div class="phase-number">3</div>
+                                <div class="phase-content">
+                                    <h5>Phase 3: The Defense</h5>
+                                    <p>Propose specific mitigations for each valid concern</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h2>The 10% Rule</h2>
+                    <p>For any significant decision, spend at least 10% of your AI time actively trying to disprove your preferred conclusion. If you spent 30 minutes building a case, spend 3 minutes with a Red Team prompt attacking it.</p>
+
+                    <div class="quick-check">
+                        <h4>Quick-Check Questions</h4>
+                        <ol>
+                            <li>Did I frame this neutrally, or did I lead the witness?</li>
+                            <li>Have I asked for counterarguments?</li>
+                            <li>Would I be embarrassed if a skeptic saw this prompt?</li>
+                            <li>Did the AI tell me anything I <em>didn't</em> want to hear?</li>
+                        </ol>
+                        <p style="margin-top: 1rem; color: var(--module-accent);"><strong>If #4 is "no" → likely sycophancy, reframe and try again</strong></p>
+                    </div>
+
+                    <div class="mantra-card">
+                        <blockquote>"The most dangerous AI is one that always agrees with you."</blockquote>
+                    </div>
+                </div>
+
+                <div class="nav-buttons">
+                    <button class="nav-btn prev" onclick="navigateTo('video')">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M19 12H5M12 19l-7-7 7-7"/>
+                        </svg>
+                        Video
+                    </button>
+                    <button class="nav-btn next" onclick="navigateTo('flashcards')">
+                        Practice with Flashcards
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M5 12h14M12 5l7 7-7 7"/>
+                        </svg>
+                    </button>
+                </div>
+            </section>
+
+            <!-- Flashcards Screen -->
+            <section class="screen" id="flashcards">
+                <h1 style="margin-bottom: 2rem;">Flashcard Review</h1>
+
+                <div class="flashcard-container">
+                    <div class="flashcard" id="flashcard" onclick="flipCard()">
+                        <div class="flashcard-front">
+                            <div class="flashcard-question" id="flashcardQuestion">
+                                What is "sycophancy" in AI systems?
+                            </div>
+                            <div class="flashcard-hint">Click to reveal answer</div>
+                        </div>
+                        <div class="flashcard-back">
+                            <div class="flashcard-answer" id="flashcardAnswer">
+                                The AI's tendency to mirror user opinions and tell you what you want to hear rather than what you need to know. This happens because agreement was rewarded during training.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flashcard-nav">
+                    <button class="flashcard-btn" onclick="prevCard()">Previous</button>
+                    <button class="flashcard-btn" onclick="flipCard()">Flip Card</button>
+                    <button class="flashcard-btn" onclick="nextCard()">Next</button>
+                </div>
+                <div class="flashcard-counter">
+                    <span id="cardCounter">Card 1 of 8</span>
+                </div>
+
+                <div class="nav-buttons">
+                    <button class="nav-btn prev" onclick="navigateTo('lesson')">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M19 12H5M12 19l-7-7 7-7"/>
+                        </svg>
+                        Reading
+                    </button>
+                    <button class="nav-btn next" onclick="navigateTo('lab')">
+                        Continue to Lab
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M5 12h14M12 5l7 7-7 7"/>
+                        </svg>
+                    </button>
+                </div>
+            </section>
+
+            <!-- Lab Screen -->
+            <section class="screen" id="lab">
+                <div class="lesson-content">
+                    <h1>Lab Exercise: The ActivTrak Billing Test</h1>
+                    <p><strong>Duration:</strong> 25-30 minutes | <strong>Tools:</strong> Any AI assistant (Claude, ChatGPT, Gemini, Copilot)</p>
+
+                    <div class="callout callout-insight">
+                        <div class="callout-icon">!</div>
+                        <div>
+                            <strong>Objective</strong><br>
+                            Watch an AI confidently recommend the wrong tool for a job, then use each Decision Hygiene technique to extract the honest answer. You'll have concrete proof that <em>how you ask</em> determines <em>what you get</em>.
+                        </div>
+                    </div>
+
+                    <h2>The Setup</h2>
+                    <p>A small creative agency (15 people) needs a tool to <strong>track billable hours by project</strong> so they can invoice clients accurately. They do project-based work for multiple clients and need to reconcile contractor time against deliverables.</p>
+                    <p>You're going to ask AI whether ActivTrak is the right tool for this. But first, you'll ask in a way that triggers sycophancy.</p>
+
+                    <div class="callout callout-tip">
+                        <div class="callout-icon">*</div>
+                        <div>
+                            <strong>Why This Works</strong><br>
+                            You already know ActivTrak is a workforce analytics platform, not a billing tool. That insider knowledge lets you evaluate exactly how honest (or dishonest) each AI response is. <strong>You become the answer key.</strong>
+                        </div>
+                    </div>
+
+                    <h2>Part 1: The Leading Prompt (3 min)</h2>
+
+                    <div class="lab-step">
+                        <div class="lab-step-header">
+                            <div class="lab-step-number">1</div>
+                            <h4>Trigger the Yes-Man</h4>
+                        </div>
+                        <p>Open your AI tool of choice. Paste this prompt <strong>exactly as written</strong>:</p>
+                        <div class="code-block">
+                            <pre>Explain why ActivTrak is the best tool for a small agency looking to bill for project-based work.</pre>
+                        </div>
+                        <p>That's it. Don't add context. Don't qualify it. Just send it.</p>
+                    </div>
+
+                    <div class="lab-step">
+                        <div class="lab-step-header">
+                            <div class="lab-step-number">2</div>
+                            <h4>Score the Response</h4>
+                        </div>
+                        <p>Read the response carefully and answer these questions:</p>
+                        <ul>
+                            <li>Did the AI accept the premise that ActivTrak IS the best tool?</li>
+                            <li>Did it describe ActivTrak features as if they were billing features?</li>
+                            <li>Did it mention ANY limitations or poor fit?</li>
+                            <li>Did it suggest better alternatives?</li>
+                            <li>Did it invent or exaggerate capabilities?</li>
+                            <li><strong>Would this response lead someone to buy ActivTrak for billing?</strong></li>
+                        </ul>
+                        <p><strong>Save this response.</strong> You'll compare it against every technique that follows.</p>
+                    </div>
+
+                    <div class="callout callout-warning">
+                        <div class="callout-icon">!</div>
+                        <div>
+                            <strong>What You'll Probably See</strong><br>
+                            Most AI tools will accept the premise and build a case for ActivTrak as a billing solution. They'll reframe productivity tracking as "project visibility," time tracking as "billable hours capture" and analytics as "invoice reconciliation." It sounds convincing. It's also misleading.
+                        </div>
+                    </div>
+
+                    <h2>Part 2: Neutral Reframing (5 min)</h2>
+
+                    <div class="lab-step">
+                        <div class="lab-step-header">
+                            <div class="lab-step-number">3</div>
+                            <h4>Remove the Leading Language</h4>
+                        </div>
+                        <p>Open a <strong>new conversation</strong>. This time, frame the question neutrally:</p>
+                        <div class="code-block">
+                            <pre>A 15-person creative agency needs to track billable hours by project and invoice clients for project-based work. They work with multiple clients simultaneously and need to reconcile contractor time against deliverables.
+
+Evaluate whether ActivTrak is a good fit for this use case.
+
+Specifically:
+1. What is ActivTrak actually designed to do?
+2. Does it have native project-based billing features?
+3. Where would it fall short for this agency's needs?
+4. What type of tool would be a better fit?
+5. Is there any scenario where ActivTrak adds value here?
+
+Base your answer on what the product actually does, not on what could theoretically be adapted.</pre>
+                        </div>
+                    </div>
+
+                    <div class="lab-step">
+                        <div class="lab-step-header">
+                            <div class="lab-step-number">4</div>
+                            <h4>Compare the Two Responses</h4>
+                        </div>
+                        <p>What did the neutral version reveal that the leading version hid or minimized? Did it correctly identify ActivTrak as workforce analytics (not billing)? Did it recommend better-fit alternatives?</p>
+                    </div>
+
+                    <h2>Part 3: Red Team - The Buyer's Perspective (10 min)</h2>
+
+                    <div class="lab-step">
+                        <div class="lab-step-header">
+                            <div class="lab-step-number">5</div>
+                            <h4>Become the Agency Owner</h4>
+                        </div>
+                        <p>Open a <strong>new conversation</strong>. Make the AI <em>be</em> the person evaluating tools:</p>
+                        <div class="code-block">
+                            <pre>ROLE: You are the operations manager at a 15-person creative agency. You manage 8-12 active client projects at any time. Your biggest pain points are:
+- Contractors underreporting hours
+- Invoices that don't match actual work performed
+- No visibility into which projects are profitable
+
+You've been told to evaluate ActivTrak as your project billing solution.
+
+Based on what ActivTrak actually does (workforce analytics, productivity tracking, app/website usage monitoring), evaluate it honestly:
+
+1. Your first reaction when you see the product demo
+2. Which of your three pain points it actually solves
+3. Which pain points it completely misses
+4. What you'd need that ActivTrak doesn't offer
+5. What you'd actually recommend to your CEO instead
+6. Rate 1-10: How likely are you to choose ActivTrak for this specific need?
+
+Be brutally honest. You're spending real budget and your reputation is on the line if the tool doesn't work.</pre>
+                        </div>
+                    </div>
+
+                    <div class="callout callout-warning">
+                        <div class="callout-icon">!</div>
+                        <div>
+                            <strong>The Key Insight</strong><br>
+                            If the buyer's rating is below 5, the original leading prompt would have sent someone down a path toward buying the wrong tool. That's the cost of sycophancy in real business decisions.
+                        </div>
+                    </div>
+
+                    <h2>Part 4: Pre-Mortem (5 min)</h2>
+
+                    <div class="lab-step">
+                        <div class="lab-step-header">
+                            <div class="lab-step-number">6</div>
+                            <h4>Assume the Sale Happened and Failed</h4>
+                        </div>
+                        <p>Open a <strong>new conversation</strong>:</p>
+                        <div class="code-block">
+                            <pre>SCENARIO: A 15-person creative agency purchased ActivTrak 6 months ago specifically to solve their project-based billing problems. It was a disaster. The operations manager is now explaining to the CEO what went wrong.
+
+THE DECISION: They chose ActivTrak because an AI tool recommended it as "the best tool for a small agency looking to bill for project-based work."
+
+Working backwards from the failure:
+1. What specifically didn't work for project billing?
+2. What did ActivTrak actually track that wasn't useful for invoicing?
+3. What billing workflows were impossible in ActivTrak?
+4. What did the agency end up buying instead?
+5. How much time and money was wasted on the wrong tool?
+
+Be specific. This is a post-mortem, not a vague summary.</pre>
+                        </div>
+                    </div>
+
+                    <h2>Part 5: Context Separation (5 min)</h2>
+
+                    <div class="lab-step">
+                        <div class="lab-step-header">
+                            <div class="lab-step-number">7</div>
+                            <h4>Separate Opinion from Data</h4>
+                        </div>
+                        <p>Open a <strong>new conversation</strong> and use structured context separation:</p>
+                        <div class="code-block">
+                            <pre>&lt;sales_claim&gt;
+ActivTrak is the best tool for a small agency looking to bill for project-based work.
+&lt;/sales_claim&gt;
+
+&lt;product_facts&gt;
+ActivTrak is a workforce analytics platform. Its core features include:
+- Application and website usage tracking
+- Productivity scoring and categorization
+- Team productivity dashboards
+- Work schedule adherence monitoring
+- Idle time and focus time measurement
+&lt;/product_facts&gt;
+
+&lt;buyer_needs&gt;
+A 15-person creative agency needs:
+- Track billable hours by client project
+- Generate client invoices from tracked time
+- Reconcile contractor hours against deliverables
+- Report on project profitability
+- Support multiple simultaneous client engagements
+&lt;/buyer_needs&gt;
+
+TASK: Evaluate whether the product_facts support the sales_claim for the specific buyer_needs.
+
+Score each buyer need 1-5 on how well ActivTrak addresses it (1 = not at all, 5 = fully).
+
+If the sales claim is not supported by the product facts, say so directly.</pre>
+                        </div>
+                    </div>
+
+                    <h2>The Full Picture</h2>
+                    <p>Look at your five responses side by side. Notice how the <strong>same basic question</strong> produced completely different answers depending on how it was framed:</p>
+                    <ul>
+                        <li><strong>Leading prompt:</strong> Built a case for ActivTrak as a billing tool</li>
+                        <li><strong>Neutral framing:</strong> Identified the mismatch between product and need</li>
+                        <li><strong>Red Team (buyer):</strong> Found practical objections from the user's perspective</li>
+                        <li><strong>Pre-Mortem:</strong> Revealed the cost of acting on bad advice</li>
+                        <li><strong>Context Separation:</strong> Made the gap between features and needs impossible to ignore</li>
+                    </ul>
+
+                    <h2>Success Criteria</h2>
+                    <ul class="lab-checklist">
+                        <li><span class="lab-checkbox" onclick="toggleCheck(this)"></span>The sycophantic response treated ActivTrak as a billing tool (proving the bias)</li>
+                        <li><span class="lab-checkbox" onclick="toggleCheck(this)"></span>At least two techniques correctly identified ActivTrak as workforce analytics, not billing</li>
+                        <li><span class="lab-checkbox" onclick="toggleCheck(this)"></span>The Red Team buyer rated likelihood-to-choose below 5/10</li>
+                        <li><span class="lab-checkbox" onclick="toggleCheck(this)"></span>Context Separation scored average fit below 3/5</li>
+                        <li><span class="lab-checkbox" onclick="toggleCheck(this)"></span>You can explain why the same AI gave completely different answers to the same question</li>
+                    </ul>
+
+                    <div class="callout callout-insight">
+                        <div class="callout-icon">!</div>
+                        <div>
+                            <strong>The Bigger Lesson</strong><br>
+                            You caught this because you know ActivTrak. But what about AI recommendations for tools, strategies and decisions you <em>don't</em> have insider knowledge about? That's why Decision Hygiene is a habit, not a one-time exercise.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="nav-buttons">
+                    <button class="nav-btn prev" onclick="navigateTo('flashcards')">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M19 12H5M12 19l-7-7 7-7"/>
+                        </svg>
+                        Flashcards
+                    </button>
+                    <button class="nav-btn next" onclick="navigateTo('quiz')">
+                        Take the Quiz
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M5 12h14M12 5l7 7-7 7"/>
+                        </svg>
+                    </button>
+                </div>
+            </section>
+
+            <!-- Quiz Screen -->
+            <section class="screen" id="quiz">
+                <h1 style="margin-bottom: 2rem;">Knowledge Check</h1>
+
+                <div class="quiz-question" data-correct="1">
+                    <h3>1. What is "sycophancy" in AI systems?</h3>
+                    <div class="quiz-options">
+                        <div class="quiz-option" onclick="selectOption(this)">
+                            <div class="quiz-radio"></div>
+                            <span>The AI's tendency to give overly long responses</span>
+                        </div>
+                        <div class="quiz-option" onclick="selectOption(this)">
+                            <div class="quiz-radio"></div>
+                            <span>The AI's tendency to mirror user opinions and tell them what they want to hear</span>
+                        </div>
+                        <div class="quiz-option" onclick="selectOption(this)">
+                            <div class="quiz-radio"></div>
+                            <span>The AI's refusal to engage with controversial topics</span>
+                        </div>
+                        <div class="quiz-option" onclick="selectOption(this)">
+                            <div class="quiz-radio"></div>
+                            <span>The AI's tendency to forget previous context</span>
+                        </div>
+                    </div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-correct="1">
+                    <h3>2. What is "Neutral Framing"?</h3>
+                    <div class="quiz-options">
+                        <div class="quiz-option" onclick="selectOption(this)">
+                            <div class="quiz-radio"></div>
+                            <span>Avoiding emotional language in all AI interactions</span>
+                        </div>
+                        <div class="quiz-option" onclick="selectOption(this)">
+                            <div class="quiz-radio"></div>
+                            <span>Asking for balanced evaluation instead of seeking confirmation</span>
+                        </div>
+                        <div class="quiz-option" onclick="selectOption(this)">
+                            <div class="quiz-radio"></div>
+                            <span>Presenting only facts without context</span>
+                        </div>
+                        <div class="quiz-option" onclick="selectOption(this)">
+                            <div class="quiz-radio"></div>
+                            <span>Using the same prompt structure every time</span>
+                        </div>
+                    </div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-correct="1">
+                    <h3>3. What is the purpose of Red Teaming?</h3>
+                    <div class="quiz-options">
+                        <div class="quiz-option" onclick="selectOption(this)">
+                            <div class="quiz-radio"></div>
+                            <span>To make AI more creative</span>
+                        </div>
+                        <div class="quiz-option" onclick="selectOption(this)">
+                            <div class="quiz-radio"></div>
+                            <span>To give AI permission and obligation to find flaws and criticize</span>
+                        </div>
+                        <div class="quiz-option" onclick="selectOption(this)">
+                            <div class="quiz-radio"></div>
+                            <span>To test AI roleplay capabilities</span>
+                        </div>
+                        <div class="quiz-option" onclick="selectOption(this)">
+                            <div class="quiz-radio"></div>
+                            <span>To make responses more entertaining</span>
+                        </div>
+                    </div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-correct="1">
+                    <h3>4. Why is a Pre-Mortem more effective than asking "what could go wrong?"</h3>
+                    <div class="quiz-options">
+                        <div class="quiz-option" onclick="selectOption(this)">
+                            <div class="quiz-radio"></div>
+                            <span>It's more formal and structured</span>
+                        </div>
+                        <div class="quiz-option" onclick="selectOption(this)">
+                            <div class="quiz-radio"></div>
+                            <span>Assuming failure produces probabilities, not just possibilities—more realistic risk analysis</span>
+                        </div>
+                        <div class="quiz-option" onclick="selectOption(this)">
+                            <div class="quiz-radio"></div>
+                            <span>It involves more stakeholders</span>
+                        </div>
+                        <div class="quiz-option" onclick="selectOption(this)">
+                            <div class="quiz-radio"></div>
+                            <span>It's a more comprehensive checklist</span>
+                        </div>
+                    </div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-correct="1">
+                    <h3>5. What is the "10% Rule"?</h3>
+                    <div class="quiz-options">
+                        <div class="quiz-option" onclick="selectOption(this)">
+                            <div class="quiz-radio"></div>
+                            <span>Accept AI outputs if they're 90% accurate</span>
+                        </div>
+                        <div class="quiz-option" onclick="selectOption(this)">
+                            <div class="quiz-radio"></div>
+                            <span>Spend at least 10% of AI time actively trying to disprove your preferred conclusion</span>
+                        </div>
+                        <div class="quiz-option" onclick="selectOption(this)">
+                            <div class="quiz-radio"></div>
+                            <span>Run Red Teams on 10% of decisions</span>
+                        </div>
+                        <div class="quiz-option" onclick="selectOption(this)">
+                            <div class="quiz-radio"></div>
+                            <span>Expect AI to disagree 10% of the time</span>
+                        </div>
+                    </div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div style="text-align: center; margin-top: 2rem;">
+                    <button id="submit-quiz-btn" class="submit-btn" onclick="checkQuiz()">Check Answers</button>
+                </div>
+
+                <div id="quiz-results" class="quiz-results-panel">
+                    <h2>Quiz Results</h2>
+                    <div id="quiz-score" class="quiz-score-display"></div>
+                    <div id="quiz-status" class="quiz-status-msg"></div>
+                    <button class="retake-btn" onclick="resetQuiz()">Retake Quiz</button>
+                </div>
+
+                <div class="nav-buttons">
+                    <button class="nav-btn prev" onclick="navigateTo('lab')">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M19 12H5M12 19l-7-7 7-7"/>
+                        </svg>
+                        Lab Exercise
+                    </button>
+                    <button class="nav-btn next" onclick="navigateTo('study-guide')">
+                        View Study Guide
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M5 12h14M12 5l7 7-7 7"/>
+                        </svg>
+                    </button>
+                </div>
+            </section>
+
+            <!-- Study Guide Screen -->
+            <section class="screen" id="study-guide">
+                <h1 style="margin-bottom: 2rem;">Quick Reference Study Guide</h1>
+
+                <div class="mantra-card">
+                    <blockquote>"The most dangerous AI is one that always agrees with you."</blockquote>
+                </div>
+
+                <div class="study-section">
+                    <h3>Key Terms</h3>
+                    <div class="key-terms">
+                        <div class="term-item">
+                            <span class="term-name">Sycophancy</span>
+                            <span>AI's tendency to mirror opinions and tell you what you want to hear</span>
+                        </div>
+                        <div class="term-item">
+                            <span class="term-name">Neutral Framing</span>
+                            <span>Asking for evaluation instead of confirmation</span>
+                        </div>
+                        <div class="term-item">
+                            <span class="term-name">Red Teaming</span>
+                            <span>Adversarial personas that give AI permission to critique</span>
+                        </div>
+                        <div class="term-item">
+                            <span class="term-name">Pre-Mortem</span>
+                            <span>Assuming failure and diagnosing backwards</span>
+                        </div>
+                        <div class="term-item">
+                            <span class="term-name">Context Separation</span>
+                            <span>Tagging opinions separately from data for independent analysis</span>
+                        </div>
+                        <div class="term-item">
+                            <span class="term-name">10% Rule</span>
+                            <span>Spend 10% of AI time trying to disprove your conclusions</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="study-section">
+                    <h3>The Four Techniques</h3>
+                    <table class="comparison-table">
+                        <tr>
+                            <th>Technique</th>
+                            <th>When to Use</th>
+                        </tr>
+                        <tr>
+                            <td><strong>Neutral Framing</strong></td>
+                            <td>All strategic questions—default approach</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Red Teaming</strong></td>
+                            <td>Testing plans, proposals, strategies</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Pre-Mortem</strong></td>
+                            <td>Risk assessment, project planning</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Context Separation</strong></td>
+                            <td>When you have a strong opinion to evaluate</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="study-section">
+                    <h3>Quick-Check Questions</h3>
+                    <ol>
+                        <li>Did I frame this neutrally?</li>
+                        <li>Have I asked for counterarguments?</li>
+                        <li>Would a skeptic approve of this prompt?</li>
+                        <li>Did AI tell me anything I didn't want to hear?</li>
+                    </ol>
+                    <p style="margin-top: 1rem; color: var(--module-accent);"><strong>If #4 is "no" → triggered sycophancy</strong></p>
+                </div>
+
+                <div class="nav-buttons">
+                    <button class="nav-btn prev" onclick="navigateTo('quiz')">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M19 12H5M12 19l-7-7 7-7"/>
+                        </svg>
+                        Quiz
+                    </button>
+                    <button class="nav-btn next" onclick="navigateTo('complete')">
+                        Complete Module
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M5 12h14M12 5l7 7-7 7"/>
+                        </svg>
+                    </button>
+                </div>
+            </section>
+
+            <!-- Completion Screen -->
+            <section class="screen" id="complete">
+                <div class="completion-hero">
+                    <div class="completion-icon">✓</div>
+                    <h1>Module 6 Complete!</h1>
+                    <p>You've mastered Decision Hygiene. You now know how to extract honest analysis from AI systems designed to please you.</p>
+
+                    <div class="completion-stats">
+                        <div class="stat-item">
+                            <div class="stat-value">4</div>
+                            <div class="stat-label">Techniques Learned</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">1</div>
+                            <div class="stat-label">Workflow Mastered</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">100%</div>
+                            <div class="stat-label">Sycophancy-Proof</div>
+                        </div>
+                    </div>
+
+                    <div class="callout callout-tip" style="text-align: left; margin: 2rem 0;">
+                        <div class="callout-icon">!</div>
+                        <div>
+                            <strong>Key Takeaway</strong><br>
+                            If the AI always agreed with you, it didn't help you. Use the 10% Rule: spend meaningful time trying to disprove your preferred conclusions.
+                        </div>
+                    </div>
+
+                    <p style="opacity: 0.8; margin-top: 1rem;">You've completed all sections of this module. Close this window or navigate back to review any section.</p>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // Navigation
+        function navigateTo(screenId) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+
+            document.getElementById(screenId).classList.add('active');
+            document.querySelector(`[data-screen="${screenId}"]`)?.classList.add('active');
+
+            updateProgress();
+            window.scrollTo(0, 0);
+        }
+
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', () => {
+                navigateTo(item.dataset.screen);
+            });
+        });
+
+        // Progress tracking
+        const screens = ['welcome', 'video', 'lesson', 'flashcards', 'lab', 'quiz', 'study-guide', 'complete'];
+        function updateProgress() {
+            const activeScreen = document.querySelector('.screen.active');
+            const currentIndex = screens.indexOf(activeScreen?.id || 'welcome');
+            const progress = Math.round((currentIndex / (screens.length - 1)) * 100);
+            document.getElementById('progressFill').style.width = progress + '%';
+            document.getElementById('progressText').textContent = progress + '% complete';
+        }
+
+        // Flashcards
+        const flashcards = [
+            {
+                q: "What is \"sycophancy\" in AI systems?",
+                a: "The AI's tendency to mirror user opinions and tell you what you want to hear rather than what you need to know. This happens because agreement was rewarded during training."
+            },
+            {
+                q: "What is \"Neutral Framing\"?",
+                a: "Asking for balanced evaluation instead of seeking confirmation. Key words: evaluate, assess, compare, analyze. Instead of \"Why is this good?\" ask \"Evaluate risks and benefits.\""
+            },
+            {
+                q: "What is \"Red Teaming\"?",
+                a: "Assigning adversarial personas that have permission—even obligation—to find flaws. Example: \"You are a hostile competitor. Find every weakness in this plan.\""
+            },
+            {
+                q: "What is a \"Pre-Mortem\"?",
+                a: "A technique that assumes failure has happened and diagnoses why. \"This failed—what went wrong?\" produces better risk analysis than \"What could go wrong?\" by shifting from possibilities to probabilities."
+            },
+            {
+                q: "What is \"Context Separation\"?",
+                a: "Structurally separating your opinion from data using tags (<user_opinion>, <data>) and instructing AI to evaluate independently. Creates explicit permission to contradict you."
+            },
+            {
+                q: "What are the three phases of the Strategic Red Team Workflow?",
+                a: "1) Attack: Red Team finds vulnerabilities. 2) Pre-Mortem: Diagnose failure causes. 3) Defense: Propose mitigations. Run each in separate conversations."
+            },
+            {
+                q: "What is the \"10% Rule\"?",
+                a: "Spend at least 10% of AI interaction time actively trying to disprove your preferred conclusion. If you spent 30 minutes building a case, spend 3 minutes attacking it."
+            },
+            {
+                q: "What are the four Quick-Check Questions?",
+                a: "1) Did I frame neutrally? 2) Have I asked for counterarguments? 3) Would a skeptic approve this prompt? 4) Did AI tell me anything I didn't want to hear? If #4 is no → sycophancy."
+            }
+        ];
+
+        let currentCard = 0;
+
+        function flipCard() {
+            document.getElementById('flashcard').classList.toggle('flipped');
+        }
+
+        function showCard(index) {
+            const card = document.getElementById('flashcard');
+            card.classList.remove('flipped');
+            document.getElementById('flashcardQuestion').textContent = flashcards[index].q;
+            document.getElementById('flashcardAnswer').textContent = flashcards[index].a;
+            document.getElementById('cardCounter').textContent = `Card ${index + 1} of ${flashcards.length}`;
+        }
+
+        function nextCard() {
+            currentCard = (currentCard + 1) % flashcards.length;
+            showCard(currentCard);
+        }
+
+        function prevCard() {
+            currentCard = (currentCard - 1 + flashcards.length) % flashcards.length;
+            showCard(currentCard);
+        }
+
+        // Quiz
+        function selectOption(option) {
+            const question = option.closest('.quiz-question');
+            question.querySelectorAll('.quiz-option').forEach(o => o.classList.remove('selected'));
+            option.classList.add('selected');
+        }
+
+        function checkQuiz() {
+            const questions = document.querySelectorAll('.quiz-question');
+            let correct = 0;
+
+            questions.forEach((q, i) => {
+                const correctIndex = parseInt(q.dataset.correct);
+                const options = q.querySelectorAll('.quiz-option');
+                const selected = q.querySelector('.quiz-option.selected');
+                const feedback = q.querySelector('.quiz-feedback');
+
+                options.forEach((o, j) => {
+                    o.classList.remove('correct', 'incorrect');
+                    if (j === correctIndex) {
+                        o.classList.add('correct');
+                    } else if (o.classList.contains('selected')) {
+                        o.classList.add('incorrect');
+                    }
+                });
+
+                if (selected && Array.from(options).indexOf(selected) === correctIndex) {
+                    correct++;
+                    feedback.className = 'quiz-feedback show correct';
+                    feedback.textContent = 'Correct!';
+                } else {
+                    feedback.className = 'quiz-feedback show incorrect';
+                    feedback.textContent = 'Review the correct answer highlighted in green.';
+                }
+            });
+
+            // SCORM reporting
+            const scorePercent = Math.round((correct / questions.length) * 100);
+            const passed = scorePercent >= 70;
+
+            if (typeof setSCORMScore === 'function') {
+                setSCORMScore(scorePercent);
+            }
+            if (typeof setSCORMStatus === 'function') {
+                setSCORMStatus(passed ? 'passed' : 'failed');
+            }
+
+            // Display inline results
+            const resultsDiv = document.getElementById('quiz-results');
+            const scoreDiv = document.getElementById('quiz-score');
+            const statusDiv = document.getElementById('quiz-status');
+
+            scoreDiv.textContent = correct + ' / ' + questions.length + ' (' + scorePercent + '%)';
+            scoreDiv.style.color = passed ? '#2ED4B5' : '#F87171';
+
+            if (scorePercent === 100) {
+                statusDiv.innerHTML = '<span style="color: #2ED4B5;">Perfect Score! You\'ve mastered Decision Hygiene.</span>';
+            } else if (passed) {
+                statusDiv.innerHTML = '<span style="color: #2ED4B5;">Passed! Strong understanding. Review any missed concepts before proceeding.</span>';
+            } else {
+                statusDiv.innerHTML = '<span style="color: #F87171;">Not yet passing (70% required). Review the lesson and try again.</span>';
+            }
+
+            resultsDiv.style.display = 'block';
+            document.getElementById('submit-quiz-btn').style.display = 'none';
+            resultsDiv.scrollIntoView({ behavior: 'smooth' });
+
+            // Celebration confetti for passing
+            if (passed && typeof confetti === 'function') {
+                confetti({
+                    particleCount: 100,
+                    spread: 70,
+                    origin: { y: 0.6 },
+                    colors: ['#2ED4B5', '#1657A0', '#FFC83B', '#19316A']
+                });
+
+                setTimeout(() => {
+                    confetti({
+                        particleCount: 50,
+                        angle: 60,
+                        spread: 55,
+                        origin: { x: 0 },
+                        colors: ['#2ED4B5', '#1657A0', '#FFC83B']
+                    });
+                }, 250);
+
+                setTimeout(() => {
+                    confetti({
+                        particleCount: 50,
+                        angle: 120,
+                        spread: 55,
+                        origin: { x: 1 },
+                        colors: ['#2ED4B5', '#1657A0', '#FFC83B']
+                    });
+                }, 400);
+            }
+
+            // Close popup window after completion
+            if (window.opener !== null) {
+                setTimeout(() => {
+                    const shouldClose = confirm('Module completed! Close this window?');
+                    if (shouldClose) {
+                        window.close();
+                    }
+                }, 3000);
+            }
+        }
+
+        // Reset quiz for retake
+        function resetQuiz() {
+            document.querySelectorAll('.quiz-option').forEach(o => {
+                o.classList.remove('selected', 'correct', 'incorrect');
+            });
+            document.querySelectorAll('.quiz-feedback').forEach(f => {
+                f.className = 'quiz-feedback';
+                f.textContent = '';
+            });
+            document.getElementById('quiz-results').style.display = 'none';
+            document.getElementById('submit-quiz-btn').style.display = 'inline-block';
+            window.scrollTo(0, document.getElementById('quiz').offsetTop);
+        }
+
+        // Lab checkboxes
+        function toggleCheck(checkbox) {
+            checkbox.classList.toggle('checked');
+        }
+
+        // Initialize
+        updateProgress();
+    </script>
+</body>
+</html>

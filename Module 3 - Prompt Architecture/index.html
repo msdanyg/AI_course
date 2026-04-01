@@ -1,0 +1,2231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module 3: Prompt Architecture | Solo Pilot to Squadron Leader</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <script src="scorm_api.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+    <style>
+        :root {
+            /* ActivTrak Brand Colors */
+            --dark-navy: #14203F;
+            --medium-navy: #19316A;
+            --blue: #1657A0;
+            --teal: #2ED4B5;
+            --yellow: #FFC83B;
+            --white: #FFFFFF;
+
+            /* Legacy aliases for compatibility */
+            --primary-blue: #19316A;
+            --pelorous: #1657A0;
+            --dark-base: #14203F;
+            --light-gray: #D9D9D9;
+            --bg-light: #F8F9FA;
+            --success: #2ED4B5;
+            --error: #EE2C82;
+            --warning: #F5A623;
+
+            /* Module-specific colors */
+            --module-accent: #F59E0B;
+            --module-accent-light: #FEF3C7;
+            --xml-color: #F59E0B;
+            --markdown-color: #3B82F6;
+            --sections-color: #10B981;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Century Gothic', 'CenturyGothic', AppleGothic, sans-serif;
+            background: var(--bg-light);
+            color: var(--dark-base);
+            line-height: 1.6;
+        }
+
+        /* Header */
+        .course-header {
+            background: linear-gradient(135deg, var(--dark-navy) 0%, var(--medium-navy) 100%);
+            color: white;
+            padding: 1rem 2rem;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .course-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .course-subtitle {
+            font-size: 0.85rem;
+            opacity: 0.9;
+        }
+
+        .progress-container {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .progress-bar {
+            width: 200px;
+            height: 8px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--module-accent);
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        .progress-text {
+            font-size: 0.85rem;
+        }
+
+        /* Main Layout */
+        .main-container {
+            display: flex;
+            margin-top: 60px;
+            min-height: calc(100vh - 60px);
+        }
+
+        /* Sidebar Navigation */
+        .sidebar {
+            width: 280px;
+            background: var(--white);
+            border-right: 1px solid var(--light-gray);
+            padding: 1.5rem;
+            position: fixed;
+            top: 60px;
+            left: 0;
+            bottom: 0;
+            overflow-y: auto;
+        }
+
+        .module-badge {
+            background: linear-gradient(135deg, var(--module-accent), #D97706);
+            color: white;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+        }
+
+        .module-badge h2 {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.9;
+        }
+
+        .module-badge h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .nav-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .nav-section-title {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #666;
+            margin-bottom: 0.75rem;
+            font-weight: 600;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-bottom: 0.25rem;
+        }
+
+        .nav-item:hover {
+            background: var(--bg-light);
+        }
+
+        .nav-item.active {
+            background: var(--module-accent-light);
+            color: var(--module-accent);
+        }
+
+        .nav-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: var(--light-gray);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .nav-item.active .nav-icon {
+            background: var(--module-accent);
+            color: white;
+        }
+
+        .nav-label {
+            font-size: 0.9rem;
+        }
+
+        /* Content Area */
+        .content-area {
+            margin-left: 280px;
+            flex: 1;
+            padding: 2rem 3rem;
+            max-width: 900px;
+        }
+
+        .content-section {
+            display: none;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        /* Video Section */
+        .video-container {
+            background: var(--dark-base);
+            border-radius: 12px;
+            aspect-ratio: 16/9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 2rem;
+        }
+
+        .video-placeholder {
+            text-align: center;
+            color: white;
+        }
+
+        .play-button {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: var(--module-accent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .play-button:hover {
+            transform: scale(1.1);
+        }
+
+        .play-button::after {
+            content: '';
+            width: 0;
+            height: 0;
+            border-left: 24px solid white;
+            border-top: 14px solid transparent;
+            border-bottom: 14px solid transparent;
+            margin-left: 6px;
+        }
+
+        /* Lesson Content */
+        .lesson-header {
+            margin-bottom: 2rem;
+        }
+
+        .lesson-header h1 {
+            font-size: 2rem;
+            color: var(--dark-base);
+            margin-bottom: 0.5rem;
+        }
+
+        .lesson-meta {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .lesson-content h2 {
+            font-size: 1.5rem;
+            color: var(--dark-base);
+            margin: 2rem 0 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--module-accent-light);
+        }
+
+        .lesson-content h3 {
+            font-size: 1.2rem;
+            color: var(--dark-base);
+            margin: 1.5rem 0 0.75rem;
+        }
+
+        .lesson-content p {
+            margin-bottom: 1rem;
+            color: #444;
+        }
+
+        .lesson-content ul, .lesson-content ol {
+            margin-bottom: 1rem;
+            padding-left: 1.5rem;
+        }
+
+        .lesson-content li {
+            margin-bottom: 0.5rem;
+            color: #444;
+        }
+
+        /* Format Selector */
+        .format-selector {
+            background: var(--white);
+            border: 2px solid var(--module-accent-light);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .format-selector-title {
+            font-weight: 600;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .format-tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .format-tab {
+            padding: 0.75rem 1.25rem;
+            border: 2px solid var(--light-gray);
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .format-tab:hover {
+            border-color: var(--module-accent);
+        }
+
+        .format-tab.active {
+            border-color: var(--module-accent);
+            background: var(--module-accent);
+            color: white;
+        }
+
+        .format-tab.xml { border-left: 4px solid var(--xml-color); }
+        .format-tab.markdown { border-left: 4px solid var(--markdown-color); }
+        .format-tab.sections { border-left: 4px solid var(--sections-color); }
+
+        .format-tab.active.xml { background: var(--xml-color); border-color: var(--xml-color); }
+        .format-tab.active.markdown { background: var(--markdown-color); border-color: var(--markdown-color); }
+        .format-tab.active.sections { background: var(--sections-color); border-color: var(--sections-color); }
+
+        .format-content {
+            display: none;
+        }
+
+        .format-content.active {
+            display: block;
+        }
+
+        .format-description {
+            background: var(--bg-light);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+
+        /* Code Blocks */
+        .code-block {
+            background: #1E293B;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            overflow-x: auto;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.85rem;
+            line-height: 1.6;
+            color: #E2E8F0;
+        }
+
+        .code-block .tag { color: var(--xml-color); }
+        .code-block .header { color: var(--markdown-color); }
+        .code-block .label { color: var(--sections-color); }
+        .code-block .content { color: #E2E8F0; }
+        .code-block .comment { color: #64748B; font-style: italic; }
+
+        /* Concept Cards */
+        .concept-card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            border-left: 4px solid var(--module-accent);
+        }
+
+        .concept-card h4 {
+            color: var(--module-accent);
+            margin-bottom: 0.75rem;
+            font-size: 1.1rem;
+        }
+
+        /* Key Insight Box */
+        .key-insight {
+            background: linear-gradient(135deg, var(--module-accent-light), #FEF9C3);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-left: 4px solid var(--module-accent);
+        }
+
+        .key-insight h4 {
+            color: var(--module-accent);
+            margin-bottom: 0.5rem;
+        }
+
+        /* Comparison Table */
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+        }
+
+        .comparison-table th {
+            background: var(--module-accent);
+            color: white;
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .comparison-table td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--light-gray);
+        }
+
+        .comparison-table tr:hover {
+            background: var(--module-accent-light);
+        }
+
+        /* When to Use Cards */
+        .when-cards {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .when-card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 1.25rem;
+            border: 2px solid var(--light-gray);
+        }
+
+        .when-card.use {
+            border-color: var(--success);
+        }
+
+        .when-card.skip {
+            border-color: var(--error);
+        }
+
+        .when-card h4 {
+            font-size: 0.9rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .when-card.use h4 { color: var(--success); }
+        .when-card.skip h4 { color: var(--error); }
+
+        .when-card ul {
+            list-style: none;
+            padding: 0;
+            font-size: 0.9rem;
+        }
+
+        .when-card li {
+            padding: 0.25rem 0;
+        }
+
+        /* Flashcards */
+        .flashcard-container {
+            perspective: 1000px;
+            margin: 2rem 0;
+        }
+
+        .flashcard {
+            width: 100%;
+            height: 300px;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.6s ease;
+            cursor: pointer;
+        }
+
+        .flashcard.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .flashcard-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 12px;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .flashcard-front {
+            background: linear-gradient(135deg, var(--module-accent), #D97706);
+            color: white;
+        }
+
+        .flashcard-back {
+            background: var(--white);
+            border: 2px solid var(--module-accent);
+            transform: rotateY(180deg);
+        }
+
+        .flashcard-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.8;
+            margin-bottom: 1rem;
+        }
+
+        .flashcard-content {
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        .flashcard-nav {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .flashcard-btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            background: var(--module-accent);
+            color: white;
+        }
+
+        .flashcard-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .flashcard-counter {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        /* Lab Section */
+        .lab-step {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            border: 1px solid var(--light-gray);
+        }
+
+        .lab-step-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .lab-step-number {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--module-accent);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+
+        .lab-step-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .copy-btn {
+            background: var(--module-accent);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .copy-btn:hover {
+            background: #D97706;
+        }
+
+        /* Quiz Section */
+        .quiz-question {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .quiz-question-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .quiz-question-number {
+            background: var(--module-accent);
+            color: white;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+
+        .quiz-question-type {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #666;
+            background: var(--bg-light);
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+        }
+
+        .quiz-question-text {
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .quiz-option {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            border: 2px solid var(--light-gray);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .quiz-option:hover {
+            border-color: var(--module-accent);
+            background: var(--module-accent-light);
+        }
+
+        .quiz-option.selected {
+            border-color: var(--module-accent);
+            background: var(--module-accent-light);
+        }
+
+        .quiz-option.correct {
+            border-color: var(--success);
+            background: rgba(47, 211, 180, 0.1);
+        }
+
+        .quiz-option.incorrect {
+            border-color: var(--error);
+            background: rgba(238, 44, 130, 0.1);
+        }
+
+        .quiz-option-marker {
+            width: 24px;
+            height: 24px;
+            border: 2px solid var(--light-gray);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        .quiz-option.selected .quiz-option-marker {
+            border-color: var(--module-accent);
+            background: var(--module-accent);
+            color: white;
+        }
+
+        .quiz-feedback {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .quiz-feedback.show {
+            display: block;
+        }
+
+        .quiz-feedback.correct {
+            background: rgba(47, 211, 180, 0.1);
+            border: 1px solid var(--success);
+        }
+
+        .quiz-feedback.incorrect {
+            background: rgba(238, 44, 130, 0.1);
+            border: 1px solid var(--error);
+        }
+
+        .check-answer-btn {
+            background: var(--module-accent);
+            color: white;
+            border: none;
+            padding: 0.75rem 2rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            margin-top: 1rem;
+        }
+
+        .check-answer-btn:hover {
+            background: #D97706;
+        }
+
+        /* Study Guide */
+        .study-guide-section {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .study-guide-section h3 {
+            color: var(--module-accent);
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+
+        /* Navigation Buttons */
+        .section-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--light-gray);
+        }
+
+        .nav-button {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .nav-button.primary {
+            background: var(--module-accent);
+            color: white;
+        }
+
+        .nav-button.secondary {
+            background: var(--bg-light);
+            color: var(--dark-base);
+        }
+
+        .nav-button:hover {
+            transform: translateY(-2px);
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .sidebar {
+                width: 240px;
+            }
+            .content-area {
+                margin-left: 240px;
+                padding: 1.5rem;
+            }
+            .when-cards {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                display: none;
+            }
+            .content-area {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="course-header">
+        <div>
+            <div class="course-title">Solo Pilot to Squadron Leader</div>
+            <div class="course-subtitle">ActivTrak AI Certification</div>
+        </div>
+        <div class="progress-container">
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 0%"></div>
+            </div>
+            <span class="progress-text">0% Complete</span>
+        </div>
+    </header>
+
+    <div class="main-container">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="module-badge">
+                <h2>Module 3</h2>
+                <h3>Prompt Architecture</h3>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Learn</div>
+                <div class="nav-item active" data-section="video">
+                    <div class="nav-icon">▶</div>
+                    <span class="nav-label">Video Lesson</span>
+                </div>
+                <div class="nav-item" data-section="lesson">
+                    <div class="nav-icon">📖</div>
+                    <span class="nav-label">Full Lesson</span>
+                </div>
+                <div class="nav-item" data-section="flashcards">
+                    <div class="nav-icon">🎴</div>
+                    <span class="nav-label">Flashcards</span>
+                </div>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Practice</div>
+                <div class="nav-item" data-section="lab">
+                    <div class="nav-icon">🧪</div>
+                    <span class="nav-label">Lab Exercise</span>
+                </div>
+                <div class="nav-item" data-section="quiz">
+                    <div class="nav-icon">✓</div>
+                    <span class="nav-label">Knowledge Check</span>
+                </div>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Reference</div>
+                <div class="nav-item" data-section="study-guide">
+                    <div class="nav-icon">📋</div>
+                    <span class="nav-label">Study Guide</span>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="content-area">
+            <!-- Video Section -->
+            <section id="video" class="content-section active">
+                <div class="video-container">
+                    <video controls width="100%" style="max-width: 900px; border-radius: 8px;">
+                        <source src="module3_video.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+
+                <div class="lesson-header">
+                    <h1>The Reasoning Engine: Advanced Prompt Architecture</h1>
+                    <p class="lesson-meta">Learn to structure prompts for consistent, high-quality results</p>
+                </div>
+
+                <div class="lesson-content">
+                    <div class="key-insight">
+                        <h4>Key Insight</h4>
+                        <p>It's not about XML specifically—it's about <strong>clear separation of concerns</strong>. You can achieve this with XML tags, Markdown headers, or even simple labels. Choose what feels natural to you.</p>
+                    </div>
+
+                    <h2>What You'll Learn</h2>
+                    <ul>
+                        <li>Why unstructured prompts produce inconsistent results ("context bleeding")</li>
+                        <li>Three format options: XML tags, Markdown headers, or clear section labels</li>
+                        <li>When XML is superior (and when simpler formats work fine)</li>
+                        <li>How to ask Claude to structure messy data for you</li>
+                        <li>When you don't need formal structure at all</li>
+                    </ul>
+
+                    <h2>The Structure Spectrum</h2>
+                    <p>You have three options for structuring prompts, progressing from simplest to most advanced. All three work—choose based on comfort level and task complexity:</p>
+
+                    <div class="format-selector">
+                        <div class="format-selector-title">Compare Format Options</div>
+                        <div class="format-tabs">
+                            <button class="format-tab sections active" onclick="showFormat('sections')">Clear Labels</button>
+                            <button class="format-tab markdown" onclick="showFormat('markdown')">Markdown</button>
+                            <button class="format-tab xml" onclick="showFormat('xml')">XML Tags</button>
+                        </div>
+
+                        <div id="format-sections" class="format-content active">
+                            <div class="format-description">
+                                <strong>Simplest Approach.</strong> Best for: beginners, quick tasks, when formal structure feels like overkill.
+                            </div>
+                            <div class="code-block">
+<span class="label">ROLE:</span> <span class="content">CSM at ActivTrak, "Insights, Not Oversight"</span>
+
+<span class="label">SITUATION:</span> <span class="content">Client productivity dropped 15% during EHR implementation</span>
+
+<span class="label">AVOID:</span> <span class="content">tracking, monitoring, surveillance language</span>
+
+<span class="label">TASK:</span> <span class="content">Three hypotheses with supporting data</span>
+                            </div>
+                        </div>
+
+                        <div id="format-markdown" class="format-content">
+                            <div class="format-description">
+                                <strong>Balanced.</strong> Best for: narrative prompts, documentation-style, people comfortable with Markdown.
+                            </div>
+                            <div class="code-block">
+<span class="header">## Role</span>
+<span class="content">You are a CSM at ActivTrak focused on "Insights, Not Oversight."</span>
+
+<span class="header">## Context</span>
+<span class="content">Client productivity dropped 15% during EHR implementation.</span>
+
+<span class="header">## Constraints</span>
+<span class="content">- Avoid: tracking, monitoring, surveillance
+- Use supportive framing</span>
+
+<span class="header">## What I Need</span>
+<span class="content">Three hypotheses with supporting data.</span>
+                            </div>
+                        </div>
+
+                        <div id="format-xml" class="format-content">
+                            <div class="format-description">
+                                <strong>Most Precise.</strong> Best for: complex prompts, nested data, reusable templates, structured outputs, advanced users.
+                            </div>
+                            <div class="code-block">
+<span class="tag">&lt;system_role&gt;</span>
+<span class="content">You are a CSM at ActivTrak focused on "Insights, Not Oversight."</span>
+<span class="tag">&lt;/system_role&gt;</span>
+
+<span class="tag">&lt;task_context&gt;</span>
+<span class="content">Client productivity dropped 15% during EHR implementation.</span>
+<span class="tag">&lt;/task_context&gt;</span>
+
+<span class="tag">&lt;constraints&gt;</span>
+<span class="content">- Avoid: tracking, monitoring, surveillance
+- Use supportive framing</span>
+<span class="tag">&lt;/constraints&gt;</span>
+
+<span class="tag">&lt;output_format&gt;</span>
+<span class="content">Three hypotheses with supporting data.</span>
+<span class="tag">&lt;/output_format&gt;</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h2>Markdown Quick Reference</h2>
+                    <p>If you're new to Markdown, here's a quick reference for the most useful formatting you'll use in prompts:</p>
+
+                    <div class="markdown-reference" style="background: #f8f9fa; padding: 1.5rem; border-radius: 8px; margin: 1.5rem 0;">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                            <div>
+                                <h4 style="color: #1657A0; margin-bottom: 0.5rem;">Headers</h4>
+                                <div class="code-block" style="font-size: 0.85rem;">
+# Level 1 Header
+## Level 2 Header
+### Level 3 Header</div>
+                            </div>
+
+                            <div>
+                                <h4 style="color: #1657A0; margin-bottom: 0.5rem;">Text Formatting</h4>
+                                <div class="code-block" style="font-size: 0.85rem;">
+**Bold text**
+*Italic text*
+***Bold and italic***</div>
+                            </div>
+
+                            <div>
+                                <h4 style="color: #1657A0; margin-bottom: 0.5rem;">Lists</h4>
+                                <div class="code-block" style="font-size: 0.85rem;">
+Bullet list:
+- Item one
+- Item two
+  - Nested item
+
+Numbered list:
+1. First item
+2. Second item</div>
+                            </div>
+
+                            <div>
+                                <h4 style="color: #1657A0; margin-bottom: 0.5rem;">Code</h4>
+                                <div class="code-block" style="font-size: 0.85rem;">
+Inline: `variable_name`
+
+Code block:
+```
+code here
+```</div>
+                            </div>
+
+                            <div>
+                                <h4 style="color: #1657A0; margin-bottom: 0.5rem;">Tables</h4>
+                                <div class="code-block" style="font-size: 0.85rem;">
+| Column 1 | Column 2 |
+|----------|----------|
+| Data 1   | Data 2   |</div>
+                            </div>
+
+                            <div>
+                                <h4 style="color: #1657A0; margin-bottom: 0.5rem;">Links & Rules</h4>
+                                <div class="code-block" style="font-size: 0.85rem;">
+[Link text](url)
+
+Horizontal rule:
+---</div>
+                            </div>
+                        </div>
+
+                        <p style="margin-top: 1rem; margin-bottom: 0; font-style: italic; color: #14203F;">
+                            <strong>Why this matters for prompting:</strong> Markdown formatting helps you organize data within prompts (tables for metrics, lists for findings, code blocks for technical content) and helps Claude parse structured information more reliably.
+                        </p>
+                    </div>
+
+                    <h2>When to Use Structure (And When Not To)</h2>
+
+                    <div class="when-cards">
+                        <div class="when-card use">
+                            <h4>✓ Use Formal Structure When</h4>
+                            <ul>
+                                <li>• Multiple data sources</li>
+                                <li>• Several distinct requirements</li>
+                                <li>• Getting inconsistent results</li>
+                                <li>• Creating reusable templates</li>
+                            </ul>
+                        </div>
+                        <div class="when-card skip">
+                            <h4>✗ Skip Structure When</h4>
+                            <ul>
+                                <li>• Simple, single-purpose task</li>
+                                <li>• Back-and-forth conversation</li>
+                                <li>• Your writing is already clear</li>
+                                <li>• Quick questions</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="concept-card">
+                        <h4>Pro Tip: Let Claude Structure Your Data</h4>
+                        <p>Have messy meeting notes or raw data? Just ask Claude to organize it:</p>
+                        <p><em>"Here are my rough notes. Convert them into structured sections: Client Goals, Concerns, Action Items, Next Steps."</em></p>
+                        <p>Then use Claude's structured output as clean input for your next prompt.</p>
+                    </div>
+                </div>
+
+                <div class="section-nav">
+                    <button class="nav-button secondary" onclick="navigateTo('video')">← Back to Video</button>
+                    <button class="nav-button primary" onclick="navigateTo('lesson')">Continue to Full Lesson →</button>
+                </div>
+            </section>
+
+            <!-- Full Lesson Section -->
+            <section id="lesson" class="content-section">
+                <div class="lesson-header">
+                    <h1>The Reasoning Engine: Advanced Prompt Architecture</h1>
+                    <p class="lesson-meta">Estimated reading time: 15-20 minutes</p>
+                </div>
+
+                <div class="lesson-content">
+                    <h2>The Core Principle</h2>
+                    <p><strong>Clear structure prevents context bleeding.</strong> When you separate role, data, constraints and instructions—whether using XML tags, Markdown headers, or simple labels—the AI produces consistent, high-quality outputs.</p>
+
+                    <p>The goal is <strong>clarity, not a specific syntax</strong>. Choose the format that feels natural to you.</p>
+
+                    <h2>When XML Is Superior</h2>
+                    <p>While all formats work, XML has advantages in specific situations:</p>
+
+                    <table class="comparison-table">
+                        <tr>
+                            <th>Situation</th>
+                            <th>Why XML Works Best</th>
+                        </tr>
+                        <tr>
+                            <td>Nested data</td>
+                            <td>Tags inside tags (metrics within client_info within user_data)</td>
+                        </tr>
+                        <tr>
+                            <td>Structured output</td>
+                            <td>Signals you want data back in specific format</td>
+                        </tr>
+                        <tr>
+                            <td>Reusable templates</td>
+                            <td>Clear placeholders like [CLIENT_NAME]</td>
+                        </tr>
+                        <tr>
+                            <td>Markdown in data</td>
+                            <td>Prevents confusion when your data contains ## headers</td>
+                        </tr>
+                    </table>
+
+                    <h2>Standard Components</h2>
+                    <p>Regardless of format, include these components:</p>
+
+                    <table class="comparison-table">
+                        <tr>
+                            <th>Component</th>
+                            <th>Purpose</th>
+                        </tr>
+                        <tr>
+                            <td><strong>Role</strong></td>
+                            <td>Who the AI should be</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Context</strong></td>
+                            <td>Background situation</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Data</strong></td>
+                            <td>Content to process</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Constraints</strong></td>
+                            <td>What NOT to do</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Output Format</strong></td>
+                            <td>Desired structure</td>
+                        </tr>
+                    </table>
+
+                    <p><strong>Order matters:</strong> Role at top, data in middle, instructions at end (due to "Lost in the Middle" effect).</p>
+
+                    <h2>Common Mistakes</h2>
+
+                    <table class="comparison-table">
+                        <tr>
+                            <th>Mistake</th>
+                            <th>Fix</th>
+                        </tr>
+                        <tr>
+                            <td>Overloading (research + write + critique)</td>
+                            <td>Separate tasks across conversations</td>
+                        </tr>
+                        <tr>
+                            <td>Vague outputs ("make it better")</td>
+                            <td>Specify exactly what "better" means</td>
+                        </tr>
+                        <tr>
+                            <td>Missing constraints</td>
+                            <td>Always include what to AVOID</td>
+                        </tr>
+                        <tr>
+                            <td>Buried instructions</td>
+                            <td>Place key instructions at END</td>
+                        </tr>
+                        <tr>
+                            <td>Over-engineering</td>
+                            <td>Match structure to task complexity</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="section-nav">
+                    <button class="nav-button secondary" onclick="navigateTo('video')">← Back to Video</button>
+                    <button class="nav-button primary" onclick="navigateTo('flashcards')">Continue to Flashcards →</button>
+                </div>
+            </section>
+
+            <!-- Flashcards Section -->
+            <section id="flashcards" class="content-section">
+                <div class="lesson-header">
+                    <h1>Flashcards</h1>
+                    <p class="lesson-meta">Click cards to flip. 8 cards total.</p>
+                </div>
+
+                <div class="flashcard-container">
+                    <div class="flashcard" id="flashcard">
+                        <div class="flashcard-face flashcard-front">
+                            <div class="flashcard-label">Question</div>
+                            <div class="flashcard-content" id="flashcard-front-content">
+                                What are the three format options for structuring prompts?
+                            </div>
+                        </div>
+                        <div class="flashcard-face flashcard-back">
+                            <div class="flashcard-label">Answer</div>
+                            <div class="flashcard-content" id="flashcard-back-content">
+                                <strong>1. XML Tags</strong> - Most precise, best for complex prompts<br><br>
+                                <strong>2. Markdown Headers</strong> - Balanced, familiar syntax<br><br>
+                                <strong>3. Clear Sections</strong> - Simplest, good for quick tasks<br><br>
+                                <em>All three work—choose based on comfort and complexity.</em>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flashcard-nav">
+                    <button class="flashcard-btn" onclick="prevCard()">← Previous</button>
+                    <span class="flashcard-counter"><span id="currentCard">1</span> / <span id="totalCards">8</span></span>
+                    <button class="flashcard-btn" onclick="nextCard()">Next →</button>
+                </div>
+
+                <div class="section-nav">
+                    <button class="nav-button secondary" onclick="navigateTo('lesson')">← Back to Lesson</button>
+                    <button class="nav-button primary" onclick="navigateTo('lab')">Continue to Lab →</button>
+                </div>
+            </section>
+
+            <!-- Lab Section -->
+            <section id="lab" class="content-section">
+                <div class="lesson-header">
+                    <h1>Lab Exercise: The POC Closeout Challenge</h1>
+                    <p class="lesson-meta">Duration: 20-25 minutes | Tools: Claude (claude.ai) + Forever New POC deck</p>
+                </div>
+
+                <div class="lesson-content">
+                    <h2>Objective</h2>
+                    <p>By the end of this lab, you will be able to:</p>
+                    <ul>
+                        <li>Transform an unstructured email into a reusable markdown template with placeholders</li>
+                        <li>Structure complex multi-asset prompts using XML tags, markdown headers or clear labels</li>
+                        <li>Apply the ActivTrak standard prompt components (Role → Context → Data → Constraints → Output Format)</li>
+                        <li>Prevent context bleeding when working with multiple data sources</li>
+                        <li>Create prompts that produce consistent, professional POC closeout communications</li>
+                    </ul>
+
+                    <div class="lab-step">
+                        <div class="lab-step-header">
+                            <div class="lab-step-number">1</div>
+                            <div class="lab-step-title">Part A: Email to Template (10 minutes)</div>
+                        </div>
+
+                        <h3>The Assignment</h3>
+                        <p><strong>Your Goal:</strong> Convert the Forever New POC closeout email into a reusable markdown template with placeholders.</p>
+
+                        <h4>Data Source: The POC Closeout Email</h4>
+                        <details style="margin-top: 1rem; padding: 1rem; background: #f8f9fa; border-radius: 8px; border-left: 4px solid #1657A0;">
+                            <summary style="cursor: pointer; font-weight: bold; color: #1657A0;">📧 View POC Closeout Email (Click to expand)</summary>
+                            <div style="margin-top: 1rem;">
+                                <div class="code-block" style="margin-top: 0.5rem; white-space: pre-wrap;">Subject: Forever New POC Results - Ready to Discuss Next Steps
+
+Hi Ben and team,
+
+I wanted to share the results from your ActivTrak POC. The data is really compelling.
+
+Your team showed 0.3 hours more productivity when working remotely (6.8 hrs) compared to in-office (6.5 hrs). The Buying Apparel team especially benefited from remote work. Interestingly, hybrid days where people split locations had the lowest productivity at 6.4 hours - likely due to transition time.
+
+We also identified significant capacity opportunities. 68.6% of users (105 of 153) are currently below productivity goals, representing about $104K in monthly financial loss or 25 FTE worth of untapped capacity. The IT Department spends 27% of their time in chat and messaging - nearly double other departments - suggesting focus time optimization opportunities.
+
+We detected 3 users with potential time theft issues using input simulation tools, which validates your concerns about activity authenticity.
+
+Based on these findings, I recommend we focus on three immediate actions: addressing the IT productivity gap, coaching the bottom 36 users averaging under 5 productive hours daily, and investigating the input simulation cases.
+
+The ROI potential is substantial - even a conservative 10% improvement would recover $125K annually and gain 2.5 FTE capacity without hiring.
+
+I'd love to schedule a call this week to discuss moving forward with Essentials Plus. Are you available Thursday or Friday afternoon?
+
+Best regards,
+Sarah Mitchell
+Customer Success Manager, ActivTrak</div>
+                                <button class="copy-btn" onclick="copyToClipboard(this.previousElementSibling.textContent)" style="margin-top: 0.5rem;">📋 Copy Email</button>
+                            </div>
+                        </details>
+
+                        <h4>Your Instructions</h4>
+                        <p>Create a prompt that tells Claude to:</p>
+                        <ol>
+                            <li><strong>Replace specific details</strong> with placeholders in [BRACKETS]</li>
+                            <li><strong>Organize into clear sections</strong> with markdown headers (##)</li>
+                            <li><strong>Preserve the tone and flow</strong> but make it generic enough for any POC</li>
+                            <li><strong>Make it flexible</strong> - some POCs might have 2 findings, others might have 5</li>
+                        </ol>
+
+                        <h4>Try It Yourself First</h4>
+                        <p>Open Claude and write your own prompt. See if you can get it to produce a good template!</p>
+
+                        <details style="margin-top: 1rem; padding: 1rem; background: #f8f9fa; border-radius: 8px;">
+                            <summary style="cursor: pointer; font-weight: bold; color: #1657A0;">💡 Show Me How (Click to reveal example prompt)</summary>
+                            <div style="margin-top: 1rem;">
+                                <p>Here's an example using the ActivTrak standard prompt components:</p>
+                                <div class="code-block" style="margin-top: 0.5rem;">ROLE: You are a Solutions Consultant at ActivTrak creating reusable templates for POC closeout communications.
+
+CONTEXT: This template will be used by the Solutions team for future POC closeouts with different clients. It needs to be flexible enough to work for various findings while maintaining a consistent professional structure.
+
+DATA: [Paste the POC closeout email above]
+
+CONSTRAINTS:
+- Replace all client-specific details with placeholders in [BRACKETS]
+- Use descriptive placeholder names (e.g., [CLIENT_NAME], [PRODUCTIVITY_METRIC], [ROI_FIGURE])
+- Preserve the supportive, consultative tone
+- Keep the email structure flexible for 2-5 key findings
+- Maintain professional closing format
+
+OUTPUT FORMAT:
+Create a markdown template with these sections:
+## Subject Line
+## Greeting
+## Key Findings (flexible number)
+## Recommendations
+## ROI Summary
+## Next Steps
+## Closing</div>
+                                <p style="margin-top: 1rem;"><strong>What makes this work:</strong></p>
+                                <ul>
+                                    <li><strong>Role</strong> establishes who Claude is and their purpose</li>
+                                    <li><strong>Context</strong> explains why this template matters and how it will be used</li>
+                                    <li><strong>Data</strong> clearly separates the source material</li>
+                                    <li><strong>Constraints</strong> prevent common errors (vague placeholders, rigid structure)</li>
+                                    <li><strong>Output Format</strong> specifies exactly what sections to create</li>
+                                </ul>
+                            </div>
+                        </details>
+                    </div>
+
+                    <div class="lab-step">
+                        <div class="lab-step-header">
+                            <div class="lab-step-number">2</div>
+                            <div class="lab-step-title">Part B: Multi-Asset Executive Summary (10-15 minutes)</div>
+                        </div>
+
+                        <h3>The Assignment</h3>
+                        <p><strong>Your Goal:</strong> Create a structured prompt that synthesizes THREE data sources into a board-ready executive summary for Forever New's CIO.</p>
+                        <p><strong>The Challenge:</strong> How do you structure a prompt with multiple data sources without context bleeding?</p>
+
+                        <h4>Your Instructions</h4>
+                        <p>Structure a prompt that includes:</p>
+                        <ol>
+                            <li><strong>Role:</strong> Who is Claude? (CSM preparing executive summary for C-suite)</li>
+                            <li><strong>Context:</strong> What's the purpose and audience? (Board-ready POC results, non-technical executives)</li>
+                            <li><strong>Data Sources:</strong> All three sources - <strong>clearly separated</strong></li>
+                            <li><strong>Constraints:</strong>
+                                <ul>
+                                    <li>Use "users" or "accounts" (never "customers" for end users)</li>
+                                    <li>Use "analytics" and "insights" (never "monitoring" or "tracking")</li>
+                                    <li>Frame findings supportively using "Insights, Not Oversight" philosophy</li>
+                                    <li>No technical jargon - audience is C-suite</li>
+                                    <li>Keep summary to 400 words maximum</li>
+                                </ul>
+                            </li>
+                            <li><strong>Output Format:</strong> POC Overview, Key Findings, Strategic Recommendations, Expected ROI, Proposed Next Steps</li>
+                        </ol>
+
+                        <h4 style="margin-top: 2rem;">Data Sources</h4>
+                        <p>You'll need all three data sources to complete Part B. <strong>Notice that each source uses a different format</strong> (free text, Markdown, bullet list) - this is intentional! Real-world data rarely comes in a single format, and your prompt structure must handle this variety without context bleeding.</p>
+                        <p style="margin-top: 0.5rem;"><em>Expand each section below to view and copy:</em></p>
+
+                        <details style="margin-top: 1rem; padding: 1rem; background: #f8f9fa; border-radius: 8px; border-left: 4px solid #1657A0;">
+                            <summary style="cursor: pointer; font-weight: bold; color: #1657A0;">📧 Data Source 1: POC Closeout Email - FREE TEXT FORMAT (Click to expand)</summary>
+                            <div style="margin-top: 1rem;">
+                                <p style="color: #1657A0; font-weight: bold; margin-bottom: 0.5rem;">⚠️ Note: This data source uses free-text email format</p>
+                                <div class="code-block" style="margin-top: 0.5rem; white-space: pre-wrap;">Subject: Forever New POC Results - Ready to Discuss Next Steps
+
+Hi Ben and team,
+
+I wanted to share the results from your ActivTrak POC. The data is really compelling.
+
+Your team showed 0.3 hours more productivity when working remotely (6.8 hrs) compared to in-office (6.5 hrs). The Buying Apparel team especially benefited from remote work. Interestingly, hybrid days where people split locations had the lowest productivity at 6.4 hours - likely due to transition time.
+
+We also identified significant capacity opportunities. 68.6% of users (105 of 153) are currently below productivity goals, representing about $104K in monthly financial loss or 25 FTE worth of untapped capacity. The IT Department spends 27% of their time in chat and messaging - nearly double other departments - suggesting focus time optimization opportunities.
+
+We detected 3 users with potential time theft issues using input simulation tools, which validates your concerns about activity authenticity.
+
+Based on these findings, I recommend we focus on three immediate actions: addressing the IT productivity gap, coaching the bottom 36 users averaging under 5 productive hours daily, and investigating the input simulation cases.
+
+The ROI potential is substantial - even a conservative 10% improvement would recover $125K annually and gain 2.5 FTE capacity without hiring.
+
+I'd love to schedule a call this week to discuss moving forward with Essentials Plus. Are you available Thursday or Friday afternoon?
+
+Best regards,
+Sarah Mitchell
+Customer Success Manager, ActivTrak</div>
+                                <button class="copy-btn" onclick="copyToClipboard(this.previousElementSibling.textContent)" style="margin-top: 0.5rem;">📋 Copy</button>
+                            </div>
+                        </details>
+
+                        <details style="margin-top: 1rem; padding: 1rem; background: #f8f9fa; border-radius: 8px; border-left: 4px solid #2ED4B5;">
+                            <summary style="cursor: pointer; font-weight: bold; color: #1657A0;">📊 Data Source 2: POC Findings Deck - MARKDOWN FORMAT (Click to expand)</summary>
+                            <div style="margin-top: 1rem;">
+                                <p style="color: #1657A0; font-weight: bold; margin-bottom: 0.5rem;">⚠️ Note: This data source uses Markdown formatting</p>
+                                <div class="code-block" style="margin-top: 0.5rem; white-space: pre-wrap;"># Forever New POC Results Summary
+
+## Success Criteria Validation
+
+| Criterion | Status | Metric |
+|-----------|--------|--------|
+| Remote work productivity | ✅ VALIDATED | 0.3 hrs more productive (6.8 vs 6.5 hrs) |
+| After-hours work verification | ✅ VALIDATED | Schedule adherence tracking implemented |
+| Comprehensive visibility | ✅ VALIDATED | Application usage beyond AD logs achieved |
+| Capacity opportunities | ✅ VALIDATED | 25 FTE untapped capacity identified |
+| License optimization | ✅ VALIDATED | Usage patterns tracked for cost savings |
+| False activity detection | ✅ VALIDATED | 3 users detected using input simulation |
+| Meeting time visibility | ✅ VALIDATED | Offline meeting integration successful |
+
+## Workforce Utilization
+
+**Critical Finding**: 105 of 153 users (68.6%) currently below productivity goal
+
+- **Monthly financial loss**: $104,292
+- **Annualized impact**: $1,251,500
+- **Equivalent untapped capacity**: 25.03 FTE
+
+## Time Allocation by Department
+
+| Department | Office Apps | Business Systems | Chat/Messaging | Other |
+|------------|-------------|------------------|----------------|-------|
+| Buying Apparel | 65.7% | — | 14.1% | 20.2% |
+| Finance | 40.7% | 24.5% | — | 34.8% |
+| IT Department | 15.4% | — | **27.1%** ⚠️ | 57.5% |
+| People & Culture | 33.1% | — | 13.8% | 53.1% |
+
+*⚠️ IT Department chat time is double other departments*
+
+## False Activity Detection
+
+- **2 confirmed cases**: Input simulation detected (movemouse.exe, screenshot evidence)
+- **1 highly suspected case**: Productivity theater identified through pattern analysis
+
+## Immediate Action Recommendations
+
+1. **Address IT productivity gap**: 0.8-hour gap vs other departments
+2. **Target bottom performers**: 36 users (24%) averaging under 5 hrs/day
+3. **Investigate input simulation**: Follow up on 3 flagged accounts
+
+## ROI Projections
+
+| Scenario | Improvement | Annual Recovery | FTE Capacity Gained |
+|----------|-------------|-----------------|---------------------|
+| Conservative | 10% | $125,150 | 2.5 FTE |
+| Target | 20% | $250,300 | 5 FTE |
+| Full Potential | 100% | $1,251,500 | 25 FTE |</div>
+                                <button class="copy-btn" onclick="copyToClipboard(this.previousElementSibling.textContent)" style="margin-top: 0.5rem;">📋 Copy</button>
+                            </div>
+                        </details>
+
+                        <details style="margin-top: 1rem; padding: 1rem; background: #f8f9fa; border-radius: 8px; border-left: 4px solid #19316A;">
+                            <summary style="cursor: pointer; font-weight: bold; color: #1657A0;">📝 Data Source 3: POC Kickoff Meeting Notes - BULLET LIST FORMAT (Click to expand)</summary>
+                            <div style="margin-top: 1rem;">
+                                <p style="color: #1657A0; font-weight: bold; margin-bottom: 0.5rem;">⚠️ Note: This data source uses simple bullet list format</p>
+                                <div class="code-block" style="margin-top: 0.5rem; white-space: pre-wrap;">POC Kickoff Meeting - Forever New
+Date: October 15, 2024
+Attendees: Ben (IT Lead), Efstratios (CIO), Sarah Mitchell (ActivTrak CSM)
+
+• New CIO Efstratios joined 3 months ago with mandate to cut costs and improve efficiency
+• Board pressuring leadership for data-driven RTO (return-to-office) policy decisions
+• Employees claiming high productivity while WFH but no objective data to validate
+• Current monitoring limited to Azure AD logs - very fragmented visibility
+• IT team suspects some employees using mouse jigglers or similar tools
+• Recent productivity decline coincides with WFH policy expansion
+• IT controls all software licensing, looking for opportunities to optimize spend
+• Employee council raised privacy concerns about "surveillance"
+• Need solution that provides insights without being perceived as Big Brother
+• Timeline: 30-day POC, decision needed before Q1 budget planning
+• Success criteria: validate/refute WFH productivity claims, identify capacity gaps, detect anomalous activity</div>
+                                <button class="copy-btn" onclick="copyToClipboard(this.previousElementSibling.textContent)" style="margin-top: 0.5rem;">📋 Copy</button>
+                            </div>
+                        </details>
+
+                        <h4 style="margin-top: 2rem;">Choose Your Format</h4>
+                        <p>You have three options for structuring this prompt. Try writing your prompt now using your preferred format!</p>
+
+                        <details style="margin-top: 1rem; padding: 1rem; background: #f8f9fa; border-radius: 8px;">
+                            <summary style="cursor: pointer; font-weight: bold; color: #1657A0;">💡 Show Me How - Option A: XML Tags (Click to reveal)</summary>
+                            <div style="margin-top: 1rem;">
+                                <p>Most precise, best for nested data:</p>
+                                <div class="code-block" style="margin-top: 0.5rem;">&lt;system_role&gt;
+You are a Customer Success Manager at ActivTrak preparing an executive summary for a retail company's C-suite following a successful POC.
+&lt;/system_role&gt;
+
+&lt;task_context&gt;
+The CIO needs a concise executive summary for the board meeting that synthesizes POC results into business impact and next steps.
+&lt;/task_context&gt;
+
+&lt;data_source_1&gt;
+&lt;source_type&gt;POC Closeout Email&lt;/source_type&gt;
+&lt;content&gt;[Paste email here]&lt;/content&gt;
+&lt;/data_source_1&gt;
+
+&lt;constraints&gt;
+- Use "users" or "accounts" (never "customers")
+- Use "analytics" and "insights" (never "monitoring")
+- Keep to 400 words maximum
+&lt;/constraints&gt;
+
+&lt;output_format&gt;
+1. POC Overview (2 sentences)
+2. Key Findings (3-4 bullet points)
+3. Strategic Recommendations (3 priorities)
+4. Expected ROI (conservative and target)
+5. Proposed Next Steps
+&lt;/output_format&gt;</div>
+                            </div>
+                        </details>
+
+                        <details style="margin-top: 1rem; padding: 1rem; background: #f8f9fa; border-radius: 8px;">
+                            <summary style="cursor: pointer; font-weight: bold; color: #1657A0;">💡 Show Me How - Option B: Markdown Headers (Click to reveal)</summary>
+                            <div style="margin-top: 1rem;">
+                                <p>Balanced, familiar syntax:</p>
+                                <div class="code-block" style="margin-top: 0.5rem;">## Role
+You are a Customer Success Manager at ActivTrak preparing an executive summary.
+
+## Context
+The CIO needs a board-ready summary focused on ROI and strategic recommendations.
+
+## Data Source 1: POC Closeout Email
+[Paste email here]
+
+## Data Source 2: POC Findings Deck
+[Paste deck summary]
+
+## Data Source 3: Meeting Notes
+[Paste notes]
+
+## Constraints
+- Use "users" or "accounts" (never "customers")
+- Use "analytics" and "insights" (never "monitoring")
+- 400 word maximum
+
+## Output Format
+1. POC Overview (2 sentences)
+2. Key Findings (3-4 bullets)
+3. Strategic Recommendations (3 priorities)
+4. Expected ROI
+5. Proposed Next Steps</div>
+                            </div>
+                        </details>
+
+                        <details style="margin-top: 1rem; padding: 1rem; background: #f8f9fa; border-radius: 8px;">
+                            <summary style="cursor: pointer; font-weight: bold; color: #1657A0;">💡 Show Me How - Option C: Clear Labels (Click to reveal)</summary>
+                            <div style="margin-top: 1rem;">
+                                <p>Simplest, fastest:</p>
+                                <div class="code-block" style="margin-top: 0.5rem;">ROLE: Customer Success Manager at ActivTrak preparing executive summary
+
+CONTEXT: Board-ready POC summary focused on ROI
+
+DATA SOURCE 1 - POC EMAIL:
+[Paste email]
+
+DATA SOURCE 2 - POC DECK:
+[Paste deck summary]
+
+DATA SOURCE 3 - MEETING NOTES:
+[Paste notes]
+
+AVOID:
+- Words: monitoring, tracking, surveillance, customers
+- Technical jargon
+- Exceeding 400 words
+
+OUTPUT STRUCTURE:
+1. POC Overview (2 sentences)
+2. Key Findings (3-4 quantified bullets)
+3. Strategic Recommendations (3 priorities)
+4. Expected ROI (conservative and target)
+5. Proposed Next Steps</div>
+                            </div>
+                        </details>
+                    </div>
+
+                    <div class="lab-step">
+                        <div class="lab-step-header">
+                            <div class="lab-step-number">3</div>
+                            <div class="lab-step-title">Bonus Challenge: One Prompt, Two Outputs (Advanced)</div>
+                        </div>
+
+                        <h3>The Assignment</h3>
+                        <p>Can you create a single structured prompt that produces BOTH:</p>
+                        <ol>
+                            <li>The reusable email template (Part A)</li>
+                            <li>The executive summary (Part B)</li>
+                        </ol>
+
+                        <p><strong>Why this is hard:</strong> Different output formats, different audiences, risk of context bleeding between template creation and summary writing.</p>
+
+                        <p><strong>Hint:</strong> You'll need <strong>nested structure</strong> - perhaps a parent &lt;task&gt; tag with two child &lt;deliverable&gt; tags, each with their own constraints and output formats.</p>
+
+                        <details style="margin-top: 1rem; padding: 1rem; background: #f8f9fa; border-radius: 8px;">
+                            <summary style="cursor: pointer; font-weight: bold; color: #1657A0;">💡 Show Me How (Click to reveal)</summary>
+                            <div style="margin-top: 1rem;">
+                                <p>Here's one way to structure a combined prompt using nested XML:</p>
+                                <div class="code-block" style="margin-top: 0.5rem;">&lt;task_overview&gt;
+You are a Customer Success Manager at ActivTrak. You need to create TWO deliverables from POC closeout materials.
+&lt;/task_overview&gt;
+
+&lt;deliverable_1&gt;
+&lt;type&gt;Reusable Template&lt;/type&gt;
+&lt;goal&gt;Convert the POC email into a markdown template for future use&lt;/goal&gt;
+&lt;instructions&gt;Replace specific details with [PLACEHOLDERS], organize with ## headers&lt;/instructions&gt;
+&lt;/deliverable_1&gt;
+
+&lt;deliverable_2&gt;
+&lt;type&gt;Executive Summary&lt;/type&gt;
+&lt;goal&gt;Create board-ready summary synthesizing all three data sources&lt;/goal&gt;
+&lt;constraints&gt;ActivTrak terminology, 400 words, no surveillance language&lt;/constraints&gt;
+&lt;output_format&gt;5 required sections (POC Overview, Findings, etc.)&lt;/output_format&gt;
+&lt;/deliverable_2&gt;</div>
+                                <p style="margin-top: 1rem;"><strong>Key insight:</strong> Nested tags prevent context bleeding between the two tasks.</p>
+                            </div>
+                        </details>
+                    </div>
+
+                    <div class="callout" style="background: #14203F; color: white; padding: 1.5rem; border-radius: 8px; margin-top: 2rem;">
+                        <h4>What You'll Create</h4>
+                        <ul>
+                            <li>A reusable POC email template you can use in Module 8 (Projects)</li>
+                            <li>A "Mission Card" structured prompt for executive summaries</li>
+                            <li>Templates that follow ActivTrak's "Insights, Not Oversight" philosophy</li>
+                        </ul>
+                        <p style="margin-top: 1rem; margin-bottom: 0;"><strong>All data sources are embedded above in collapsible sections. Expand each to view and copy the content you need.</strong></p>
+                    </div>
+                </div>
+
+                <div class="section-nav">
+                    <button class="nav-button secondary" onclick="navigateTo('flashcards')">← Back to Flashcards</button>
+                    <button class="nav-button primary" onclick="navigateTo('quiz')">Continue to Quiz →</button>
+                </div>
+            </section>
+
+            <!-- Quiz Section -->
+            <section id="quiz" class="content-section">
+                <div class="lesson-header">
+                    <h1>Knowledge Check</h1>
+                    <p class="lesson-meta">8 questions | Test your understanding of prompt architecture</p>
+                </div>
+
+                <div class="quiz-question" data-correct="B">
+                    <div class="quiz-question-header">
+                        <div class="quiz-question-number">1</div>
+                        <span class="quiz-question-type">Multiple Choice</span>
+                    </div>
+                    <div class="quiz-question-text">What is "context bleeding" in AI prompts?</div>
+                    <div class="quiz-options">
+                        <div class="quiz-option" data-value="A">
+                            <div class="quiz-option-marker">A</div>
+                            <span>When the AI runs out of context window space</span>
+                        </div>
+                        <div class="quiz-option" data-value="B">
+                            <div class="quiz-option-marker">B</div>
+                            <span>When different parts of a prompt contaminate each other, causing the AI to confuse instructions with data</span>
+                        </div>
+                        <div class="quiz-option" data-value="C">
+                            <div class="quiz-option-marker">C</div>
+                            <span>When you copy-paste too much text into a prompt</span>
+                        </div>
+                        <div class="quiz-option" data-value="D">
+                            <div class="quiz-option-marker">D</div>
+                            <span>When the AI forgets information from earlier in the conversation</span>
+                        </div>
+                    </div>
+                    <div class="quiz-feedback"></div>
+                    <button class="check-answer-btn">Check Answer</button>
+                </div>
+
+                <div class="quiz-question" data-correct="B">
+                    <div class="quiz-question-header">
+                        <div class="quiz-question-number">2</div>
+                        <span class="quiz-question-type">Multiple Choice</span>
+                    </div>
+                    <div class="quiz-question-text">Which statement about prompt structure formats is TRUE?</div>
+                    <div class="quiz-options">
+                        <div class="quiz-option" data-value="A">
+                            <div class="quiz-option-marker">A</div>
+                            <span>XML is required for Claude to understand structured prompts</span>
+                        </div>
+                        <div class="quiz-option" data-value="B">
+                            <div class="quiz-option-marker">B</div>
+                            <span>XML, Markdown headers, and clear section labels can all achieve similar results</span>
+                        </div>
+                        <div class="quiz-option" data-value="C">
+                            <div class="quiz-option-marker">C</div>
+                            <span>Only XML can prevent context bleeding</span>
+                        </div>
+                        <div class="quiz-option" data-value="D">
+                            <div class="quiz-option-marker">D</div>
+                            <span>Unstructured prompts never work well</span>
+                        </div>
+                    </div>
+                    <div class="quiz-feedback"></div>
+                    <button class="check-answer-btn">Check Answer</button>
+                </div>
+
+                <div class="quiz-question" data-correct="B">
+                    <div class="quiz-question-header">
+                        <div class="quiz-question-number">3</div>
+                        <span class="quiz-question-type">Multiple Choice</span>
+                    </div>
+                    <div class="quiz-question-text">When is XML superior to Markdown or clear section labels?</div>
+                    <div class="quiz-options">
+                        <div class="quiz-option" data-value="A">
+                            <div class="quiz-option-marker">A</div>
+                            <span>Always—XML is the only professional option</span>
+                        </div>
+                        <div class="quiz-option" data-value="B">
+                            <div class="quiz-option-marker">B</div>
+                            <span>When you need nested data, structured outputs, or reusable templates</span>
+                        </div>
+                        <div class="quiz-option" data-value="C">
+                            <div class="quiz-option-marker">C</div>
+                            <span>Only when working with code</span>
+                        </div>
+                        <div class="quiz-option" data-value="D">
+                            <div class="quiz-option-marker">D</div>
+                            <span>When prompts are longer than 500 words</span>
+                        </div>
+                    </div>
+                    <div class="quiz-feedback"></div>
+                    <button class="check-answer-btn">Check Answer</button>
+                </div>
+
+                <div class="quiz-question" data-correct="B">
+                    <div class="quiz-question-header">
+                        <div class="quiz-question-number">4</div>
+                        <span class="quiz-question-type">True/False</span>
+                    </div>
+                    <div class="quiz-question-text">You should always use formal structure (XML, Markdown, or labels) for every prompt.</div>
+                    <div class="quiz-options">
+                        <div class="quiz-option" data-value="A">
+                            <div class="quiz-option-marker">A</div>
+                            <span>True</span>
+                        </div>
+                        <div class="quiz-option" data-value="B">
+                            <div class="quiz-option-marker">B</div>
+                            <span>False</span>
+                        </div>
+                    </div>
+                    <div class="quiz-feedback"></div>
+                    <button class="check-answer-btn">Check Answer</button>
+                </div>
+
+                <div class="quiz-question" data-correct="B">
+                    <div class="quiz-question-header">
+                        <div class="quiz-question-number">5</div>
+                        <span class="quiz-question-type">Multiple Choice</span>
+                    </div>
+                    <div class="quiz-question-text">What is a key benefit of asking Claude to structure messy data for you?</div>
+                    <div class="quiz-options">
+                        <div class="quiz-option" data-value="A">
+                            <div class="quiz-option-marker">A</div>
+                            <span>It makes Claude work faster</span>
+                        </div>
+                        <div class="quiz-option" data-value="B">
+                            <div class="quiz-option-marker">B</div>
+                            <span>It converts unorganized notes into clean format you can use in subsequent prompts</span>
+                        </div>
+                        <div class="quiz-option" data-value="C">
+                            <div class="quiz-option-marker">C</div>
+                            <span>It reduces the cost of API calls</span>
+                        </div>
+                        <div class="quiz-option" data-value="D">
+                            <div class="quiz-option-marker">D</div>
+                            <span>It only works with XML output</span>
+                        </div>
+                    </div>
+                    <div class="quiz-feedback"></div>
+                    <button class="check-answer-btn">Check Answer</button>
+                </div>
+
+                <div class="quiz-question" data-correct="B">
+                    <div class="quiz-question-header">
+                        <div class="quiz-question-number">6</div>
+                        <span class="quiz-question-type">Multiple Choice</span>
+                    </div>
+                    <div class="quiz-question-text">What is the correct order for prompt sections, and why?</div>
+                    <div class="quiz-options">
+                        <div class="quiz-option" data-value="A">
+                            <div class="quiz-option-marker">A</div>
+                            <span>Data → Instructions → Role → Constraints</span>
+                        </div>
+                        <div class="quiz-option" data-value="B">
+                            <div class="quiz-option-marker">B</div>
+                            <span>Role → Context → Data → Constraints → Output Format</span>
+                        </div>
+                        <div class="quiz-option" data-value="C">
+                            <div class="quiz-option-marker">C</div>
+                            <span>Instructions → Data → Role → Format</span>
+                        </div>
+                        <div class="quiz-option" data-value="D">
+                            <div class="quiz-option-marker">D</div>
+                            <span>Any order works equally well</span>
+                        </div>
+                    </div>
+                    <div class="quiz-feedback"></div>
+                    <button class="check-answer-btn">Check Answer</button>
+                </div>
+
+                <div class="quiz-question" data-correct="C">
+                    <div class="quiz-question-header">
+                        <div class="quiz-question-number">7</div>
+                        <span class="quiz-question-type">Scenario-Based</span>
+                    </div>
+                    <div class="quiz-question-text">A colleague needs to analyze three data sources (client metrics, support tickets and NPS scores) and produce a structured health assessment with specific sections plus recommendations. Which format would you recommend?</div>
+                    <div class="quiz-options">
+                        <div class="quiz-option" data-value="A">
+                            <div class="quiz-option-marker">A</div>
+                            <span>A simple unstructured paragraph would work fine</span>
+                        </div>
+                        <div class="quiz-option" data-value="B">
+                            <div class="quiz-option-marker">B</div>
+                            <span>Markdown headers, because they're easier to read</span>
+                        </div>
+                        <div class="quiz-option" data-value="C">
+                            <div class="quiz-option-marker">C</div>
+                            <span>XML tags, because nested data and structured output requirements favor explicit containers</span>
+                        </div>
+                        <div class="quiz-option" data-value="D">
+                            <div class="quiz-option-marker">D</div>
+                            <span>Clear section labels, because they're the simplest option</span>
+                        </div>
+                    </div>
+                    <div class="quiz-feedback"></div>
+                    <button class="check-answer-btn">Check Answer</button>
+                </div>
+
+                <div class="quiz-question" data-correct="B">
+                    <div class="quiz-question-header">
+                        <div class="quiz-question-number">8</div>
+                        <span class="quiz-question-type">Multiple Choice</span>
+                    </div>
+                    <div class="quiz-question-text">What is "meta-prompting"?</div>
+                    <div class="quiz-options">
+                        <div class="quiz-option" data-value="A">
+                            <div class="quiz-option-marker">A</div>
+                            <span>Writing very long, detailed prompts</span>
+                        </div>
+                        <div class="quiz-option" data-value="B">
+                            <div class="quiz-option-marker">B</div>
+                            <span>Using AI to analyze and improve your prompts</span>
+                        </div>
+                        <div class="quiz-option" data-value="C">
+                            <div class="quiz-option-marker">C</div>
+                            <span>Prompting about metadata in documents</span>
+                        </div>
+                        <div class="quiz-option" data-value="D">
+                            <div class="quiz-option-marker">D</div>
+                            <span>A format that only works with XML</span>
+                        </div>
+                    </div>
+                    <div class="quiz-feedback"></div>
+                    <button class="check-answer-btn">Check Answer</button>
+                </div>
+
+                <div style="text-align: center; margin: 2rem 0;">
+                    <button id="submit-quiz-btn" class="nav-button primary" onclick="showResults()" style="font-size: 1.1rem; padding: 1rem 3rem;">Submit Quiz</button>
+                </div>
+
+                <div id="quiz-results" style="display: none; background: #1E293B; border-radius: 12px; padding: 2rem; margin: 2rem 0; border: 2px solid #334155;">
+                    <h2 style="margin-bottom: 1rem;">Quiz Results</h2>
+                    <div id="quiz-score" style="font-size: 2rem; font-weight: bold; margin-bottom: 1rem;"></div>
+                    <div id="quiz-status" style="margin-bottom: 1.5rem;"></div>
+                    <button class="nav-button secondary" onclick="resetQuiz()">Retake Quiz</button>
+                </div>
+
+                <div class="section-nav">
+                    <button class="nav-button secondary" onclick="navigateTo('lab')">← Back to Lab</button>
+                    <button class="nav-button primary" onclick="navigateTo('study-guide')">View Study Guide →</button>
+                </div>
+            </section>
+
+            <!-- Study Guide Section -->
+            <section id="study-guide" class="content-section">
+                <div class="lesson-header">
+                    <h1>Study Guide</h1>
+                    <p class="lesson-meta">Quick reference for Module 3 concepts</p>
+                </div>
+
+                <div class="study-guide-section">
+                    <h3>Core Concept</h3>
+                    <p><strong>Clear structure prevents context bleeding.</strong> The goal is clarity, not a specific syntax. Choose XML, Markdown, or simple labels based on comfort and task complexity.</p>
+                </div>
+
+                <div class="study-guide-section">
+                    <h3>The Structure Spectrum</h3>
+                    <table class="comparison-table">
+                        <tr>
+                            <th>Format</th>
+                            <th>Best For</th>
+                        </tr>
+                        <tr>
+                            <td><strong>XML Tags</strong></td>
+                            <td>Complex prompts, nested data, templates, structured outputs</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Markdown Headers</strong></td>
+                            <td>Narrative prompts, documentation-style, XML-uncomfortable users</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Clear Sections</strong></td>
+                            <td>Simple tasks, beginners, when formal structure feels like overkill</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="study-guide-section">
+                    <h3>When XML Is Superior</h3>
+                    <ul>
+                        <li>Nested data (tags inside tags)</li>
+                        <li>Requesting structured output</li>
+                        <li>Reusable templates with placeholders</li>
+                        <li>When your data contains Markdown formatting</li>
+                    </ul>
+                </div>
+
+                <div class="study-guide-section">
+                    <h3>Pro Tip</h3>
+                    <p><strong>Ask Claude to structure messy data:</strong> "Here are my rough notes. Convert them into sections: Goals, Concerns, Action Items, Next Steps."</p>
+                </div>
+
+                <div class="section-nav">
+                    <button class="nav-button secondary" onclick="navigateTo('quiz')">← Back to Quiz</button>
+                    <button class="nav-button primary" onclick="navigateTo('video')">Back to Start →</button>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // Navigation
+        function navigateTo(sectionId) {
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+                if (item.dataset.section === sectionId) {
+                    item.classList.add('active');
+                }
+            });
+
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.getElementById(sectionId).classList.add('active');
+
+            window.scrollTo(0, 0);
+            updateProgress();
+        }
+
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', () => {
+                navigateTo(item.dataset.section);
+            });
+        });
+
+        function updateProgress() {
+            const sections = ['video', 'lesson', 'flashcards', 'lab', 'quiz', 'study-guide'];
+            const activeIndex = sections.findIndex(s =>
+                document.getElementById(s).classList.contains('active')
+            );
+            const progress = Math.round(((activeIndex + 1) / sections.length) * 100);
+            document.querySelector('.progress-fill').style.width = progress + '%';
+            document.querySelector('.progress-text').textContent = progress + '% Complete';
+        }
+
+        // Format Selector
+        function showFormat(format) {
+            document.querySelectorAll('.format-tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.format-content').forEach(content => content.classList.remove('active'));
+
+            document.querySelector(`.format-tab.${format}`).classList.add('active');
+            document.getElementById(`format-${format}`).classList.add('active');
+        }
+
+        // Flashcards
+        const flashcards = [
+            {
+                front: 'What are the three format options for structuring prompts?',
+                back: '<strong>1. XML Tags</strong> - Most precise<br><strong>2. Markdown Headers</strong> - Balanced<br><strong>3. Clear Sections</strong> - Simplest<br><br><em>All three work—choose based on comfort and complexity.</em>'
+            },
+            {
+                front: 'When is XML superior to other formats?',
+                back: '1. <strong>Nested data</strong> - Tags inside tags<br>2. <strong>Structured output</strong> - Request specific format back<br>3. <strong>Reusable templates</strong> - Clear placeholders<br>4. <strong>Edge cases</strong> - When data contains Markdown'
+            },
+            {
+                front: 'When do you NOT need formal structure?',
+                back: '<strong>Skip structure when:</strong><br>• Simple, single-purpose task<br>• Back-and-forth conversation<br>• Your writing is already clear<br>• Quick questions<br><br><em>The goal is clarity, not ceremony.</em>'
+            },
+            {
+                front: 'How can you ask Claude to structure messy data?',
+                back: 'Simply ask:<br><br><em>"Here are my rough notes. Convert them into structured sections: Client Goals, Concerns, Action Items, Next Steps."</em><br><br>Then use the structured output as clean input for your next prompt.'
+            },
+            {
+                front: 'What are the six standard components of a structured prompt?',
+                back: '1. <strong>Role</strong> - Who the AI should be<br>2. <strong>Context</strong> - Background situation<br>3. <strong>Data</strong> - Content to process<br>4. <strong>Constraints</strong> - What NOT to do<br>5. <strong>Output Format</strong> - Desired structure<br>6. <strong>Examples</strong> - (Optional) Samples to emulate'
+            },
+            {
+                front: 'What is the correct order for prompt sections?',
+                back: '<strong>Role → Context → Data → Constraints → Output</strong><br><br>Why? Role at top primes the persona. Data in middle. Instructions at END get highest attention (Lost in the Middle effect).'
+            },
+            {
+                front: 'What are five common prompt mistakes?',
+                back: '1. <strong>Overloading</strong> - Fix: Separate tasks<br>2. <strong>Vague outputs</strong> - Fix: Be specific<br>3. <strong>Missing constraints</strong> - Fix: Include don\'ts<br>4. <strong>Buried instructions</strong> - Fix: Put at END<br>5. <strong>Over-engineering</strong> - Fix: Match complexity'
+            },
+            {
+                front: 'What is meta-prompting?',
+                back: 'Using AI to analyze and improve your prompts—the tool sharpening itself.<br><br><em>"Analyze this prompt and suggest improvements: [paste prompt]"</em><br><br>Works in any format, not just XML.'
+            }
+        ];
+
+        let currentCardIndex = 0;
+
+        function updateFlashcard() {
+            const card = flashcards[currentCardIndex];
+            document.getElementById('flashcard-front-content').innerHTML = card.front;
+            document.getElementById('flashcard-back-content').innerHTML = card.back;
+            document.getElementById('currentCard').textContent = currentCardIndex + 1;
+            document.getElementById('flashcard').classList.remove('flipped');
+        }
+
+        document.getElementById('flashcard').addEventListener('click', function() {
+            this.classList.toggle('flipped');
+        });
+
+        function nextCard() {
+            currentCardIndex = (currentCardIndex + 1) % flashcards.length;
+            updateFlashcard();
+        }
+
+        function prevCard() {
+            currentCardIndex = (currentCardIndex - 1 + flashcards.length) % flashcards.length;
+            updateFlashcard();
+        }
+
+        // Quiz
+        const quizFeedback = {
+            1: 'Context bleeding occurs when different sections of your prompt contaminate each other—mixing instructions with content or treating data as commands. Clear structure solves this.',
+            2: 'All three formats (XML, Markdown, Clear Sections) create separation between prompt components. The goal is clarity, not a specific syntax.',
+            3: 'XML has specific advantages: nesting data, requesting structured output, creating templates, and avoiding confusion when data contains Markdown.',
+            4: 'Simple tasks work fine without formal structure. Match complexity to the task—the goal is clarity, not ceremony.',
+            5: 'You can ask Claude to organize messy notes into structured sections, then use that clean output as input for subsequent prompts.',
+            6: 'Role → Context → Data → Constraints → Output Format follows the principle of orientation at the beginning, instructions at the end. Instructions at the END get highest attention due to the "Lost in the Middle" effect.',
+            7: 'Multiple data sources that benefit from nesting and structured output requirements are two of XML\'s specific advantages. Though a well-organized Markdown structure would also produce good results.',
+            8: 'Meta-prompting is asking the AI to act as a prompt engineer—analyzing your prompts for weaknesses and suggesting improvements. It works in any format.'
+        };
+
+        document.querySelectorAll('.quiz-option').forEach(option => {
+            option.addEventListener('click', function() {
+                const question = this.closest('.quiz-question');
+                if (question.classList.contains('answered')) return;
+                question.querySelectorAll('.quiz-option').forEach(opt => {
+                    opt.classList.remove('selected');
+                });
+                this.classList.add('selected');
+            });
+        });
+
+        document.querySelectorAll('.check-answer-btn').forEach((btn, index) => {
+            btn.addEventListener('click', function() {
+                const question = this.closest('.quiz-question');
+                const selected = question.querySelector('.quiz-option.selected');
+                const feedback = question.querySelector('.quiz-feedback');
+                const correctAnswer = question.dataset.correct;
+
+                if (!selected) {
+                    alert('Please select an answer');
+                    return;
+                }
+
+                const selectedValue = selected.dataset.value;
+                const isCorrect = selectedValue === correctAnswer;
+
+                question.classList.add('answered');
+                question.dataset.result = isCorrect ? 'correct' : 'incorrect';
+
+                question.querySelectorAll('.quiz-option').forEach(opt => {
+                    opt.classList.remove('correct', 'incorrect');
+                    if (opt.dataset.value === correctAnswer) {
+                        opt.classList.add('correct');
+                    } else if (opt === selected && !isCorrect) {
+                        opt.classList.add('incorrect');
+                    }
+                });
+
+                feedback.className = 'quiz-feedback show ' + (isCorrect ? 'correct' : 'incorrect');
+                feedback.innerHTML = `<strong>${isCorrect ? '✓ Correct!' : '✗ Incorrect'}</strong><br>${quizFeedback[index + 1] || ''}`;
+
+                this.disabled = true;
+                this.textContent = isCorrect ? '✓ Correct' : 'See Above';
+            });
+        });
+
+        // Quiz Results and SCORM Reporting
+        function showResults() {
+            const questions = document.querySelectorAll('.quiz-question');
+            const total = questions.length;
+            let answered = 0;
+            let correct = 0;
+
+            questions.forEach(q => {
+                if (q.classList.contains('answered')) {
+                    answered++;
+                    if (q.dataset.result === 'correct') correct++;
+                }
+            });
+
+            if (answered < total) {
+                alert('Please answer all ' + total + ' questions before submitting.');
+                return;
+            }
+
+            const scorePercent = Math.round((correct / total) * 100);
+            const passed = scorePercent >= 70;
+
+            // SCORM reporting
+            if (typeof setSCORMScore === 'function') {
+                setSCORMScore(scorePercent);
+            }
+            if (typeof setSCORMStatus === 'function') {
+                setSCORMStatus(passed ? 'passed' : 'failed');
+            }
+
+            // Display results
+            const resultsDiv = document.getElementById('quiz-results');
+            const scoreDiv = document.getElementById('quiz-score');
+            const statusDiv = document.getElementById('quiz-status');
+
+            scoreDiv.textContent = correct + ' / ' + total + ' (' + scorePercent + '%)';
+            scoreDiv.style.color = passed ? '#2ED4B5' : '#F87171';
+
+            if (scorePercent === 100) {
+                statusDiv.innerHTML = '<span style="color: #2ED4B5;">★ Perfect Score! You\'ve mastered prompt architecture. Ready for Module 4.</span>';
+            } else if (passed) {
+                statusDiv.innerHTML = '<span style="color: #2ED4B5;">✓ Passed! Strong understanding. Review any concepts you missed before proceeding.</span>';
+            } else {
+                statusDiv.innerHTML = '<span style="color: #F87171;">✗ Not yet passing (70% required). Review the lesson content and try again.</span>';
+            }
+
+            resultsDiv.style.display = 'block';
+            document.getElementById('submit-quiz-btn').style.display = 'none';
+            resultsDiv.scrollIntoView({ behavior: 'smooth' });
+
+            // Celebration confetti for passing
+            if (passed && typeof confetti === 'function') {
+                // Initial burst
+                confetti({
+                    particleCount: 100,
+                    spread: 70,
+                    origin: { y: 0.6 },
+                    colors: ['#2ED4B5', '#1657A0', '#FFC83B', '#19316A']
+                });
+
+                // Follow-up burst after slight delay
+                setTimeout(() => {
+                    confetti({
+                        particleCount: 50,
+                        angle: 60,
+                        spread: 55,
+                        origin: { x: 0 },
+                        colors: ['#2ED4B5', '#1657A0', '#FFC83B']
+                    });
+                }, 250);
+
+                setTimeout(() => {
+                    confetti({
+                        particleCount: 50,
+                        angle: 120,
+                        spread: 55,
+                        origin: { x: 1 },
+                        colors: ['#2ED4B5', '#1657A0', '#FFC83B']
+                    });
+                }, 400);
+            }
+
+            // Close popup window after completion (if opened in popup)
+            if (window.opener !== null) {
+                setTimeout(() => {
+                    const shouldClose = confirm('Module completed! Close this window?');
+                    if (shouldClose) {
+                        window.close();
+                    }
+                }, 3000); // Wait 3 seconds to let them see the results
+            }
+        }
+
+        function resetQuiz() {
+            document.querySelectorAll('.quiz-question').forEach(q => {
+                q.classList.remove('answered');
+                delete q.dataset.result;
+                q.querySelectorAll('.quiz-option').forEach(opt => {
+                    opt.classList.remove('selected', 'correct', 'incorrect');
+                });
+                q.querySelector('.quiz-feedback').className = 'quiz-feedback';
+                q.querySelector('.quiz-feedback').innerHTML = '';
+                const btn = q.querySelector('.check-answer-btn');
+                btn.disabled = false;
+                btn.textContent = 'Check Answer';
+            });
+
+            document.getElementById('quiz-results').style.display = 'none';
+            document.getElementById('submit-quiz-btn').style.display = 'inline-block';
+            document.querySelector('#quiz .quiz-question').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Copy to clipboard
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                alert('Copied to clipboard!');
+            });
+        }
+
+        // Initialize
+        document.getElementById('totalCards').textContent = flashcards.length;
+        updateProgress();
+    </script>
+</body>
+</html>

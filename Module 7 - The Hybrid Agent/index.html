@@ -1,0 +1,2516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module 7: The Hybrid Agent | Solo Pilot to Squadron Leader</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sofia+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* ActivTrak Official Brand Colors */
+            --dark-navy: #14203F;
+            --medium-navy: #19316A;
+            --blue: #1657A0;
+            --teal: #2ED4B5;
+            --yellow: #FFC83B;
+            --white: #FFFFFF;
+            --light-gray: #E5E7EB;
+            --bg-light: #F8FAFC;
+
+            /* Semantic mappings */
+            --primary-blue: #19316A;
+            --pelorous: #1657A0;
+            --dark-base: #14203F;
+            --success: #2ED4B5;
+            --error: #DC2626;
+            --warning: #F59E0B;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Sofia Sans', sans-serif;
+            background: var(--bg-light);
+            color: var(--dark-base);
+            line-height: 1.6;
+        }
+
+        /* Header */
+        .course-header {
+            background: linear-gradient(135deg, var(--dark-navy) 0%, var(--medium-navy) 100%);
+            color: white;
+            padding: 1rem 2rem;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .course-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .course-subtitle {
+            font-size: 0.85rem;
+            opacity: 0.9;
+        }
+
+        .progress-container {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .progress-bar {
+            width: 200px;
+            height: 8px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--teal);
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        .progress-text {
+            font-size: 0.85rem;
+        }
+
+        /* Main Layout */
+        .main-container {
+            display: flex;
+            margin-top: 60px;
+            min-height: calc(100vh - 60px);
+        }
+
+        /* Sidebar Navigation */
+        .sidebar {
+            width: 280px;
+            background: var(--white);
+            border-right: 1px solid var(--light-gray);
+            position: fixed;
+            top: 60px;
+            bottom: 0;
+            left: 0;
+            overflow-y: auto;
+            padding: 1.5rem 0;
+        }
+
+        .nav-section {
+            padding: 0 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .nav-section-title {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #6B7280;
+            margin-bottom: 0.75rem;
+            padding: 0 0.75rem;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 0.25rem;
+        }
+
+        .nav-item:hover {
+            background: var(--bg-light);
+        }
+
+        .nav-item.active {
+            background: rgba(0, 66, 243, 0.1);
+            color: var(--primary-blue);
+        }
+
+        .nav-item.completed .nav-icon {
+            background: var(--success);
+            color: white;
+        }
+
+        .nav-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: var(--light-gray);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .nav-item.active .nav-icon {
+            background: var(--primary-blue);
+            color: white;
+        }
+
+        .nav-label {
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .nav-duration {
+            font-size: 0.75rem;
+            color: #6B7280;
+            margin-left: auto;
+        }
+
+        /* Content Area */
+        .content-area {
+            flex: 1;
+            margin-left: 280px;
+            padding: 2rem 3rem;
+            max-width: 1000px;
+        }
+
+        /* Screen Sections */
+        .screen {
+            display: none;
+        }
+
+        .screen.active {
+            display: block;
+            animation: fadeIn 0.4s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Welcome Screen */
+        .welcome-hero {
+            background: linear-gradient(135deg, var(--dark-navy) 0%, var(--medium-navy) 100%);
+            border-radius: 16px;
+            padding: 3rem;
+            color: white;
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .welcome-hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 400px;
+            height: 400px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+        }
+
+        .welcome-hero h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            position: relative;
+        }
+
+        .welcome-hero .module-tag {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            margin-bottom: 1rem;
+        }
+
+        .welcome-hero p {
+            font-size: 1.1rem;
+            opacity: 0.95;
+            max-width: 600px;
+            position: relative;
+        }
+
+        .objectives-card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .objectives-card h2 {
+            font-size: 1.25rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .objective-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--bg-light);
+        }
+
+        .objective-item:last-child {
+            border-bottom: none;
+        }
+
+        .objective-level {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .level-retrieval { background: #E0F2FE; color: #0369A1; }
+        .level-comprehension { background: #FEF3C7; color: #B45309; }
+        .level-analysis { background: #FCE7F3; color: #BE185D; }
+        .level-utilization { background: #D1FAE5; color: #047857; }
+
+        .time-estimate {
+            display: flex;
+            gap: 2rem;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--bg-light);
+        }
+
+        .time-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #6B7280;
+        }
+
+        .start-btn {
+            background: var(--primary-blue);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .start-btn:hover {
+            background: #0035C7;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 66, 243, 0.3);
+        }
+
+        /* Lesson Content */
+        .lesson-content {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 2.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .lesson-content h1 {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            color: var(--dark-base);
+        }
+
+        .lesson-content h2 {
+            font-size: 1.5rem;
+            margin: 2rem 0 1rem;
+            color: var(--dark-base);
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--bg-light);
+        }
+
+        .lesson-content h3 {
+            font-size: 1.2rem;
+            margin: 1.5rem 0 0.75rem;
+            color: var(--pelorous);
+        }
+
+        .lesson-content p {
+            margin-bottom: 1rem;
+            font-size: 1.05rem;
+            line-height: 1.8;
+        }
+
+        .lesson-content ul, .lesson-content ol {
+            margin: 1rem 0 1rem 1.5rem;
+        }
+
+        .lesson-content li {
+            margin-bottom: 0.5rem;
+            line-height: 1.7;
+        }
+
+        .callout {
+            padding: 1.25rem 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+            display: flex;
+            gap: 1rem;
+        }
+
+        .callout-icon {
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .callout-insight {
+            background: rgba(0, 66, 243, 0.08);
+            border-left: 4px solid var(--primary-blue);
+        }
+
+        .callout-warning {
+            background: rgba(238, 44, 130, 0.08);
+            border-left: 4px solid var(--violet-red);
+        }
+
+        .callout-tip {
+            background: rgba(47, 211, 180, 0.1);
+            border-left: 4px solid var(--teal);
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .comparison-table th {
+            background: var(--dark-base);
+            color: white;
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .comparison-table td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--bg-light);
+        }
+
+        .comparison-table tr:nth-child(even) {
+            background: var(--bg-light);
+        }
+
+        /* Interactive Elements */
+        .interactive-demo {
+            background: var(--bg-light);
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .demo-title {
+            font-weight: 600;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .prompt-box {
+            background: var(--white);
+            border: 2px solid var(--light-gray);
+            border-radius: 8px;
+            padding: 1rem;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            margin: 1rem 0;
+            position: relative;
+        }
+
+        .prompt-box.bad {
+            border-color: var(--violet-red);
+            background: rgba(238, 44, 130, 0.03);
+        }
+
+        .prompt-box.good {
+            border-color: var(--teal);
+            background: rgba(47, 211, 180, 0.03);
+        }
+
+        .prompt-label {
+            position: absolute;
+            top: -10px;
+            left: 12px;
+            background: var(--white);
+            padding: 0 0.5rem;
+            font-family: 'Sofia Sans', sans-serif;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .prompt-box.bad .prompt-label { color: var(--violet-red); }
+        .prompt-box.good .prompt-label { color: var(--teal); }
+
+        /* Video Player */
+        .video-container {
+            background: var(--dark-base);
+            border-radius: 12px;
+            aspect-ratio: 16/9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .video-placeholder {
+            text-align: center;
+            color: white;
+        }
+
+        .play-btn {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: var(--primary-blue);
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            margin-bottom: 1rem;
+        }
+
+        .play-btn:hover {
+            transform: scale(1.1);
+            background: var(--teal);
+        }
+
+        .play-btn svg {
+            width: 32px;
+            height: 32px;
+            fill: white;
+            margin-left: 4px;
+        }
+
+        /* Flashcards */
+        .flashcard-container {
+            perspective: 1000px;
+            margin: 2rem auto;
+            max-width: 600px;
+        }
+
+        .flashcard {
+            width: 100%;
+            height: 300px;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.6s;
+            cursor: pointer;
+        }
+
+        .flashcard.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .flashcard-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .flashcard-front {
+            background: linear-gradient(135deg, var(--dark-navy) 0%, var(--medium-navy) 100%);
+            color: white;
+        }
+
+        .flashcard-back {
+            background: var(--white);
+            border: 2px solid var(--primary-blue);
+            transform: rotateY(180deg);
+            color: var(--dark-base);
+        }
+
+        .flashcard-front h3 {
+            font-size: 1.4rem;
+            line-height: 1.5;
+        }
+
+        .flashcard-back p {
+            font-size: 1.1rem;
+            line-height: 1.7;
+        }
+
+        .flashcard-nav {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 2rem;
+            margin-top: 1.5rem;
+        }
+
+        .flashcard-btn {
+            background: var(--bg-light);
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .flashcard-btn:hover {
+            background: var(--primary-blue);
+            color: white;
+        }
+
+        .flashcard-counter {
+            font-weight: 600;
+            color: #6B7280;
+        }
+
+        .flip-hint {
+            text-align: center;
+            color: #6B7280;
+            font-size: 0.9rem;
+            margin-top: 1rem;
+        }
+
+        /* Lab Exercise */
+        .lab-header {
+            background: linear-gradient(135deg, var(--pelorous) 0%, #2A8A96 100%);
+            border-radius: 12px;
+            padding: 2rem;
+            color: white;
+            margin-bottom: 2rem;
+        }
+
+        .lab-header h1 {
+            font-size: 1.75rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .lab-meta {
+            display: flex;
+            gap: 2rem;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .lab-steps {
+            background: var(--white);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .lab-step {
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid var(--bg-light);
+            display: none;
+        }
+
+        .lab-step.active {
+            display: block;
+        }
+
+        .step-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .step-number {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--primary-blue);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .step-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .step-content {
+            padding-left: 52px;
+        }
+
+        .copy-block {
+            background: #1E1E1E;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+            position: relative;
+            overflow-x: auto;
+        }
+
+        .copy-block pre {
+            color: #D4D4D4;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background: #3C3C3C;
+            border: none;
+            color: white;
+            padding: 0.5rem 0.75rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .copy-btn:hover {
+            background: var(--primary-blue);
+        }
+
+        .lab-navigation {
+            display: flex;
+            justify-content: space-between;
+            padding: 1.5rem 2rem;
+            border-top: 1px solid var(--bg-light);
+        }
+
+        /* Quiz */
+        .quiz-container {
+            background: var(--white);
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            overflow: hidden;
+        }
+
+        .quiz-header {
+            background: var(--bg-light);
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .quiz-progress {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .quiz-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--light-gray);
+        }
+
+        .quiz-dot.current {
+            background: var(--primary-blue);
+        }
+
+        .quiz-dot.correct {
+            background: var(--success);
+        }
+
+        .quiz-dot.incorrect {
+            background: var(--error);
+        }
+
+        .quiz-question {
+            padding: 2rem;
+            display: none;
+        }
+
+        .quiz-question.active {
+            display: block;
+        }
+
+        .question-number {
+            font-size: 0.85rem;
+            color: #6B7280;
+            margin-bottom: 0.5rem;
+        }
+
+        .question-text {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            line-height: 1.5;
+        }
+
+        .answer-options {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .answer-option {
+            padding: 1rem 1.25rem;
+            border: 2px solid var(--light-gray);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .answer-option:hover:not(.disabled) {
+            border-color: var(--primary-blue);
+            background: rgba(0, 66, 243, 0.03);
+        }
+
+        .answer-option.selected {
+            border-color: var(--primary-blue);
+            background: rgba(0, 66, 243, 0.08);
+        }
+
+        .answer-option.correct {
+            border-color: var(--success);
+            background: rgba(47, 211, 180, 0.1);
+        }
+
+        .answer-option.incorrect {
+            border-color: var(--error);
+            background: rgba(238, 44, 130, 0.08);
+        }
+
+        .answer-option.disabled {
+            cursor: default;
+        }
+
+        .option-letter {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--bg-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .answer-option.selected .option-letter {
+            background: var(--primary-blue);
+            color: white;
+        }
+
+        .answer-option.correct .option-letter {
+            background: var(--success);
+            color: white;
+        }
+
+        .answer-option.incorrect .option-letter {
+            background: var(--error);
+            color: white;
+        }
+
+        .feedback-panel {
+            padding: 1.5rem 2rem;
+            background: var(--bg-light);
+            display: none;
+        }
+
+        .feedback-panel.show {
+            display: block;
+        }
+
+        .feedback-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+        }
+
+        .feedback-correct {
+            color: var(--success);
+        }
+
+        .feedback-incorrect {
+            color: var(--error);
+        }
+
+        .quiz-footer {
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: flex-end;
+            border-top: 1px solid var(--bg-light);
+        }
+
+        /* Study Guide */
+        .study-guide-card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .study-guide-card h2 {
+            font-size: 1.25rem;
+            margin-bottom: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--primary-blue);
+        }
+
+        .term-grid {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .term-item {
+            display: grid;
+            grid-template-columns: 180px 1fr;
+            gap: 1rem;
+            padding: 1rem;
+            background: var(--bg-light);
+            border-radius: 8px;
+        }
+
+        .term-name {
+            font-weight: 600;
+            color: var(--dark-base);
+        }
+
+        .term-def {
+            color: #4B5563;
+        }
+
+        .do-dont-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        .do-column h3 {
+            color: var(--success);
+            margin-bottom: 1rem;
+        }
+
+        .dont-column h3 {
+            color: var(--error);
+            margin-bottom: 1rem;
+        }
+
+        .do-dont-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.5rem;
+            margin-bottom: 0.75rem;
+            font-size: 0.95rem;
+        }
+
+        /* Navigation Buttons */
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            border: none;
+        }
+
+        .btn-primary {
+            background: var(--primary-blue);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #0035C7;
+        }
+
+        .btn-secondary {
+            background: var(--bg-light);
+            color: var(--dark-base);
+        }
+
+        .btn-secondary:hover {
+            background: var(--light-gray);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .content-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--bg-light);
+        }
+
+        /* Quiz Results */
+        .quiz-results {
+            text-align: center;
+            padding: 3rem 2rem;
+        }
+
+        .results-score {
+            font-size: 4rem;
+            font-weight: 700;
+            color: var(--primary-blue);
+            margin-bottom: 0.5rem;
+        }
+
+        .results-label {
+            font-size: 1.25rem;
+            color: #6B7280;
+            margin-bottom: 2rem;
+        }
+
+        .results-breakdown {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            margin-bottom: 2rem;
+        }
+
+        .breakdown-item {
+            text-align: center;
+        }
+
+        .breakdown-value {
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .breakdown-value.correct { color: var(--success); }
+        .breakdown-value.incorrect { color: var(--error); }
+
+        .breakdown-label {
+            font-size: 0.9rem;
+            color: #6B7280;
+        }
+
+        /* Workflow Diagram */
+        .workflow-diagram {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1.5rem;
+            background: var(--bg-light);
+            border-radius: 8px;
+            margin: 1.5rem 0;
+        }
+
+        .workflow-step {
+            text-align: center;
+            flex: 1;
+        }
+
+        .workflow-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--primary-blue);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin: 0 auto 0.5rem;
+        }
+
+        .workflow-icon.teal { background: var(--teal); }
+        .workflow-icon.pelorous { background: var(--pelorous); }
+
+        .workflow-label {
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        .workflow-arrow {
+            color: var(--light-gray);
+            font-size: 1.5rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .sidebar {
+                width: 240px;
+            }
+            .content-area {
+                margin-left: 240px;
+                padding: 1.5rem 2rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                display: none;
+            }
+            .content-area {
+                margin-left: 0;
+                padding: 1rem;
+            }
+            .do-dont-grid {
+                grid-template-columns: 1fr;
+            }
+            .term-item {
+                grid-template-columns: 1fr;
+            }
+            .workflow-diagram {
+                flex-direction: column;
+            }
+            .workflow-arrow {
+                transform: rotate(90deg);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="course-header">
+        <div>
+            <div class="course-title">Solo Pilot → Squadron Leader</div>
+            <div class="course-subtitle">Module 7: The Hybrid Agent</div>
+        </div>
+        <div class="progress-container">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+            </div>
+            <span class="progress-text" id="progressText">0% Complete</span>
+        </div>
+    </header>
+
+    <div class="main-container">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="nav-section">
+                <div class="nav-section-title">Module Content</div>
+                <div class="nav-item active" data-screen="welcome">
+                    <div class="nav-icon">▶</div>
+                    <span class="nav-label">Welcome</span>
+                    <span class="nav-duration">2 min</span>
+                </div>
+                <div class="nav-item" data-screen="video">
+                    <div class="nav-icon">🎬</div>
+                    <span class="nav-label">Video Lesson</span>
+                    <span class="nav-duration">12 min</span>
+                </div>
+                <div class="nav-item" data-screen="lesson-1">
+                    <div class="nav-icon">1</div>
+                    <span class="nav-label">Ramble-to-Gold</span>
+                    <span class="nav-duration">5 min</span>
+                </div>
+                <div class="nav-item" data-screen="lesson-2">
+                    <div class="nav-icon">2</div>
+                    <span class="nav-label">Mac Power User</span>
+                    <span class="nav-duration">5 min</span>
+                </div>
+                <div class="nav-item" data-screen="lesson-3">
+                    <div class="nav-icon">3</div>
+                    <span class="nav-label">The HTML Bridge</span>
+                    <span class="nav-duration">5 min</span>
+                </div>
+                <div class="nav-item" data-screen="lesson-4">
+                    <div class="nav-icon">4</div>
+                    <span class="nav-label">Mobile & Workspace</span>
+                    <span class="nav-duration">5 min</span>
+                </div>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Practice & Assessment</div>
+                <div class="nav-item" data-screen="flashcards">
+                    <div class="nav-icon">🗂</div>
+                    <span class="nav-label">Flashcards</span>
+                    <span class="nav-duration">5 min</span>
+                </div>
+                <div class="nav-item" data-screen="lab">
+                    <div class="nav-icon">🧪</div>
+                    <span class="nav-label">Lab Exercise</span>
+                    <span class="nav-duration">25 min</span>
+                </div>
+                <div class="nav-item" data-screen="quiz">
+                    <div class="nav-icon">✓</div>
+                    <span class="nav-label">Knowledge Check</span>
+                    <span class="nav-duration">10 min</span>
+                </div>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Reference</div>
+                <div class="nav-item" data-screen="study-guide">
+                    <div class="nav-icon">📋</div>
+                    <span class="nav-label">Study Guide</span>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Content Area -->
+        <main class="content-area">
+            <!-- Welcome Screen -->
+            <section class="screen active" id="welcome">
+                <div class="welcome-hero">
+                    <span class="module-tag">Module 7 of 11</span>
+                    <h1>The Hybrid Agent</h1>
+                    <p>Command your Squadron from anywhere. Capture ideas on mobile, process on Mac, and deliver through Google Workspace with zero friction.</p>
+                </div>
+
+                <div class="objectives-card">
+                    <h2>🎯 Learning Objectives</h2>
+                    <div class="objective-item">
+                        <span class="objective-level level-retrieval">Retrieval</span>
+                        <span>Identify the four phases of the Ramble-to-Gold workflow and list Mac-specific advantages of Claude Desktop</span>
+                    </div>
+                    <div class="objective-item">
+                        <span class="objective-level level-comprehension">Comprehension</span>
+                        <span>Explain how the HTML Bridge works and describe when to use each platform (mobile vs. desktop vs. Google Workspace)</span>
+                    </div>
+                    <div class="objective-item">
+                        <span class="objective-level level-analysis">Analysis</span>
+                        <span>Compare mobile vs. desktop use cases and differentiate Claude vs. Gemini applications based on task requirements</span>
+                    </div>
+                    <div class="objective-item">
+                        <span class="objective-level level-utilization">Utilization</span>
+                        <span>Execute cross-platform workflows, create formatted deliverables using HTML Bridge, and apply hybrid workflows to ActivTrak scenarios</span>
+                    </div>
+
+                    <div class="time-estimate">
+                        <div class="time-item">
+                            <span>⏱</span>
+                            <span><strong>Total Time:</strong> ~65 minutes</span>
+                        </div>
+                        <div class="time-item">
+                            <span>🧪</span>
+                            <span><strong>Lab:</strong> 25 minutes hands-on</span>
+                        </div>
+                        <div class="time-item">
+                            <span>✓</span>
+                            <span><strong>Quiz:</strong> 7 questions</span>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="start-btn" onclick="navigateTo('video')">
+                    Begin Module
+                    <span>→</span>
+                </button>
+            </section>
+
+            <!-- Video Screen -->
+            <section class="screen" id="video">
+                <div class="video-container">
+                    <div class="video-placeholder">
+                        <button class="play-btn" aria-label="Play video">
+                            <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                        </button>
+                        <p>Video: The Hybrid Agent (10:30)</p>
+                    </div>
+                </div>
+
+                <div class="lesson-content">
+                    <h2>Video Summary</h2>
+                    <p>This video introduces cross-platform AI workflows that let you command your Squadron from anywhere:</p>
+                    <ul>
+                        <li><strong>Ramble-to-Gold</strong> — Capture voice notes when clarity strikes, process them later with Claude Desktop</li>
+                        <li><strong>Mac Power User</strong> — Drag-and-drop files directly into Claude, use Apple Notes as your Squadron staging area</li>
+                        <li><strong>The HTML Bridge</strong> — Format tables and content for Google Docs without losing formatting</li>
+                        <li><strong>Mobile Command Center</strong> — Claude mobile for capture and quick queries, desktop for deep work</li>
+                        <li><strong>Google Workspace Integration</strong> — Gemini's native advantages for Docs, Sheets, and Slides</li>
+                    </ul>
+
+                    <div class="callout callout-tip">
+                        <span class="callout-icon">💡</span>
+                        <div>
+                            <strong>Pro Tip:</strong> Pay attention to the HTML Bridge demo. You'll practice this in the lab, and it's the workflow that saves the most formatting frustration when working with Google Docs.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="content-nav">
+                    <button class="btn btn-secondary" onclick="navigateTo('welcome')">← Back</button>
+                    <button class="btn btn-primary" onclick="navigateTo('lesson-1')">Continue to Lesson →</button>
+                </div>
+            </section>
+
+            <!-- Lesson 1: Ramble-to-Gold -->
+            <section class="screen" id="lesson-1">
+                <div class="lesson-content">
+                    <h1>The Ramble-to-Gold Workflow</h1>
+
+                    <p>Your best ideas don't wait for you to sit down at your computer. They strike during your commute, between meetings, while walking the dog. And by the time you reach your desk, the nuance is gone.</p>
+
+                    <p>The <strong>Ramble-to-Gold workflow</strong> eliminates this friction by letting you capture raw thinking when it happens, then refining it later with AI assistance.</p>
+
+                    <div class="workflow-diagram">
+                        <div class="workflow-step">
+                            <div class="workflow-icon">📱</div>
+                            <div class="workflow-label">1. Capture</div>
+                            <small>Voice on mobile</small>
+                        </div>
+                        <div class="workflow-arrow">→</div>
+                        <div class="workflow-step">
+                            <div class="workflow-icon teal">☁️</div>
+                            <div class="workflow-label">2. Sync</div>
+                            <small>iCloud/Account</small>
+                        </div>
+                        <div class="workflow-arrow">→</div>
+                        <div class="workflow-step">
+                            <div class="workflow-icon pelorous">💻</div>
+                            <div class="workflow-label">3. Process</div>
+                            <small>Claude Desktop</small>
+                        </div>
+                        <div class="workflow-arrow">→</div>
+                        <div class="workflow-step">
+                            <div class="workflow-icon">✨</div>
+                            <div class="workflow-label">4. Refine</div>
+                            <small>Iterate to polish</small>
+                        </div>
+                    </div>
+
+                    <h3>Phase 1: Capture</h3>
+                    <p>When inspiration strikes, don't try to write perfectly. Just talk.</p>
+                    <ul>
+                        <li><strong>Claude Mobile:</strong> Tap microphone, speak naturally, Claude transcribes and can respond</li>
+                        <li><strong>Apple Voice Memos:</strong> Record while walking/driving, share to Notes for transcription</li>
+                    </ul>
+
+                    <h3>Phase 2: Sync</h3>
+                    <p>iCloud automatically syncs Apple Notes to your Mac. Claude mobile conversations sync across devices when you're logged into the same account. By the time you sit down, your captures are waiting.</p>
+
+                    <h3>Phase 3: Process</h3>
+                    <p>Now you're at your desk with Claude Desktop. Feed your raw capture with a structured prompt:</p>
+
+                    <div class="prompt-box good">
+                        <span class="prompt-label">✓ Processing Prompt</span>
+<pre style="color: var(--dark-base); font-size: 0.9rem;">
+<strong>[ROLE]</strong>
+You are my Chief of Staff, helping transform rough
+voice notes into polished work product.
+
+<strong>[RAW CAPTURE]</strong>
+[Paste your voice memo transcript]
+
+<strong>[TASK]</strong>
+1. Extract the core insights and structure logically
+2. Identify any gaps or questions I should address
+3. Draft a polished version maintaining my intent
+
+<strong>[CONSTRAINTS]</strong>
+- Preserve my voice and specific word choices
+- Flag statements that need supporting data
+</pre>
+                    </div>
+
+                    <h3>Phase 4: Refine</h3>
+                    <p>Review Claude's draft and iterate: "Add more urgency to the burnout angle" or "Suggest a better transition between sections 2 and 3."</p>
+
+                    <div class="callout callout-insight">
+                        <span class="callout-icon">🧠</span>
+                        <div>
+                            <strong>Real-World Example:</strong> 7:15 AM voice memo in the car → 7:45 AM transcript waiting on Mac → 7:47 AM paste into Claude → 8:00 AM polished proposal draft. From scattered thoughts to structured deliverable in under 15 minutes.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="content-nav">
+                    <button class="btn btn-secondary" onclick="navigateTo('video')">← Back</button>
+                    <button class="btn btn-primary" onclick="navigateTo('lesson-2')">Continue →</button>
+                </div>
+            </section>
+
+            <!-- Lesson 2: Mac Power User -->
+            <section class="screen" id="lesson-2">
+                <div class="lesson-content">
+                    <h1>The Mac Power User</h1>
+
+                    <p>ActivTrak is a Mac-first organization. Understanding Mac-specific AI workflows gives you a significant productivity advantage.</p>
+
+                    <h2>Claude Desktop: The Native Advantage</h2>
+
+                    <h3>1. Universal Drag-and-Drop</h3>
+                    <p>Drag files directly into Claude with zero friction:</p>
+                    <ul>
+                        <li>PDFs from Finder</li>
+                        <li>Screenshots immediately after capture (Cmd+Shift+4)</li>
+                        <li>CSV files for instant analysis</li>
+                        <li>Entire folders to upload multiple files at once</li>
+                    </ul>
+
+                    <div class="callout callout-tip">
+                        <span class="callout-icon">💡</span>
+                        <div>
+                            <strong>Example:</strong> Client mentions a competitor feature during a call. Screenshot their website (Cmd+Shift+4), drag directly into Claude, ask: "What feature is being shown here? How does it compare to ActivTrak's approach?"
+                        </div>
+                    </div>
+
+                    <h3>2. Keyboard Shortcuts</h3>
+                    <table class="comparison-table">
+                        <thead>
+                            <tr>
+                                <th>Shortcut</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>Cmd+N</code></td>
+                                <td>New conversation</td>
+                            </tr>
+                            <tr>
+                                <td><code>Cmd+Shift+P</code></td>
+                                <td>New Project</td>
+                            </tr>
+                            <tr>
+                                <td><code>Cmd+O</code></td>
+                                <td>Open recent conversation</td>
+                            </tr>
+                            <tr>
+                                <td><code>Cmd+,</code></td>
+                                <td>Settings</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h3>3. Native Notifications</h3>
+                    <p>When Claude finishes a long analysis or code execution, you get a Mac notification even if you've switched to another app.</p>
+
+                    <h2>Apple Notes as Squadron Staging Area</h2>
+
+                    <p>Apple Notes isn't just for capture—it's your Squadron's staging area. Create a dedicated "AI Squadron" notebook:</p>
+
+                    <div class="interactive-demo">
+                        <div class="demo-title">📁 Recommended Structure</div>
+                        <div style="background: white; padding: 1.5rem; border-radius: 8px; font-family: monospace; font-size: 0.9rem;">
+📁 AI Squadron<br>
+&nbsp;&nbsp;└─ 📄 Active Missions (pinned)<br>
+&nbsp;&nbsp;└─ 📁 Voice Captures<br>
+&nbsp;&nbsp;└─ 📁 Research Briefs (from Gemini)<br>
+&nbsp;&nbsp;└─ 📁 Meeting Intelligence (from Granola)<br>
+&nbsp;&nbsp;└─ 📁 Templates
+                        </div>
+                    </div>
+
+                    <p><strong>Why Notes?</strong> Zero friction (native, always available), instant iCloud sync, rich text support (tables, images), Quick Note feature (hover bottom-right corner), and tags/folders for organization.</p>
+                </div>
+
+                <div class="content-nav">
+                    <button class="btn btn-secondary" onclick="navigateTo('lesson-1')">← Back</button>
+                    <button class="btn btn-primary" onclick="navigateTo('lesson-3')">Continue →</button>
+                </div>
+            </section>
+
+            <!-- Lesson 3: HTML Bridge -->
+            <section class="screen" id="lesson-3">
+                <div class="lesson-content">
+                    <h1>The HTML Bridge to Google Docs</h1>
+
+                    <p>You've created perfect analysis in Claude. You need it in Google Docs. You copy, you paste, and... disaster.</p>
+
+                    <ul>
+                        <li>Tables become plain text with pipe characters</li>
+                        <li>Formatting disappears</li>
+                        <li>Headers lose hierarchy</li>
+                    </ul>
+
+                    <p>This is the <strong>Copy-Paste Gap</strong>—and it costs knowledge workers hours per week.</p>
+
+                    <h2>Understanding the Problem</h2>
+
+                    <p>Google Docs doesn't understand Markdown (Claude's default output). But it DOES understand HTML. When you copy rendered HTML, Docs reads the tags and translates them into formatted content.</p>
+
+                    <h2>The HTML Bridge Solution</h2>
+
+                    <div class="prompt-box good">
+                        <span class="prompt-label">✓ HTML Table Prompt</span>
+<pre style="color: var(--dark-base); font-size: 0.9rem;">
+Create a comparison table: ActivTrak vs [Competitor]
+
+Dimensions:
+- Pricing transparency
+- Privacy-first architecture
+- Burnout detection
+- Real-time analytics
+
+Format as HTML table. Requirements:
+- Use inline CSS for styling
+- Apply border-collapse: collapse
+- Set border: 1px solid #333 for all cells
+- Header row: background #f0f0f0, bold text
+- Render the table directly (not in a code block)
+</pre>
+                    </div>
+
+                    <h3>Why These CSS Requirements Matter</h3>
+
+                    <table class="comparison-table">
+                        <thead>
+                            <tr>
+                                <th>Requirement</th>
+                                <th>Why It Matters</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>border-collapse: collapse</code></td>
+                                <td>Prevents double borders when pasting into Docs</td>
+                            </tr>
+                            <tr>
+                                <td><code>border: 1px solid</code></td>
+                                <td>Ensures visible cell borders survive the paste</td>
+                            </tr>
+                            <tr>
+                                <td><code>background</code> on headers</td>
+                                <td>Maintains visual hierarchy in Docs</td>
+                            </tr>
+                            <tr>
+                                <td>"Render directly"</td>
+                                <td>Ensures you copy visual output, not code</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h2>The Copy Process</h2>
+
+                    <div class="callout callout-warning">
+                        <span class="callout-icon">⚠️</span>
+                        <div>
+                            <strong>Critical:</strong> You must copy the <em>rendered</em> table, not the HTML code. Click inside the visual table Claude displays, select all cells, copy (Cmd+C), then paste into Google Docs (Cmd+V).
+                        </div>
+                    </div>
+
+                    <p>The table arrives with borders, shading, and formatting intact. No manual fixing required.</p>
+                </div>
+
+                <div class="content-nav">
+                    <button class="btn btn-secondary" onclick="navigateTo('lesson-2')">← Back</button>
+                    <button class="btn btn-primary" onclick="navigateTo('lesson-4')">Continue →</button>
+                </div>
+            </section>
+
+            <!-- Lesson 4: Mobile & Workspace -->
+            <section class="screen" id="lesson-4">
+                <div class="lesson-content">
+                    <h1>Mobile Command Center & Google Workspace</h1>
+
+                    <h2>Claude Mobile: Unique Use Cases</h2>
+
+                    <p>Claude mobile isn't just "Claude but smaller"—it unlocks workflows you can't do at your desk.</p>
+
+                    <table class="comparison-table">
+                        <thead>
+                            <tr>
+                                <th>Use Case</th>
+                                <th>How It Works</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Voice brainstorming</strong></td>
+                                <td>Tap microphone, think out loud, Claude responds conversationally</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Image analysis on-the-go</strong></td>
+                                <td>Photo whiteboard after meeting, Claude extracts and structures</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Meeting prep on transit</strong></td>
+                                <td>Voice query your Project: "What concerns did this client raise?"</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Instant email drafts</strong></td>
+                                <td>Copy email, paste into Claude, voice prompt for response draft</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="callout callout-insight">
+                        <span class="callout-icon">🔄</span>
+                        <div>
+                            <strong>Cross-Device Context:</strong> Mobile and desktop Claude share conversation history. Start on iPhone ("I need to prep a QBR deck"), continue on Mac ("Here's the data [upload CSV]"), finalize on mobile ("Convert to one-page brief"). The context persists.
+                        </div>
+                    </div>
+
+                    <h2>Google Workspace Integration</h2>
+
+                    <p>When working in Google Docs, Sheets, or Slides, <strong>Gemini has native advantages</strong> Claude can't match.</p>
+
+                    <h3>Gemini in Google Docs</h3>
+                    <ul>
+                        <li>Click Gemini icon in right sidebar</li>
+                        <li>Gemini reads the entire document automatically</li>
+                        <li>Generate, expand, or refine sections</li>
+                        <li>Click "Insert" to place content at cursor</li>
+                    </ul>
+
+                    <h3>Gemini Canvas → Slides Export</h3>
+                    <p>Prompt Gemini: "Create a 10-slide presentation based on these meeting notes." Gemini builds structure, content, and stock imagery. Click "Export to Google Slides"—done in 10 minutes instead of 2 hours.</p>
+
+                    <h2>Platform Decision Matrix</h2>
+
+                    <table class="comparison-table">
+                        <thead>
+                            <tr>
+                                <th>Task</th>
+                                <th>Primary Tool</th>
+                                <th>Why</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Voice capture</td>
+                                <td>Claude mobile / Voice Memos</td>
+                                <td>Transcription + sync</td>
+                            </tr>
+                            <tr>
+                                <td>Deep analysis</td>
+                                <td>Claude Desktop</td>
+                                <td>Reasoning, Projects, code execution</td>
+                            </tr>
+                            <tr>
+                                <td>Current research</td>
+                                <td>Gemini</td>
+                                <td>Grounding, real-time data</td>
+                            </tr>
+                            <tr>
+                                <td>Formatted deliverables</td>
+                                <td>HTML Bridge → Docs</td>
+                                <td>Preserves formatting</td>
+                            </tr>
+                            <tr>
+                                <td>Presentations</td>
+                                <td>Gemini → Slides</td>
+                                <td>Native export integration</td>
+                            </tr>
+                            <tr>
+                                <td>Document collaboration</td>
+                                <td>Google Docs + Gemini</td>
+                                <td>Team workflow, version control</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="callout callout-tip">
+                        <span class="callout-icon">💡</span>
+                        <div>
+                            <strong>Decision Principle:</strong> Choose the tool that eliminates friction for that specific cognitive task. Mobile is for capture. Desktop is for synthesis. Gemini is for current data and Google Workspace native integration.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="content-nav">
+                    <button class="btn btn-secondary" onclick="navigateTo('lesson-3')">← Back</button>
+                    <button class="btn btn-primary" onclick="navigateTo('flashcards')">Practice with Flashcards →</button>
+                </div>
+            </section>
+
+            <!-- Flashcards Screen -->
+            <section class="screen" id="flashcards">
+                <h1 style="margin-bottom: 0.5rem;">Flashcards</h1>
+                <p style="color: #6B7280; margin-bottom: 2rem;">Review key concepts from this module. Click the card to flip it.</p>
+
+                <div class="flashcard-container">
+                    <div class="flashcard" id="flashcard" onclick="flipCard()">
+                        <div class="flashcard-face flashcard-front">
+                            <h3 id="cardFront">What are the four phases of the Ramble-to-Gold workflow?</h3>
+                        </div>
+                        <div class="flashcard-face flashcard-back">
+                            <p id="cardBack">1. Capture (voice on mobile)<br>2. Sync (automatic iCloud/account sync)<br>3. Process (Claude Desktop with structured prompt)<br>4. Refine (iterate on draft to polish)</p>
+                        </div>
+                    </div>
+                    <p class="flip-hint">Click card to flip</p>
+                </div>
+
+                <div class="flashcard-nav">
+                    <button class="flashcard-btn" onclick="prevCard()">←</button>
+                    <span class="flashcard-counter"><span id="cardNum">1</span> / <span id="cardTotal">8</span></span>
+                    <button class="flashcard-btn" onclick="nextCard()">→</button>
+                </div>
+
+                <div class="content-nav">
+                    <button class="btn btn-secondary" onclick="navigateTo('lesson-4')">← Back to Lesson</button>
+                    <button class="btn btn-primary" onclick="navigateTo('lab')">Continue to Lab →</button>
+                </div>
+            </section>
+
+            <!-- Lab Exercise Screen -->
+            <section class="screen" id="lab">
+                <div class="lab-header">
+                    <h1>🧪 Lab Exercise: Cross-Platform Workflows</h1>
+                    <p>Practice capturing, syncing, processing, and delivering intelligence across platforms.</p>
+                    <div class="lab-meta">
+                        <span>⏱ 25-30 minutes</span>
+                        <span>🛠 Tools: Claude, Gemini, Google Docs</span>
+                    </div>
+                </div>
+
+                <div class="lab-steps">
+                    <div class="lab-step active" id="labStep1">
+                        <div class="step-header">
+                            <div class="step-number">1</div>
+                            <div class="step-title">Ramble-to-Gold Simulation</div>
+                        </div>
+                        <div class="step-content">
+                            <p>Simulate a voice capture. In Claude Desktop, paste this "ramble" as if it were a voice memo transcript:</p>
+
+                            <div class="copy-block">
+                                <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+                                <pre>okay so acme healthcare meeting tomorrow, thinking we lead with burnout → turnover problem not feature list. that stat about 5M per 100 nurses. workload balance reports spot at-risk teams early. demo should use THEIR metrics not generic screenshots so it feels real for them.</pre>
+                            </div>
+
+                            <p>Now process it with this prompt:</p>
+
+                            <div class="copy-block">
+                                <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+                                <pre>[ROLE]
+You are my Chief of Staff, helping transform rough thoughts into polished meeting prep.
+
+[RAW CAPTURE]
+okay so acme healthcare meeting tomorrow, thinking we lead with burnout → turnover problem not feature list. that stat about 5M per 100 nurses. workload balance reports spot at-risk teams early. demo should use THEIR metrics not generic screenshots so it feels real for them.
+
+[CONTEXT]
+This is for a client meeting with Acme Healthcare, a 500-bed hospital system concerned about nursing turnover.
+
+[TASK]
+1. Extract the core strategic insights
+2. Structure into 5-7 clear talking points
+3. Identify any gaps (data needs, questions to ask them)
+4. Format as a one-page meeting brief
+
+[CONSTRAINTS]
+- Use "insights" and "workforce analytics" language
+- Avoid "monitoring" or "tracking" terminology
+- Keep it consultative, not sales-y</pre>
+                            </div>
+
+                            <p><strong>Expected Output:</strong> A structured meeting brief with opening angle, key talking points, demo approach, questions to ask, and data gaps.</p>
+                        </div>
+                    </div>
+
+                    <div class="lab-step" id="labStep2">
+                        <div class="step-header">
+                            <div class="step-number">2</div>
+                            <div class="step-title">The HTML Bridge</div>
+                        </div>
+                        <div class="step-content">
+                            <p>Create a comparison table using the HTML Bridge technique:</p>
+
+                            <div class="copy-block">
+                                <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+                                <pre>Create a comparison table for the Acme Healthcare meeting:
+
+COMPARISON: ActivTrak vs. "Manual Time Tracking" (their current approach)
+
+DIMENSIONS:
+- Real-time visibility
+- Burnout risk detection
+- Privacy & compliance
+- Time to insight
+
+Format as an HTML table. Requirements:
+- Use inline CSS
+- border-collapse: collapse
+- border: 1px solid #333
+- Header row: background-color: #f0f0f0; font-weight: bold
+- Render the table directly (do not show me code in a block)
+
+Emphasize ActivTrak advantages while being fair about manual approach limitations.</pre>
+                            </div>
+
+                            <p><strong>Test the Bridge:</strong></p>
+                            <ol>
+                                <li>Claude generates a visual HTML table</li>
+                                <li>Click inside the rendered table</li>
+                                <li>Select all cells (Cmd+A or drag)</li>
+                                <li>Copy (Cmd+C)</li>
+                                <li>Open a new Google Doc and paste (Cmd+V)</li>
+                            </ol>
+
+                            <p><strong>Success Check:</strong> Does the table have visible borders? Is the header shaded? Cells formatted?</p>
+                        </div>
+                    </div>
+
+                    <div class="lab-step" id="labStep3">
+                        <div class="step-header">
+                            <div class="step-number">3</div>
+                            <div class="step-title">Cross-Platform Integration</div>
+                        </div>
+                        <div class="step-content">
+                            <p>Get research from Gemini and synthesize in Claude:</p>
+
+                            <p><strong>Step 1:</strong> Open Gemini and research nurse burnout:</p>
+
+                            <div class="copy-block">
+                                <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+                                <pre>I need to research nurse burnout statistics for a healthcare client meeting. Please find:
+
+1. Current average turnover rate for nurses in the US
+2. Estimated cost per nurse turnover
+3. Top 3 cited reasons for nurse burnout
+4. Any recent studies (2023-2024) on workload and burnout correlation
+
+Provide as a Fact Brief with source links.</pre>
+                            </div>
+
+                            <p><strong>Step 2:</strong> Copy Gemini's Fact Brief, then in Claude:</p>
+
+                            <div class="copy-block">
+                                <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+                                <pre>[ROLE]
+Executive briefing specialist
+
+[CONTEXT]
+I'm meeting with Acme Healthcare tomorrow about workforce analytics for nursing teams.
+
+[MATERIALS]
+Meeting Brief: [paste your meeting brief from Step 1]
+
+Research Data: [paste Gemini's Fact Brief]
+
+[TASK]
+Create a comprehensive one-page executive brief that integrates both sources. Structure:
+- Meeting Objective
+- Key Statistics (from research)
+- Our Strategic Approach
+- Questions to Ask
+- Success Metrics for This Meeting
+
+[FORMAT]
+Output as clean HTML that I can paste into Google Docs.</pre>
+                            </div>
+
+                            <p><strong>Final Step:</strong> Copy HTML output, paste into Google Doc, title it "Acme Healthcare Meeting Brief."</p>
+                        </div>
+                    </div>
+
+                    <div class="lab-navigation">
+                        <button class="btn btn-secondary" id="labPrevBtn" onclick="prevLabStep()" style="visibility: hidden;">← Previous Step</button>
+                        <button class="btn btn-primary" id="labNextBtn" onclick="nextLabStep()">Next Step →</button>
+                    </div>
+                </div>
+
+                <div class="content-nav">
+                    <button class="btn btn-secondary" onclick="navigateTo('flashcards')">← Back</button>
+                    <button class="btn btn-primary" onclick="navigateTo('quiz')">Take the Quiz →</button>
+                </div>
+            </section>
+
+            <!-- Quiz Screen -->
+            <section class="screen" id="quiz">
+                <div class="quiz-container">
+                    <div class="quiz-header">
+                        <h2>Knowledge Check</h2>
+                        <div class="quiz-progress">
+                            <div class="quiz-dot current" data-q="0"></div>
+                            <div class="quiz-dot" data-q="1"></div>
+                            <div class="quiz-dot" data-q="2"></div>
+                            <div class="quiz-dot" data-q="3"></div>
+                            <div class="quiz-dot" data-q="4"></div>
+                            <div class="quiz-dot" data-q="5"></div>
+                            <div class="quiz-dot" data-q="6"></div>
+                        </div>
+                    </div>
+
+                    <!-- Question 1 -->
+                    <div class="quiz-question active" data-question="0">
+                        <div class="question-number">Question 1 of 7</div>
+                        <div class="question-text">What are the four phases of the Ramble-to-Gold workflow in the correct order?</div>
+                        <div class="answer-options">
+                            <div class="answer-option" data-answer="a" onclick="selectAnswer(this, 0)">
+                                <span class="option-letter">A</span>
+                                <span>Process → Capture → Sync → Refine</span>
+                            </div>
+                            <div class="answer-option" data-answer="b" onclick="selectAnswer(this, 0)">
+                                <span class="option-letter">B</span>
+                                <span>Capture → Process → Sync → Refine</span>
+                            </div>
+                            <div class="answer-option" data-answer="c" onclick="selectAnswer(this, 0)">
+                                <span class="option-letter">C</span>
+                                <span>Capture → Sync → Process → Refine</span>
+                            </div>
+                            <div class="answer-option" data-answer="d" onclick="selectAnswer(this, 0)">
+                                <span class="option-letter">D</span>
+                                <span>Sync → Capture → Process → Refine</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Question 2 -->
+                    <div class="quiz-question" data-question="1">
+                        <div class="question-number">Question 2 of 7</div>
+                        <div class="question-text">True or False: When pasting a table from Claude into Google Docs, you should copy the Markdown code block and paste it directly.</div>
+                        <div class="answer-options">
+                            <div class="answer-option" data-answer="a" onclick="selectAnswer(this, 1)">
+                                <span class="option-letter">A</span>
+                                <span>True</span>
+                            </div>
+                            <div class="answer-option" data-answer="b" onclick="selectAnswer(this, 1)">
+                                <span class="option-letter">B</span>
+                                <span>False</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Question 3 -->
+                    <div class="quiz-question" data-question="2">
+                        <div class="question-number">Question 3 of 7</div>
+                        <div class="question-text">Which CSS property is MOST critical to include when asking Claude to generate HTML tables for Google Docs?</div>
+                        <div class="answer-options">
+                            <div class="answer-option" data-answer="a" onclick="selectAnswer(this, 2)">
+                                <span class="option-letter">A</span>
+                                <span>font-family</span>
+                            </div>
+                            <div class="answer-option" data-answer="b" onclick="selectAnswer(this, 2)">
+                                <span class="option-letter">B</span>
+                                <span>border-collapse: collapse</span>
+                            </div>
+                            <div class="answer-option" data-answer="c" onclick="selectAnswer(this, 2)">
+                                <span class="option-letter">C</span>
+                                <span>margin: auto</span>
+                            </div>
+                            <div class="answer-option" data-answer="d" onclick="selectAnswer(this, 2)">
+                                <span class="option-letter">D</span>
+                                <span>width: 100%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Question 4 -->
+                    <div class="quiz-question" data-question="3">
+                        <div class="question-number">Question 4 of 7</div>
+                        <div class="question-text">You're on a train headed to a client meeting in 20 minutes. You need to quickly review key concerns from the last three QBRs. Which approach is MOST effective?</div>
+                        <div class="answer-options">
+                            <div class="answer-option" data-answer="a" onclick="selectAnswer(this, 3)">
+                                <span class="option-letter">A</span>
+                                <span>Wait until you reach your desk, then review files</span>
+                            </div>
+                            <div class="answer-option" data-answer="b" onclick="selectAnswer(this, 3)">
+                                <span class="option-letter">B</span>
+                                <span>Open Claude mobile, voice query your Squadron Project for QBR synthesis</span>
+                            </div>
+                            <div class="answer-option" data-answer="c" onclick="selectAnswer(this, 3)">
+                                <span class="option-letter">C</span>
+                                <span>Scroll through old emails on your phone</span>
+                            </div>
+                            <div class="answer-option" data-answer="d" onclick="selectAnswer(this, 3)">
+                                <span class="option-letter">D</span>
+                                <span>Text a colleague to ask what they remember</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Question 5 -->
+                    <div class="quiz-question" data-question="4">
+                        <div class="question-number">Question 5 of 7</div>
+                        <div class="question-text">Select ALL advantages of Claude Desktop on Mac compared to the web version:</div>
+                        <div class="answer-options">
+                            <div class="answer-option" data-answer="a" onclick="selectAnswer(this, 4)">
+                                <span class="option-letter">A</span>
+                                <span>Universal drag-and-drop for PDFs, screenshots, and folders</span>
+                            </div>
+                            <div class="answer-option" data-answer="b" onclick="selectAnswer(this, 4)">
+                                <span class="option-letter">B</span>
+                                <span>Access to real-time web search</span>
+                            </div>
+                            <div class="answer-option" data-answer="c" onclick="selectAnswer(this, 4)">
+                                <span class="option-letter">C</span>
+                                <span>Native Mac notifications when analysis completes</span>
+                            </div>
+                            <div class="answer-option" data-answer="d" onclick="selectAnswer(this, 4)">
+                                <span class="option-letter">D</span>
+                                <span>Faster response times due to local processing</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Question 6 -->
+                    <div class="quiz-question" data-question="5">
+                        <div class="question-number">Question 6 of 7</div>
+                        <div class="question-text">True or False: You should use Gemini instead of Claude when you need deep reasoning and complex strategic analysis.</div>
+                        <div class="answer-options">
+                            <div class="answer-option" data-answer="a" onclick="selectAnswer(this, 5)">
+                                <span class="option-letter">A</span>
+                                <span>True</span>
+                            </div>
+                            <div class="answer-option" data-answer="b" onclick="selectAnswer(this, 5)">
+                                <span class="option-letter">B</span>
+                                <span>False</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Question 7 -->
+                    <div class="quiz-question" data-question="6">
+                        <div class="question-number">Question 7 of 7</div>
+                        <div class="question-text">You're building a quarterly report requiring current industry statistics, analysis of internal data (CSV), strategic recommendations, and a formatted deliverable for team review. What is the optimal workflow?</div>
+                        <div class="answer-options">
+                            <div class="answer-option" data-answer="a" onclick="selectAnswer(this, 6)">
+                                <span class="option-letter">A</span>
+                                <span>Do everything in Claude from start to finish</span>
+                            </div>
+                            <div class="answer-option" data-answer="b" onclick="selectAnswer(this, 6)">
+                                <span class="option-letter">B</span>
+                                <span>Do everything in Gemini from start to finish</span>
+                            </div>
+                            <div class="answer-option" data-answer="c" onclick="selectAnswer(this, 6)">
+                                <span class="option-letter">C</span>
+                                <span>Gemini (research) → Claude (analysis + strategy) → HTML Bridge (to Docs)</span>
+                            </div>
+                            <div class="answer-option" data-answer="d" onclick="selectAnswer(this, 6)">
+                                <span class="option-letter">D</span>
+                                <span>Claude (analysis) → Gemini (research) → Directly edit in Docs</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Results -->
+                    <div class="quiz-question" data-question="results" style="display: none;">
+                        <div class="quiz-results">
+                            <div class="results-score" id="quizScore">0/7</div>
+                            <div class="results-label">Questions Correct</div>
+                            <div class="results-breakdown">
+                                <div class="breakdown-item">
+                                    <div class="breakdown-value correct" id="correctCount">0</div>
+                                    <div class="breakdown-label">Correct</div>
+                                </div>
+                                <div class="breakdown-item">
+                                    <div class="breakdown-value incorrect" id="incorrectCount">0</div>
+                                    <div class="breakdown-label">Incorrect</div>
+                                </div>
+                            </div>
+                            <p id="resultMessage" style="margin-bottom: 2rem; color: #6B7280;"></p>
+                            <button class="btn btn-primary" onclick="navigateTo('study-guide')">Review Study Guide →</button>
+                        </div>
+                    </div>
+
+                    <div class="feedback-panel" id="feedbackPanel">
+                        <div class="feedback-header" id="feedbackHeader"></div>
+                        <p id="feedbackText"></p>
+                    </div>
+
+                    <div class="quiz-footer">
+                        <button class="btn btn-primary" id="quizNextBtn" onclick="nextQuestion()" disabled>Next Question →</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Study Guide Screen -->
+            <section class="screen" id="study-guide">
+                <h1 style="margin-bottom: 2rem;">📋 Study Guide</h1>
+
+                <div class="study-guide-card">
+                    <h2>🎯 Core Concept</h2>
+                    <p style="font-size: 1.1rem; line-height: 1.7;"><strong>The Hybrid Agent Model:</strong> Your Squadron operates seamlessly across mobile, Mac, and Google Workspace—capturing intelligence anywhere, processing with power tools, delivering in collaborative formats.</p>
+                </div>
+
+                <div class="study-guide-card">
+                    <h2>📖 Key Terms</h2>
+                    <div class="term-grid">
+                        <div class="term-item">
+                            <span class="term-name">Ramble-to-Gold</span>
+                            <span class="term-def">Four-phase workflow: Capture (voice) → Sync (iCloud) → Process (Claude) → Refine (iterate)</span>
+                        </div>
+                        <div class="term-item">
+                            <span class="term-name">HTML Bridge</span>
+                            <span class="term-def">Technique for preserving table/content formatting when pasting from Claude to Google Docs</span>
+                        </div>
+                        <div class="term-item">
+                            <span class="term-name">Forward Observer</span>
+                            <span class="term-def">Squadron role for mobile capture (Claude mobile, Voice Memos, Apple Notes)</span>
+                        </div>
+                        <div class="term-item">
+                            <span class="term-name">Cross-Platform Context</span>
+                            <span class="term-def">Conversations sync across devices—start on mobile, continue on desktop seamlessly</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="study-guide-card">
+                    <h2>✈️ Platform Decision Matrix</h2>
+                    <table class="comparison-table">
+                        <thead>
+                            <tr>
+                                <th>Task</th>
+                                <th>Tool</th>
+                                <th>Why</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Voice capture</td>
+                                <td>Claude mobile / Voice Memos</td>
+                                <td>Transcription + sync</td>
+                            </tr>
+                            <tr>
+                                <td>Deep analysis</td>
+                                <td>Claude Desktop</td>
+                                <td>Reasoning, Projects, code</td>
+                            </tr>
+                            <tr>
+                                <td>Current research</td>
+                                <td>Gemini</td>
+                                <td>Grounding, real-time data</td>
+                            </tr>
+                            <tr>
+                                <td>Formatted deliverables</td>
+                                <td>HTML Bridge → Docs</td>
+                                <td>Preserves formatting</td>
+                            </tr>
+                            <tr>
+                                <td>Presentations</td>
+                                <td>Gemini → Slides</td>
+                                <td>Native export</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="study-guide-card">
+                    <h2>✓ Do's and Don'ts</h2>
+                    <div class="do-dont-grid">
+                        <div class="do-column">
+                            <h3>✓ Do</h3>
+                            <div class="do-dont-item">
+                                <span style="color: var(--success);">✓</span>
+                                <span>Capture immediately—voice note when thinking is clear</span>
+                            </div>
+                            <div class="do-dont-item">
+                                <span style="color: var(--success);">✓</span>
+                                <span>Use drag-and-drop on Mac for zero friction</span>
+                            </div>
+                            <div class="do-dont-item">
+                                <span style="color: var(--success);">✓</span>
+                                <span>Ask for HTML when formatting for Google Docs</span>
+                            </div>
+                            <div class="do-dont-item">
+                                <span style="color: var(--success);">✓</span>
+                                <span>Pick the right tool: Claude for reasoning, Gemini for research</span>
+                            </div>
+                        </div>
+                        <div class="dont-column">
+                            <h3>✗ Don't</h3>
+                            <div class="do-dont-item">
+                                <span style="color: var(--error);">✗</span>
+                                <span>Wait for your desk—capture ideas when they happen</span>
+                            </div>
+                            <div class="do-dont-item">
+                                <span style="color: var(--error);">✗</span>
+                                <span>Copy Markdown to Docs—use HTML Bridge</span>
+                            </div>
+                            <div class="do-dont-item">
+                                <span style="color: var(--error);">✗</span>
+                                <span>Use mobile for deep work—mobile is for capture</span>
+                            </div>
+                            <div class="do-dont-item">
+                                <span style="color: var(--error);">✗</span>
+                                <span>Use Claude for current data—use Gemini, then transfer</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="study-guide-card">
+                    <h2>📝 Critical Prompts</h2>
+                    <p><strong>Ramble-to-Gold Processing:</strong></p>
+                    <div class="copy-block">
+                        <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+                        <pre>[ROLE] Chief of Staff transforming voice notes to polished work.
+[RAW CAPTURE] [paste ramble]
+[TASK] Extract insights, structure logically, draft polished version.</pre>
+                    </div>
+
+                    <p><strong>HTML Table for Docs:</strong></p>
+                    <div class="copy-block">
+                        <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+                        <pre>Create [topic] table as HTML with inline CSS:
+- border-collapse: collapse
+- border: 1px solid #333
+- Header: background #f0f0f0
+Render directly (not in code block).</pre>
+                    </div>
+                </div>
+
+                <div class="study-guide-card" style="background: linear-gradient(135deg, var(--dark-navy) 0%, var(--medium-navy) 100%); color: white;">
+                    <h2 style="color: white;">➡️ Next Module Preview</h2>
+                    <p><strong>Module 8: Systemizing Intelligence (Projects, GPTs & Gems)</strong></p>
+                    <p style="opacity: 0.9;">Learn to turn ad-hoc workflows into reusable systems. Create Projects that encapsulate institutional knowledge, Skills that standardize processes, and Gems that act as persistent specialists. Move from Squadron Leader to Squadron Architect.</p>
+                </div>
+
+                <div class="content-nav">
+                    <button class="btn btn-secondary" onclick="navigateTo('quiz')">← Back to Quiz</button>
+                    <button class="btn btn-success">Module Complete ✓</button>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // Navigation State
+        const screens = ['welcome', 'video', 'lesson-1', 'lesson-2', 'lesson-3', 'lesson-4', 'flashcards', 'lab', 'quiz', 'study-guide'];
+        let currentScreen = 'welcome';
+        let completedScreens = new Set();
+
+        // Flashcard State
+        const flashcards = [
+            {
+                front: "What are the four phases of the Ramble-to-Gold workflow?",
+                back: "1. Capture (voice on mobile)\n2. Sync (automatic iCloud/account sync)\n3. Process (Claude Desktop with structured prompt)\n4. Refine (iterate on draft to polish)"
+            },
+            {
+                front: "What files can you drag-and-drop directly into Claude Desktop?",
+                back: "• PDFs from Finder\n• Screenshots immediately after capture\n• CSV files for analysis\n• Entire folders (uploads multiple files)\n• Images from Photos app\n\nNo browse dialog needed—just drag."
+            },
+            {
+                front: "How do you paste a formatted table from Claude into Google Docs without it breaking?",
+                back: "1. Ask Claude for HTML table (not Markdown)\n2. Include CSS: border-collapse: collapse, border: 1px solid #333, header background\n3. Tell Claude to 'render directly' (not code block)\n4. Copy the RENDERED visual table\n5. Paste into Google Docs"
+            },
+            {
+                front: "When should you use Claude mobile vs. Claude Desktop?",
+                back: "Mobile: Voice capture, quick questions, on-the-go document review, meeting prep during commute, immediate email responses.\n\nDesktop: Deep analysis, uploading multiple files, accessing Projects, code execution, building structured deliverables."
+            },
+            {
+                front: "How should you structure Apple Notes for Squadron workflows?",
+                back: "Create 'AI Squadron' notebook:\n📁 Active Missions (pinned)\n📁 Voice Captures\n📁 Research Briefs (from Gemini)\n📁 Meeting Intelligence (from Granola)\n📁 Templates"
+            },
+            {
+                front: "What can Gemini do in Google Workspace that Claude cannot?",
+                back: "In Docs: Read document automatically, insert at cursor, native sidebar.\n\nIn Slides: Generate presentation, export directly to Slides.\n\nIn Sheets: Enrich rows with research, native formula help.\n\nUse Gemini for native Google app workflows; Claude for deep reasoning."
+            },
+            {
+                front: "What is 'cross-platform context persistence'?",
+                back: "Conversations sync across devices automatically.\n\nExample:\n• Morning (iPhone): Start conversation\n• Midday (Mac): Continue same conversation, upload files\n• Afternoon (iPhone): Finalize\n\nNo restarting. Full context persists."
+            },
+            {
+                front: "What is the optimal tool for each task?\n1. Voice capture\n2. Deep analysis\n3. Current research\n4. Presentations\n5. Document collaboration",
+                back: "1. Voice capture: Claude mobile / Voice Memos\n2. Deep analysis: Claude Desktop\n3. Current research: Gemini (grounding)\n4. Presentations: Gemini → Slides export\n5. Document collaboration: Google Docs + Gemini"
+            }
+        ];
+        let currentCard = 0;
+
+        // Lab State
+        let currentLabStep = 1;
+        const totalLabSteps = 3;
+
+        // Quiz State
+        const quizAnswers = ['c', 'b', 'b', 'b', 'a', 'b', 'c'];
+        const quizFeedback = [
+            {
+                correct: "Correct! The workflow is: Capture (record voice) → Sync (automatic iCloud/account) → Process (Claude Desktop with structured prompt) → Refine (iterate on draft).",
+                incorrect: "The correct order is Capture → Sync → Process → Refine. You must capture first, let it sync, then process on desktop, and finally refine."
+            },
+            {
+                correct: "Correct! Google Docs doesn't understand Markdown. You need to ask for HTML with inline CSS, then copy the RENDERED visual table (not the code) and paste it.",
+                incorrect: "False. Google Docs doesn't understand Markdown—it will paste as plain text with pipes. Use the HTML Bridge: ask for HTML with CSS, copy the rendered visual output."
+            },
+            {
+                correct: "Correct! border-collapse: collapse prevents double borders when pasting into Docs. Without it, table borders will be doubled or misaligned.",
+                incorrect: "The critical property is border-collapse: collapse. It prevents double borders when pasting into Google Docs—without it your tables look messy."
+            },
+            {
+                correct: "Correct! Claude mobile with Projects gives you instant synthesis of documented history. Voice query is fast, and you can screenshot the summary for reference during the meeting.",
+                incorrect: "The best approach is Claude mobile with Projects. Your Project contains QBR history, voice query is fast, and context persists across devices."
+            },
+            {
+                correct: "Correct! Claude Desktop provides drag-and-drop (A) and native notifications (C). It does NOT have real-time web search (that's Gemini) or local processing (still uses Anthropic's servers).",
+                incorrect: "Claude Desktop advantages are drag-and-drop and native notifications. It does NOT have real-time web search (Gemini's strength) or local processing."
+            },
+            {
+                correct: "Correct! Claude excels at deep reasoning (Extended Thinking, large context, Projects). Gemini's strengths are grounding (current data) and Google Workspace integration.",
+                incorrect: "False. Claude is purpose-built for deep reasoning. Gemini's strengths are real-time research and Google Workspace native integration."
+            },
+            {
+                correct: "Correct! Gemini gathers current stats (grounding), Claude analyzes data and generates strategy, then HTML Bridge delivers formatted content to Docs. Each tool does what it does best.",
+                incorrect: "The optimal workflow is Gemini (research) → Claude (analysis + strategy) → HTML Bridge (to Docs). Each tool handles what it's optimized for."
+            }
+        ];
+        let currentQuestion = 0;
+        let userAnswers = [];
+        let quizComplete = false;
+
+        // Navigation Functions
+        function navigateTo(screenId) {
+            completedScreens.add(currentScreen);
+
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+
+            document.getElementById(screenId).classList.add('active');
+            document.querySelector(`[data-screen="${screenId}"]`)?.classList.add('active');
+
+            completedScreens.forEach(id => {
+                const navItem = document.querySelector(`[data-screen="${id}"]`);
+                if (navItem && id !== screenId) {
+                    navItem.classList.add('completed');
+                }
+            });
+
+            currentScreen = screenId;
+            updateProgress();
+            window.scrollTo(0, 0);
+        }
+
+        function updateProgress() {
+            const progress = Math.round((completedScreens.size / screens.length) * 100);
+            document.getElementById('progressFill').style.width = `${progress}%`;
+            document.getElementById('progressText').textContent = `${progress}% Complete`;
+        }
+
+        // Flashcard Functions
+        function flipCard() {
+            document.getElementById('flashcard').classList.toggle('flipped');
+        }
+
+        function nextCard() {
+            currentCard = (currentCard + 1) % flashcards.length;
+            updateCard();
+        }
+
+        function prevCard() {
+            currentCard = (currentCard - 1 + flashcards.length) % flashcards.length;
+            updateCard();
+        }
+
+        function updateCard() {
+            document.getElementById('flashcard').classList.remove('flipped');
+            setTimeout(() => {
+                document.getElementById('cardFront').textContent = flashcards[currentCard].front;
+                document.getElementById('cardBack').textContent = flashcards[currentCard].back;
+                document.getElementById('cardNum').textContent = currentCard + 1;
+            }, 150);
+        }
+
+        // Lab Functions
+        function nextLabStep() {
+            if (currentLabStep < totalLabSteps) {
+                document.getElementById(`labStep${currentLabStep}`).classList.remove('active');
+                currentLabStep++;
+                document.getElementById(`labStep${currentLabStep}`).classList.add('active');
+                updateLabNav();
+            }
+        }
+
+        function prevLabStep() {
+            if (currentLabStep > 1) {
+                document.getElementById(`labStep${currentLabStep}`).classList.remove('active');
+                currentLabStep--;
+                document.getElementById(`labStep${currentLabStep}`).classList.add('active');
+                updateLabNav();
+            }
+        }
+
+        function updateLabNav() {
+            document.getElementById('labPrevBtn').style.visibility = currentLabStep > 1 ? 'visible' : 'hidden';
+            document.getElementById('labNextBtn').textContent = currentLabStep < totalLabSteps ? 'Next Step →' : 'Complete Lab ✓';
+            if (currentLabStep === totalLabSteps) {
+                document.getElementById('labNextBtn').onclick = () => navigateTo('quiz');
+            } else {
+                document.getElementById('labNextBtn').onclick = nextLabStep;
+            }
+        }
+
+        // Quiz Functions
+        function selectAnswer(element, questionIndex) {
+            if (quizComplete || userAnswers[questionIndex] !== undefined) return;
+
+            const question = document.querySelector(`[data-question="${questionIndex}"]`);
+            const options = question.querySelectorAll('.answer-option');
+            const selectedAnswer = element.dataset.answer;
+            const isCorrect = selectedAnswer === quizAnswers[questionIndex];
+
+            userAnswers[questionIndex] = selectedAnswer;
+
+            options.forEach(opt => {
+                opt.classList.add('disabled');
+                if (opt.dataset.answer === quizAnswers[questionIndex]) {
+                    opt.classList.add('correct');
+                }
+            });
+
+            if (!isCorrect) {
+                element.classList.add('incorrect');
+            }
+
+            const dot = document.querySelector(`.quiz-dot[data-q="${questionIndex}"]`);
+            dot.classList.remove('current');
+            dot.classList.add(isCorrect ? 'correct' : 'incorrect');
+
+            const feedbackPanel = document.getElementById('feedbackPanel');
+            const feedbackHeader = document.getElementById('feedbackHeader');
+            const feedbackText = document.getElementById('feedbackText');
+
+            feedbackHeader.className = `feedback-header ${isCorrect ? 'feedback-correct' : 'feedback-incorrect'}`;
+            feedbackHeader.innerHTML = isCorrect ? '✓ Correct!' : '✗ Incorrect';
+            feedbackText.textContent = isCorrect ? quizFeedback[questionIndex].correct : quizFeedback[questionIndex].incorrect;
+            feedbackPanel.classList.add('show');
+
+            document.getElementById('quizNextBtn').disabled = false;
+        }
+
+        function nextQuestion() {
+            if (currentQuestion < quizAnswers.length - 1) {
+                document.querySelector(`[data-question="${currentQuestion}"]`).classList.remove('active');
+                currentQuestion++;
+                document.querySelector(`[data-question="${currentQuestion}"]`).classList.add('active');
+
+                document.querySelector(`.quiz-dot[data-q="${currentQuestion}"]`).classList.add('current');
+
+                document.getElementById('feedbackPanel').classList.remove('show');
+                document.getElementById('quizNextBtn').disabled = true;
+
+                if (currentQuestion === quizAnswers.length - 1) {
+                    document.getElementById('quizNextBtn').textContent = 'See Results →';
+                }
+            } else {
+                showResults();
+            }
+        }
+
+        function showResults() {
+            quizComplete = true;
+            const correct = userAnswers.filter((a, i) => a === quizAnswers[i]).length;
+            const incorrect = quizAnswers.length - correct;
+
+            document.querySelector(`[data-question="${currentQuestion}"]`).classList.remove('active');
+            document.querySelector('[data-question="results"]').style.display = 'block';
+            document.querySelector('[data-question="results"]').classList.add('active');
+
+            document.getElementById('quizScore').textContent = `${correct}/${quizAnswers.length}`;
+            document.getElementById('correctCount').textContent = correct;
+            document.getElementById('incorrectCount').textContent = incorrect;
+
+            let message = '';
+            if (correct === quizAnswers.length) {
+                message = "Excellent! You've mastered the Hybrid Agent workflows. Ready for Module 8!";
+            } else if (correct >= 5) {
+                message = "Good foundation! Review the HTML Bridge and platform selection concepts before continuing.";
+            } else if (correct >= 3) {
+                message = "Review the video and flashcards, then retake the quiz.";
+            } else {
+                message = "Schedule time to review the module content before proceeding.";
+            }
+            document.getElementById('resultMessage').textContent = message;
+
+            document.getElementById('feedbackPanel').classList.remove('show');
+            document.querySelector('.quiz-footer').style.display = 'none';
+        
+            // SCORM reporting
+            const scorePercent = Math.round((correct / quizAnswers.length) * 100);
+            const passed = scorePercent >= 70;
+
+            if (typeof setSCORMScore === 'function') {
+                setSCORMScore(scorePercent);
+            }
+            if (typeof setSCORMStatus === 'function') {
+                setSCORMStatus(passed ? 'passed' : 'failed');
+            }
+
+            // Celebration confetti for passing
+            if (passed && typeof confetti === 'function') {
+                confetti({
+                    particleCount: 100,
+                    spread: 70,
+                    origin: { y: 0.6 },
+                    colors: ['#2ED4B5', '#1657A0', '#FFC83B', '#19316A']
+                });
+
+                setTimeout(() => {
+                    confetti({
+                        particleCount: 50,
+                        angle: 60,
+                        spread: 55,
+                        origin: { x: 0 },
+                        colors: ['#2ED4B5', '#1657A0', '#FFC83B']
+                    });
+                }, 250);
+
+                setTimeout(() => {
+                    confetti({
+                        particleCount: 50,
+                        angle: 120,
+                        spread: 55,
+                        origin: { x: 1 },
+                        colors: ['#2ED4B5', '#1657A0', '#FFC83B']
+                    });
+                }, 400);
+            }
+
+            // Close popup window after completion
+            if (window.opener !== null) {
+                setTimeout(() => {
+                    const shouldClose = confirm('Module completed! Close this window?');
+                    if (shouldClose) {
+                        window.close();
+                    }
+                }, 3000);
+            }
+        }
+
+        // Copy to clipboard
+        function copyToClipboard(button) {
+            const codeBlock = button.parentElement.querySelector('pre');
+            navigator.clipboard.writeText(codeBlock.textContent).then(() => {
+                button.textContent = 'Copied!';
+                setTimeout(() => button.textContent = 'Copy', 2000);
+            });
+        }
+
+        // Initialize nav click handlers
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', () => {
+                const screen = item.dataset.screen;
+                if (screen) navigateTo(screen);
+            });
+        });
+
+        // Initialize
+        document.getElementById('cardTotal').textContent = flashcards.length;
+    </script>
+</body>
+</html>

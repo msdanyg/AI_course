@@ -1,0 +1,2656 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module 2: Model Selection | Solo Pilot to Squadron Leader</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sofia+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="scorm_api.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+    <style>
+        :root {
+            --primary-blue: #19316A;
+            --pelorous: #1657A0;
+            --teal: #2ED4B5;
+            --violet-red: #EE2C82;
+            --dark-base: #14203F;
+            --light-gray: #D9D9D9;
+            --bg-light: #F8F9FA;
+            --white: #FFFFFF;
+            --success: #2ED4B5;
+            --error: #EE2C82;
+            --warning: #F5A623;
+            --haiku-color: #10B981;
+            --sonnet-color: #19316A;
+            --opus-color: #7C3AED;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Sofia Sans', sans-serif;
+            background: var(--bg-light);
+            color: var(--dark-base);
+            line-height: 1.6;
+        }
+
+        /* Header */
+        .course-header {
+            background: linear-gradient(135deg, var(--dark-navy) 0%, var(--medium-navy) 100%);
+            color: white;
+            padding: 1rem 2rem;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .course-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .course-subtitle {
+            font-size: 0.85rem;
+            opacity: 0.9;
+        }
+
+        .progress-container {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .progress-bar {
+            width: 200px;
+            height: 8px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--teal);
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        .progress-text {
+            font-size: 0.85rem;
+        }
+
+        /* Main Layout */
+        .main-container {
+            display: flex;
+            margin-top: 60px;
+            min-height: calc(100vh - 60px);
+        }
+
+        /* Sidebar Navigation */
+        .sidebar {
+            width: 280px;
+            background: var(--white);
+            border-right: 1px solid var(--light-gray);
+            position: fixed;
+            top: 60px;
+            bottom: 0;
+            left: 0;
+            overflow-y: auto;
+            padding: 1.5rem 0;
+        }
+
+        .nav-section {
+            padding: 0 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .nav-section-title {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #6B7280;
+            margin-bottom: 0.75rem;
+            padding: 0 0.75rem;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 0.25rem;
+        }
+
+        .nav-item:hover {
+            background: var(--bg-light);
+        }
+
+        .nav-item.active {
+            background: rgba(0, 66, 243, 0.1);
+            color: var(--primary-blue);
+        }
+
+        .nav-item.completed .nav-icon {
+            background: var(--success);
+            color: white;
+        }
+
+        .nav-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: var(--light-gray);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .nav-item.active .nav-icon {
+            background: var(--primary-blue);
+            color: white;
+        }
+
+        .nav-label {
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .nav-duration {
+            font-size: 0.75rem;
+            color: #6B7280;
+            margin-left: auto;
+        }
+
+        /* Content Area */
+        .content-area {
+            flex: 1;
+            margin-left: 280px;
+            padding: 2rem 3rem;
+            max-width: 1000px;
+        }
+
+        /* Screen Sections */
+        .screen {
+            display: none;
+        }
+
+        .screen.active {
+            display: block;
+            animation: fadeIn 0.4s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Welcome Screen */
+        .welcome-hero {
+            background: linear-gradient(135deg, #7C3AED 0%, #5B21B6 100%);
+            border-radius: 16px;
+            padding: 3rem;
+            color: white;
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .welcome-hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 400px;
+            height: 400px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+        }
+
+        .welcome-hero h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            position: relative;
+        }
+
+        .welcome-hero .module-tag {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            margin-bottom: 1rem;
+        }
+
+        .welcome-hero p {
+            font-size: 1.1rem;
+            opacity: 0.95;
+            max-width: 600px;
+            position: relative;
+        }
+
+        .objectives-card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .objectives-card h2 {
+            font-size: 1.25rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .objective-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--bg-light);
+        }
+
+        .objective-item:last-child {
+            border-bottom: none;
+        }
+
+        .objective-level {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .level-retrieval { background: #E0F2FE; color: #0369A1; }
+        .level-comprehension { background: #FEF3C7; color: #B45309; }
+        .level-analysis { background: #FCE7F3; color: #BE185D; }
+        .level-utilization { background: #D1FAE5; color: #047857; }
+
+        .time-estimate {
+            display: flex;
+            gap: 2rem;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--bg-light);
+        }
+
+        .time-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #6B7280;
+        }
+
+        .start-btn {
+            background: #7C3AED;
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .start-btn:hover {
+            background: #6D28D9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
+        }
+
+        /* Lesson Content */
+        .lesson-content {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 2.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .lesson-content h1 {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            color: var(--dark-base);
+        }
+
+        .lesson-content h2 {
+            font-size: 1.5rem;
+            margin: 2rem 0 1rem;
+            color: var(--dark-base);
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--bg-light);
+        }
+
+        .lesson-content h3 {
+            font-size: 1.2rem;
+            margin: 1.5rem 0 0.75rem;
+            color: #7C3AED;
+        }
+
+        .lesson-content p {
+            margin-bottom: 1rem;
+            font-size: 1.05rem;
+            line-height: 1.8;
+        }
+
+        .lesson-content ul, .lesson-content ol {
+            margin: 1rem 0 1rem 1.5rem;
+        }
+
+        .lesson-content li {
+            margin-bottom: 0.5rem;
+            line-height: 1.7;
+        }
+
+        .callout {
+            padding: 1.25rem 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+            display: flex;
+            gap: 1rem;
+        }
+
+        .callout-icon {
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .callout-insight {
+            background: rgba(124, 58, 237, 0.08);
+            border-left: 4px solid #7C3AED;
+        }
+
+        .callout-warning {
+            background: rgba(238, 44, 130, 0.08);
+            border-left: 4px solid var(--violet-red);
+        }
+
+        .callout-tip {
+            background: rgba(47, 211, 180, 0.1);
+            border-left: 4px solid var(--teal);
+        }
+
+        /* Model Cards */
+        .model-cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .model-card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 2px solid var(--light-gray);
+            transition: all 0.3s;
+        }
+
+        .model-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+        }
+
+        .model-card.haiku {
+            border-color: var(--haiku-color);
+        }
+
+        .model-card.haiku .model-icon {
+            background: var(--haiku-color);
+        }
+
+        .model-card.sonnet {
+            border-color: var(--sonnet-color);
+        }
+
+        .model-card.sonnet .model-icon {
+            background: var(--sonnet-color);
+        }
+
+        .model-card.opus {
+            border-color: var(--opus-color);
+        }
+
+        .model-card.opus .model-icon {
+            background: var(--opus-color);
+        }
+
+        .model-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .model-name {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .model-role {
+            font-size: 0.85rem;
+            color: #6B7280;
+            margin-bottom: 1rem;
+        }
+
+        .model-features {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .model-features li {
+            font-size: 0.9rem;
+            padding: 0.5rem 0;
+            border-top: 1px solid var(--bg-light);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Decision Matrix Interactive */
+        .matrix-interactive {
+            background: var(--bg-light);
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .matrix-title {
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .matrix-controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .matrix-control {
+            background: var(--white);
+            border-radius: 8px;
+            padding: 1.25rem;
+        }
+
+        .control-label {
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            display: block;
+        }
+
+        .control-options {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .control-option {
+            flex: 1;
+            padding: 0.75rem;
+            border: 2px solid var(--light-gray);
+            border-radius: 6px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.9rem;
+        }
+
+        .control-option:hover {
+            border-color: var(--primary-blue);
+        }
+
+        .control-option.selected {
+            border-color: var(--primary-blue);
+            background: rgba(0, 66, 243, 0.1);
+            color: var(--primary-blue);
+            font-weight: 600;
+        }
+
+        .matrix-result {
+            background: var(--white);
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-align: center;
+            border: 2px solid var(--light-gray);
+        }
+
+        .result-label {
+            font-size: 0.85rem;
+            color: #6B7280;
+            margin-bottom: 0.5rem;
+        }
+
+        .result-model {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .result-model.haiku { color: var(--haiku-color); }
+        .result-model.sonnet { color: var(--sonnet-color); }
+        .result-model.opus { color: var(--opus-color); }
+
+        .result-reasoning {
+            font-size: 0.9rem;
+            color: #6B7280;
+        }
+
+        /* Thinking Block Demo */
+        .thinking-demo {
+            background: var(--dark-base);
+            border-radius: 12px;
+            overflow: hidden;
+            margin: 1.5rem 0;
+        }
+
+        .thinking-header {
+            background: #1E293B;
+            padding: 0.75rem 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            cursor: pointer;
+        }
+
+        .thinking-toggle {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+            background: #334155;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #94A3B8;
+            font-size: 0.75rem;
+            transition: transform 0.2s;
+        }
+
+        .thinking-demo.expanded .thinking-toggle {
+            transform: rotate(90deg);
+        }
+
+        .thinking-label {
+            color: #94A3B8;
+            font-size: 0.85rem;
+        }
+
+        .thinking-content {
+            padding: 1rem;
+            color: #CBD5E1;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .thinking-demo.expanded .thinking-content {
+            max-height: 500px;
+        }
+
+        .thinking-response {
+            background: #0F172A;
+            padding: 1rem;
+            color: white;
+        }
+
+        /* Tables */
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .comparison-table th {
+            background: var(--dark-base);
+            color: white;
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .comparison-table td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--bg-light);
+        }
+
+        .comparison-table tr:nth-child(even) {
+            background: var(--bg-light);
+        }
+
+        /* Video Player */
+        .video-container {
+            background: var(--dark-base);
+            border-radius: 12px;
+            aspect-ratio: 16/9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .video-placeholder {
+            text-align: center;
+            color: white;
+        }
+
+        .play-btn {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: #7C3AED;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            margin-bottom: 1rem;
+        }
+
+        .play-btn:hover {
+            transform: scale(1.1);
+            background: var(--teal);
+        }
+
+        .play-btn svg {
+            width: 32px;
+            height: 32px;
+            fill: white;
+            margin-left: 4px;
+        }
+
+        /* Flashcards */
+        .flashcard-container {
+            perspective: 1000px;
+            margin: 2rem auto;
+            max-width: 600px;
+        }
+
+        .flashcard {
+            width: 100%;
+            height: 300px;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.6s;
+            cursor: pointer;
+        }
+
+        .flashcard.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .flashcard-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .flashcard-front {
+            background: linear-gradient(135deg, #7C3AED 0%, #5B21B6 100%);
+            color: white;
+        }
+
+        .flashcard-back {
+            background: var(--white);
+            border: 2px solid #7C3AED;
+            transform: rotateY(180deg);
+            color: var(--dark-base);
+        }
+
+        .flashcard-front h3 {
+            font-size: 1.4rem;
+            line-height: 1.5;
+        }
+
+        .flashcard-back p {
+            font-size: 1.05rem;
+            line-height: 1.7;
+        }
+
+        .flashcard-nav {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 2rem;
+            margin-top: 1.5rem;
+        }
+
+        .flashcard-btn {
+            background: var(--bg-light);
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .flashcard-btn:hover {
+            background: #7C3AED;
+            color: white;
+        }
+
+        .flashcard-counter {
+            font-weight: 600;
+            color: #6B7280;
+        }
+
+        .flip-hint {
+            text-align: center;
+            color: #6B7280;
+            font-size: 0.9rem;
+            margin-top: 1rem;
+        }
+
+        /* Lab */
+        .lab-header {
+            background: linear-gradient(135deg, var(--pelorous) 0%, #2A8A96 100%);
+            border-radius: 12px;
+            padding: 2rem;
+            color: white;
+            margin-bottom: 2rem;
+        }
+
+        .lab-header h1 {
+            font-size: 1.75rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .lab-meta {
+            display: flex;
+            gap: 2rem;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .lab-steps {
+            background: var(--white);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .lab-step {
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid var(--bg-light);
+            display: none;
+        }
+
+        .lab-step.active {
+            display: block;
+        }
+
+        .step-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .step-number {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #7C3AED;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .step-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .step-content {
+            padding-left: 52px;
+        }
+
+        .copy-block {
+            background: #1E1E1E;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+            position: relative;
+            overflow-x: auto;
+        }
+
+        .copy-block pre {
+            color: #D4D4D4;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background: #3C3C3C;
+            border: none;
+            color: white;
+            padding: 0.5rem 0.75rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .copy-btn:hover {
+            background: #7C3AED;
+        }
+
+        .lab-navigation {
+            display: flex;
+            justify-content: space-between;
+            padding: 1.5rem 2rem;
+            border-top: 1px solid var(--bg-light);
+        }
+
+        /* Quiz */
+        .quiz-container {
+            background: var(--white);
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            overflow: hidden;
+        }
+
+        .quiz-header {
+            background: var(--bg-light);
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .quiz-progress {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .quiz-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--light-gray);
+        }
+
+        .quiz-dot.current {
+            background: #7C3AED;
+        }
+
+        .quiz-dot.correct {
+            background: var(--success);
+        }
+
+        .quiz-dot.incorrect {
+            background: var(--error);
+        }
+
+        .quiz-question {
+            padding: 2rem;
+            display: none;
+        }
+
+        .quiz-question.active {
+            display: block;
+        }
+
+        .question-number {
+            font-size: 0.85rem;
+            color: #6B7280;
+            margin-bottom: 0.5rem;
+        }
+
+        .question-text {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            line-height: 1.5;
+        }
+
+        .answer-options {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .answer-option {
+            padding: 1rem 1.25rem;
+            border: 2px solid var(--light-gray);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .answer-option:hover:not(.disabled) {
+            border-color: #7C3AED;
+            background: rgba(124, 58, 237, 0.03);
+        }
+
+        .answer-option.selected {
+            border-color: #7C3AED;
+            background: rgba(124, 58, 237, 0.08);
+        }
+
+        .answer-option.correct {
+            border-color: var(--success);
+            background: rgba(47, 211, 180, 0.1);
+        }
+
+        .answer-option.incorrect {
+            border-color: var(--error);
+            background: rgba(238, 44, 130, 0.08);
+        }
+
+        .answer-option.disabled {
+            cursor: default;
+        }
+
+        .option-letter {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--bg-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .answer-option.selected .option-letter {
+            background: #7C3AED;
+            color: white;
+        }
+
+        .answer-option.correct .option-letter {
+            background: var(--success);
+            color: white;
+        }
+
+        .answer-option.incorrect .option-letter {
+            background: var(--error);
+            color: white;
+        }
+
+        .feedback-panel {
+            padding: 1.5rem 2rem;
+            background: var(--bg-light);
+            display: none;
+        }
+
+        .feedback-panel.show {
+            display: block;
+        }
+
+        .feedback-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+        }
+
+        .feedback-correct {
+            color: var(--success);
+        }
+
+        .feedback-incorrect {
+            color: var(--error);
+        }
+
+        .quiz-footer {
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: flex-end;
+            border-top: 1px solid var(--bg-light);
+        }
+
+        /* Study Guide */
+        .study-guide-card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .study-guide-card h2 {
+            font-size: 1.25rem;
+            margin-bottom: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #7C3AED;
+        }
+
+        .term-grid {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .term-item {
+            display: grid;
+            grid-template-columns: 180px 1fr;
+            gap: 1rem;
+            padding: 1rem;
+            background: var(--bg-light);
+            border-radius: 8px;
+        }
+
+        .term-name {
+            font-weight: 600;
+            color: var(--dark-base);
+        }
+
+        .term-def {
+            color: #4B5563;
+        }
+
+        .do-dont-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        .do-column h3 {
+            color: var(--success);
+            margin-bottom: 1rem;
+        }
+
+        .dont-column h3 {
+            color: var(--error);
+            margin-bottom: 1rem;
+        }
+
+        .do-dont-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.5rem;
+            margin-bottom: 0.75rem;
+            font-size: 0.95rem;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            border: none;
+        }
+
+        .btn-primary {
+            background: #7C3AED;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #6D28D9;
+        }
+
+        .btn-secondary {
+            background: var(--bg-light);
+            color: var(--dark-base);
+        }
+
+        .btn-secondary:hover {
+            background: var(--light-gray);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .content-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--bg-light);
+        }
+
+        /* Quiz Results */
+        .quiz-results {
+            text-align: center;
+            padding: 3rem 2rem;
+        }
+
+        .results-score {
+            font-size: 4rem;
+            font-weight: 700;
+            color: #7C3AED;
+            margin-bottom: 0.5rem;
+        }
+
+        .results-label {
+            font-size: 1.25rem;
+            color: #6B7280;
+            margin-bottom: 2rem;
+        }
+
+        .results-breakdown {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            margin-bottom: 2rem;
+        }
+
+        .breakdown-item {
+            text-align: center;
+        }
+
+        .breakdown-value {
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .breakdown-value.correct { color: var(--success); }
+        .breakdown-value.incorrect { color: var(--error); }
+
+        .breakdown-label {
+            font-size: 0.9rem;
+            color: #6B7280;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .sidebar {
+                width: 240px;
+            }
+            .content-area {
+                margin-left: 240px;
+                padding: 1.5rem 2rem;
+            }
+            .model-cards {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                display: none;
+            }
+            .content-area {
+                margin-left: 0;
+                padding: 1rem;
+            }
+            .do-dont-grid {
+                grid-template-columns: 1fr;
+            }
+            .term-item {
+                grid-template-columns: 1fr;
+            }
+            .matrix-controls {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="course-header">
+        <div>
+            <div class="course-title">Solo Pilot → Squadron Leader</div>
+            <div class="course-subtitle">Module 2: Model Selection & The "Thinking" Protocol</div>
+        </div>
+        <div class="progress-container">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+            </div>
+            <span class="progress-text" id="progressText">0% Complete</span>
+        </div>
+    </header>
+
+    <div class="main-container">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="nav-section">
+                <div class="nav-section-title">Module Content</div>
+                <div class="nav-item active" data-screen="welcome">
+                    <div class="nav-icon">▶</div>
+                    <span class="nav-label">Welcome</span>
+                    <span class="nav-duration">2 min</span>
+                </div>
+                <div class="nav-item" data-screen="video">
+                    <div class="nav-icon">🎬</div>
+                    <span class="nav-label">Video Lesson</span>
+                    <span class="nav-duration">10 min</span>
+                </div>
+                <div class="nav-item" data-screen="lesson-1">
+                    <div class="nav-icon">1</div>
+                    <span class="nav-label">The Claude Fleet</span>
+                    <span class="nav-duration">5 min</span>
+                </div>
+                <div class="nav-item" data-screen="lesson-2">
+                    <div class="nav-icon">2</div>
+                    <span class="nav-label">System 1 vs System 2</span>
+                    <span class="nav-duration">5 min</span>
+                </div>
+                <div class="nav-item" data-screen="lesson-3">
+                    <div class="nav-icon">3</div>
+                    <span class="nav-label">The Decision Matrix</span>
+                    <span class="nav-duration">5 min</span>
+                </div>
+                <div class="nav-item" data-screen="lesson-4">
+                    <div class="nav-icon">4</div>
+                    <span class="nav-label">Reading the Thinking Block</span>
+                    <span class="nav-duration">5 min</span>
+                </div>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Practice & Assessment</div>
+                <div class="nav-item" data-screen="flashcards">
+                    <div class="nav-icon">🗂</div>
+                    <span class="nav-label">Flashcards</span>
+                    <span class="nav-duration">5 min</span>
+                </div>
+                <div class="nav-item" data-screen="lab">
+                    <div class="nav-icon">🧪</div>
+                    <span class="nav-label">Lab: The Fleet Test</span>
+                    <span class="nav-duration">25 min</span>
+                </div>
+                <div class="nav-item" data-screen="quiz">
+                    <div class="nav-icon">✓</div>
+                    <span class="nav-label">Knowledge Check</span>
+                    <span class="nav-duration">10 min</span>
+                </div>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Reference</div>
+                <div class="nav-item" data-screen="study-guide">
+                    <div class="nav-icon">📋</div>
+                    <span class="nav-label">Study Guide</span>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Content Area -->
+        <main class="content-area">
+            <!-- Welcome Screen -->
+            <section class="screen active" id="welcome">
+                <div class="welcome-hero">
+                    <span class="module-tag">Module 2 of 11</span>
+                    <h1>Model Selection & The "Thinking" Protocol</h1>
+                    <p>Learn to choose the right Claude model for each mission and unlock Extended Thinking for complex reasoning tasks.</p>
+                </div>
+
+                <div class="objectives-card">
+                    <h2>🎯 Learning Objectives</h2>
+                    <div class="objective-item">
+                        <span class="objective-level level-retrieval">Retrieval</span>
+                        <span>Identify the three Claude model tiers (Haiku, Sonnet, Opus) and their optimal use cases</span>
+                    </div>
+                    <div class="objective-item">
+                        <span class="objective-level level-comprehension">Comprehension</span>
+                        <span>Explain the difference between System 1 (fast) and System 2 (analytical) thinking modes</span>
+                    </div>
+                    <div class="objective-item">
+                        <span class="objective-level level-analysis">Analysis</span>
+                        <span>Evaluate task requirements to select the appropriate model and thinking mode</span>
+                    </div>
+                    <div class="objective-item">
+                        <span class="objective-level level-utilization">Utilization</span>
+                        <span>Apply Extended Thinking to solve complex logic problems that standard mode fails</span>
+                    </div>
+
+                    <div class="time-estimate">
+                        <div class="time-item">
+                            <span>⏱</span>
+                            <span><strong>Total Time:</strong> ~60 minutes</span>
+                        </div>
+                        <div class="time-item">
+                            <span>🧪</span>
+                            <span><strong>Lab:</strong> 25 minutes hands-on</span>
+                        </div>
+                        <div class="time-item">
+                            <span>✓</span>
+                            <span><strong>Quiz:</strong> 7 questions</span>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="start-btn" onclick="navigateTo('video')">
+                    Begin Module
+                    <span>→</span>
+                </button>
+            </section>
+
+            <!-- Video Screen -->
+            <section class="screen" id="video">
+                <div class="video-container">
+                    <video controls width="100%" style="max-width: 900px; border-radius: 8px;">
+                        <source src="Module 2 - model selection.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+
+                <div class="lesson-content">
+                    <h2>Video Summary</h2>
+                    <p>This video covers the key concepts for selecting the right Claude model:</p>
+                    <ul>
+                        <li><strong>The Claude Fleet</strong> — Haiku (Scout), Sonnet (Daily Driver), Opus (Strategist)</li>
+                        <li><strong>System 1 vs System 2</strong> — Fast pattern-matching vs deliberate reasoning</li>
+                        <li><strong>The Decision Matrix</strong> — Using task complexity and error tolerance to choose</li>
+                        <li><strong>Extended Thinking</strong> — When and how to use Claude's "scratchpad" for complex reasoning</li>
+                    </ul>
+
+                    <div class="callout callout-tip">
+                        <span class="callout-icon">💡</span>
+                        <div>
+                            <strong>Pro Tip:</strong> Pay attention to the math examples. You'll replicate these in the lab to experience the difference between standard mode and Extended Thinking firsthand.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="content-nav">
+                    <button class="btn btn-secondary" onclick="navigateTo('welcome')">← Back</button>
+                    <button class="btn btn-primary" onclick="navigateTo('lesson-1')">Continue to Lesson →</button>
+                </div>
+            </section>
+
+            <!-- Lesson 1: The Claude Fleet -->
+            <section class="screen" id="lesson-1">
+                <div class="lesson-content">
+                    <h1>The Claude Fleet</h1>
+
+                    <p>Claude isn't one model—it's a family of models optimized for different mission profiles. Understanding this taxonomy is fundamental to Squadron Leader operations.</p>
+
+                    <div class="model-cards">
+                        <div class="model-card haiku">
+                            <div class="model-icon">🔍</div>
+                            <div class="model-name">Haiku</div>
+                            <div class="model-role">The Scout</div>
+                            <ul class="model-features">
+                                <li>⚡ Fastest response time</li>
+                                <li>💰 Lowest cost (~1/60 of Opus)</li>
+                                <li>📋 Simple lookups & translations</li>
+                                <li>📊 Bulk processing & categorization</li>
+                            </ul>
+                        </div>
+
+                        <div class="model-card sonnet">
+                            <div class="model-icon">⚙️</div>
+                            <div class="model-name">Sonnet 4.5</div>
+                            <div class="model-role">The Daily Driver</div>
+                            <ul class="model-features">
+                                <li>⚖️ Balanced speed & intelligence</li>
+                                <li>💻 Code generation & debugging</li>
+                                <li>📝 Standard business writing</li>
+                                <li>📈 Dashboards & artifacts</li>
+                            </ul>
+                        </div>
+
+                        <div class="model-card opus">
+                            <div class="model-icon">🧠</div>
+                            <div class="model-name">Opus 4.5</div>
+                            <div class="model-role">The Strategist</div>
+                            <ul class="model-features">
+                                <li>🎯 Deepest reasoning capability</li>
+                                <li>🔮 Handles ambiguity & nuance</li>
+                                <li>♟️ Complex strategy & analysis</li>
+                                <li>🔄 Self-correcting "agentic" behavior</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="callout callout-insight">
+                        <span class="callout-icon">💡</span>
+                        <div>
+                            <strong>Key Insight:</strong> Don't default to the "best" model. Match resources to requirements. Using Opus for a simple translation is like sending a strategic bomber to take photos—expensive overkill.
+                        </div>
+                    </div>
+
+                    <h3>When to Use Each Model</h3>
+                    <table class="comparison-table">
+                        <thead>
+                            <tr>
+                                <th>Task</th>
+                                <th>Model</th>
+                                <th>Why</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Categorize 500 support tickets</td>
+                                <td style="color: var(--haiku-color); font-weight: 600;">Haiku</td>
+                                <td>High volume, simple pattern matching</td>
+                            </tr>
+                            <tr>
+                                <td>Build a metrics dashboard</td>
+                                <td style="color: var(--sonnet-color); font-weight: 600;">Sonnet</td>
+                                <td>Code generation, iteration speed</td>
+                            </tr>
+                            <tr>
+                                <td>Analyze conflicting customer signals</td>
+                                <td style="color: var(--opus-color); font-weight: 600;">Opus</td>
+                                <td>Strategic judgment, handling ambiguity</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="content-nav">
+                    <button class="btn btn-secondary" onclick="navigateTo('video')">← Back</button>
+                    <button class="btn btn-primary" onclick="navigateTo('lesson-2')">Continue →</button>
+                </div>
+            </section>
+
+            <!-- Lesson 2: System 1 vs System 2 -->
+            <section class="screen" id="lesson-2">
+                <div class="lesson-content">
+                    <h1>System 1 vs System 2 Thinking</h1>
+
+                    <p>Beyond model selection, Claude offers different <em>thinking modes</em> that dramatically affect output quality for certain tasks.</p>
+
+                    <h2>The Dual-Process Framework</h2>
+                    <p>Psychologist Daniel Kahneman described two modes of human cognition. AI models exhibit similar behavior:</p>
+
+                    <table class="comparison-table">
+                        <thead>
+                            <tr>
+                                <th>System 1 (Standard Mode)</th>
+                                <th>System 2 (Extended Thinking)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Fast and automatic</td>
+                                <td>Slow and deliberate</td>
+                            </tr>
+                            <tr>
+                                <td>Pattern-matching</td>
+                                <td>Step-by-step reasoning</td>
+                            </tr>
+                            <tr>
+                                <td>Prone to confident errors</td>
+                                <td>Self-correcting</td>
+                            </tr>
+                            <tr>
+                                <td>"What's 2+2?"</td>
+                                <td>"What's 347 × 829?"</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h3>Standard Mode (System 1)</h3>
+                    <p>When you send a prompt in standard mode, Claude generates tokens in a continuous stream, predicting the most likely next word. This is fast and usually sufficient for well-defined tasks.</p>
+
+                    <div class="callout callout-warning">
+                        <span class="callout-icon">⚠️</span>
+                        <div>
+                            <strong>The Math Problem:</strong> Standard mode pattern-matches numbers rather than calculating. It might output a plausible-looking answer that's actually wrong. This is especially dangerous for financial analysis.
+                        </div>
+                    </div>
+
+                    <h3>Extended Thinking (System 2)</h3>
+                    <p>Extended Thinking gives Claude a "scratchpad"—space to reason through problems before committing to an answer. The model generates internal reasoning tokens that let it plan, check its work, and self-correct.</p>
+
+                    <div class="thinking-demo" onclick="toggleThinking(this)">
+                        <div class="thinking-header">
+                            <div class="thinking-toggle">▶</div>
+                            <span class="thinking-label">Thinking...</span>
+                        </div>
+                        <div class="thinking-content">
+Let me add these revenue figures step by step.
+
+Q1: $847,293
+Q2: $923,847
+Q3: $1,102,384
+Q4: $978,562
+
+First, I'll add Q1 and Q2:
+$847,293 + $923,847 = $1,771,140
+
+Now add Q3:
+$1,771,140 + $1,102,384 = $2,873,524
+
+Finally add Q4:
+$2,873,524 + $978,562 = $3,852,086
+
+Let me verify: 847,293 + 923,847 + 1,102,384 + 978,562 = 3,852,086 ✓
+                        </div>
+                        <div class="thinking-response">
+                            <strong>Total annual revenue: $3,852,086</strong>
+                        </div>
+                    </div>
+                    <p style="font-size: 0.85rem; color: #6B7280; text-align: center;">Click to expand the thinking block</p>
+
+                    <div class="callout callout-tip">
+                        <span class="callout-icon">💡</span>
+                        <div>
+                            <strong>Rule of Thumb:</strong> Always use Extended Thinking when math or complex logic is involved. The additional time cost is tiny compared to the cost of wrong answers.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="content-nav">
+                    <button class="btn btn-secondary" onclick="navigateTo('lesson-1')">← Back</button>
+                    <button class="btn btn-primary" onclick="navigateTo('lesson-3')">Continue →</button>
+                </div>
+            </section>
+
+            <!-- Lesson 3: The Decision Matrix -->
+            <section class="screen" id="lesson-3">
+                <div class="lesson-content">
+                    <h1>The Decision Matrix</h1>
+
+                    <p>Squadron Leaders need a systematic way to select the right model and mode. Use this decision matrix:</p>
+
+                    <div class="matrix-interactive">
+                        <div class="matrix-title">🎯 Interactive Decision Matrix</div>
+
+                        <div class="matrix-controls">
+                            <div class="matrix-control">
+                                <span class="control-label">Task Complexity</span>
+                                <div class="control-options">
+                                    <div class="control-option selected" data-axis="complexity" data-value="simple" onclick="selectMatrixOption(this)">Simple</div>
+                                    <div class="control-option" data-axis="complexity" data-value="standard" onclick="selectMatrixOption(this)">Standard</div>
+                                    <div class="control-option" data-axis="complexity" data-value="complex" onclick="selectMatrixOption(this)">Complex</div>
+                                </div>
+                            </div>
+
+                            <div class="matrix-control">
+                                <span class="control-label">Error Tolerance</span>
+                                <div class="control-options">
+                                    <div class="control-option selected" data-axis="tolerance" data-value="high" onclick="selectMatrixOption(this)">High</div>
+                                    <div class="control-option" data-axis="tolerance" data-value="low" onclick="selectMatrixOption(this)">Low</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="matrix-result">
+                            <div class="result-label">Recommended Model</div>
+                            <div class="result-model haiku" id="matrixResult">Haiku</div>
+                            <div class="result-reasoning" id="matrixReasoning">Simple task with high tolerance → use the fastest, cheapest option</div>
+                        </div>
+                    </div>
+
+                    <h2>Real-World Examples</h2>
+                    <table class="comparison-table">
+                        <thead>
+                            <tr>
+                                <th>Task</th>
+                                <th>Complexity</th>
+                                <th>Tolerance</th>
+                                <th>Choice</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>"Translate this email to Spanish"</td>
+                                <td>Simple</td>
+                                <td>High</td>
+                                <td style="color: var(--haiku-color); font-weight: 600;">Haiku</td>
+                            </tr>
+                            <tr>
+                                <td>"Build a Q3 metrics dashboard"</td>
+                                <td>Standard</td>
+                                <td>High</td>
+                                <td style="color: var(--sonnet-color); font-weight: 600;">Sonnet</td>
+                            </tr>
+                            <tr>
+                                <td>"Verify this calculation is correct"</td>
+                                <td>Simple</td>
+                                <td>Low</td>
+                                <td style="color: var(--sonnet-color); font-weight: 600;">Sonnet + Extended</td>
+                            </tr>
+                            <tr>
+                                <td>"Analyze why churn increased"</td>
+                                <td>Complex</td>
+                                <td>Low</td>
+                                <td style="color: var(--opus-color); font-weight: 600;">Opus + Extended</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="callout callout-insight">
+                        <span class="callout-icon">💡</span>
+                        <div>
+                            <strong>"Buying Intelligence with Latency"</strong> — You can trade time for better reasoning. Make this trade consciously based on mission requirements, not by defaulting to the fastest or most expensive option.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="content-nav">
+                    <button class="btn btn-secondary" onclick="navigateTo('lesson-2')">← Back</button>
+                    <button class="btn btn-primary" onclick="navigateTo('lesson-4')">Continue →</button>
+                </div>
+            </section>
+
+            <!-- Lesson 4: Reading the Thinking Block -->
+            <section class="screen" id="lesson-4">
+                <div class="lesson-content">
+                    <h1>Reading the Thinking Block</h1>
+
+                    <p>When you enable Extended Thinking, Claude's reasoning becomes visible. Learning to read this block is a Squadron Leader skill—it lets you verify the AI's logic before trusting the output.</p>
+
+                    <h2>What to Look For</h2>
+
+                    <div class="do-dont-grid">
+                        <div class="do-column">
+                            <h3>✓ Good Signs</h3>
+                            <div class="do-dont-item">
+                                <span style="color: var(--success);">✓</span>
+                                <span>Breaking problems into steps</span>
+                            </div>
+                            <div class="do-dont-item">
+                                <span style="color: var(--success);">✓</span>
+                                <span>Considering multiple approaches</span>
+                            </div>
+                            <div class="do-dont-item">
+                                <span style="color: var(--success);">✓</span>
+                                <span>Checking intermediate results</span>
+                            </div>
+                            <div class="do-dont-item">
+                                <span style="color: var(--success);">✓</span>
+                                <span>Self-correction ("Wait, that's not right...")</span>
+                            </div>
+                            <div class="do-dont-item">
+                                <span style="color: var(--success);">✓</span>
+                                <span>Noting assumptions and constraints</span>
+                            </div>
+                        </div>
+                        <div class="dont-column">
+                            <h3>✗ Warning Signs</h3>
+                            <div class="do-dont-item">
+                                <span style="color: var(--error);">✗</span>
+                                <span>Rushing to conclusion</span>
+                            </div>
+                            <div class="do-dont-item">
+                                <span style="color: var(--error);">✗</span>
+                                <span>Ignoring parts of your prompt</span>
+                            </div>
+                            <div class="do-dont-item">
+                                <span style="color: var(--error);">✗</span>
+                                <span>Confident assertions without verification</span>
+                            </div>
+                            <div class="do-dont-item">
+                                <span style="color: var(--error);">✗</span>
+                                <span>Circular reasoning</span>
+                            </div>
+                            <div class="do-dont-item">
+                                <span style="color: var(--error);">✗</span>
+                                <span>Missing obvious considerations</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h2>Example: Catching Errors</h2>
+
+                    <p>You ask Claude to sum revenue numbers. Compare these two thinking blocks:</p>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1.5rem 0;">
+                        <div style="background: rgba(238, 44, 130, 0.08); border-radius: 8px; padding: 1rem; border-left: 4px solid var(--error);">
+                            <strong style="color: var(--error);">❌ Bad Thinking</strong>
+                            <p style="font-family: monospace; font-size: 0.9rem; margin-top: 0.5rem;">"The total revenue is $3.8M."</p>
+                            <p style="font-size: 0.85rem; color: #6B7280; margin-top: 0.5rem;">No work shown. Pattern-matched the answer. Can't verify correctness.</p>
+                        </div>
+                        <div style="background: rgba(47, 211, 180, 0.08); border-radius: 8px; padding: 1rem; border-left: 4px solid var(--success);">
+                            <strong style="color: var(--success);">✓ Good Thinking</strong>
+                            <p style="font-family: monospace; font-size: 0.9rem; margin-top: 0.5rem;">"2.3 + 1.1 = 3.4. Then 3.4 + 0.4 = 3.8. Total: $3.8M."</p>
+                            <p style="font-size: 0.85rem; color: #6B7280; margin-top: 0.5rem;">Shows work. Each step verifiable. Can trust the result.</p>
+                        </div>
+                    </div>
+
+                    <div class="callout callout-warning">
+                        <span class="callout-icon">⚠️</span>
+                        <div>
+                            <strong>The Hidden Error:</strong> Sometimes the thinking block reveals Claude misunderstood your question. The final answer might sound plausible, but the thinking block shows it was solving the wrong problem. This is why reading it matters.
+                        </div>
+                    </div>
+
+                    <div class="callout callout-tip">
+                        <span class="callout-icon">💡</span>
+                        <div>
+                            <strong>Pro Tip:</strong> For high-stakes tasks, always expand and scan the thinking block before accepting the output. Five seconds of scanning can catch errors that would otherwise propagate.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="content-nav">
+                    <button class="btn btn-secondary" onclick="navigateTo('lesson-3')">← Back</button>
+                    <button class="btn btn-primary" onclick="navigateTo('flashcards')">Practice with Flashcards →</button>
+                </div>
+            </section>
+
+            <!-- Flashcards Screen -->
+            <section class="screen" id="flashcards">
+                <h1 style="margin-bottom: 0.5rem;">Flashcards</h1>
+                <p style="color: #6B7280; margin-bottom: 2rem;">Review key concepts from this module. Click the card to flip it.</p>
+
+                <div class="flashcard-container">
+                    <div class="flashcard" id="flashcard" onclick="flipCard()">
+                        <div class="flashcard-face flashcard-front">
+                            <h3 id="cardFront">What are the three Claude model tiers and their roles?</h3>
+                        </div>
+                        <div class="flashcard-face flashcard-back">
+                            <p id="cardBack">• Haiku (The Scout): Speed & cost efficiency<br>• Sonnet (The Daily Driver): Balanced capability<br>• Opus (The Strategist): Deep reasoning & nuance</p>
+                        </div>
+                    </div>
+                    <p class="flip-hint">Click card to flip</p>
+                </div>
+
+                <div class="flashcard-nav">
+                    <button class="flashcard-btn" onclick="prevCard()">←</button>
+                    <span class="flashcard-counter"><span id="cardNum">1</span> / <span id="cardTotal">8</span></span>
+                    <button class="flashcard-btn" onclick="nextCard()">→</button>
+                </div>
+
+                <div class="content-nav">
+                    <button class="btn btn-secondary" onclick="navigateTo('lesson-4')">← Back to Lesson</button>
+                    <button class="btn btn-primary" onclick="navigateTo('lab')">Continue to Lab →</button>
+                </div>
+            </section>
+
+            <!-- Lab Exercise Screen -->
+            <section class="screen" id="lab">
+                <div class="lab-header">
+                    <h1>🧪 Lab Exercise: The Workforce Optimization Challenge</h1>
+                    <p>Experience the difference between a fast model and a strategic model with Extended Thinking.</p>
+                    <div class="lab-meta">
+                        <span>⏱ 15-20 minutes</span>
+                        <span>🛠 Tools: Claude (claude.ai)</span>
+                    </div>
+                </div>
+
+                <div class="lab-steps">
+                    <div class="lab-step active" id="labStep1">
+                        <div class="step-header">
+                            <div class="step-number">1</div>
+                            <div class="step-title">Run with Haiku (No Extended Thinking)</div>
+                        </div>
+                        <div class="step-content">
+                            <p>Copy this workforce optimization problem and run it with <strong>Haiku</strong> (Extended Thinking OFF):</p>
+
+                            <div class="copy-block">
+                                <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+                                <pre>A workforce manager oversees a team of 12 employees who each work 8-hour shifts. She has budget to add 40 additional labor hours per week and wants to maximize productivity output. Historical data shows:
+
+Morning shifts (6am-2pm) produce 15 units/hour per employee
+Afternoon shifts (2pm-10pm) produce 12 units/hour per employee
+Adding hours to already-scheduled employees reduces their productivity by 8% per overtime hour
+New part-time hires produce at 70% efficiency for their first 4 weeks
+
+Should she extend existing employee hours, hire part-time workers, or use a hybrid approach? What allocation maximizes output over the next 8 weeks?</pre>
+                            </div>
+
+                            <p><strong>Record your observations:</strong></p>
+                            <ul>
+                                <li>Did Haiku give a recommendation?</li>
+                                <li>Did it show calculations?</li>
+                                <li>Did it quantify output for each option?</li>
+                                <li>How confident do you feel in the answer?</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="lab-step" id="labStep2">
+                        <div class="step-header">
+                            <div class="step-number">2</div>
+                            <div class="step-title">Run with Opus + Extended Thinking</div>
+                        </div>
+                        <div class="step-content">
+                            <p>Now run the <strong>same prompt</strong> with <strong>Opus</strong> and <strong>Extended Thinking ON</strong>.</p>
+
+                            <div class="callout callout-insight">
+                                <span class="callout-icon">⚠️</span>
+                                <div>
+                                    <strong>Important:</strong> Before reading the final answer, <strong>expand the Thinking block</strong>. This is the key learning moment.
+                                </div>
+                            </div>
+
+                            <p><strong>Examine the Thinking block:</strong></p>
+                            <ul>
+                                <li>Did it break down the problem into components?</li>
+                                <li>Did it define variables and assumptions?</li>
+                                <li>Did it calculate output for each option separately?</li>
+                                <li>Did it consider part-timers improving after week 4?</li>
+                                <li>Did it self-correct or revise calculations?</li>
+                            </ul>
+
+                            <p><strong>Could you follow the math?</strong> This is your verification layer.</p>
+                        </div>
+                    </div>
+
+                    <div class="lab-step" id="labStep3">
+                        <div class="step-header">
+                            <div class="step-number">3</div>
+                            <div class="step-title">Compare the Results</div>
+                        </div>
+                        <div class="step-content">
+                            <p>Compare your two responses side-by-side:</p>
+
+                            <table class="comparison-table" style="margin: 1rem 0;">
+                                <thead>
+                                    <tr>
+                                        <th>Question</th>
+                                        <th>Haiku</th>
+                                        <th>Opus</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Did it calculate units per option?</td>
+                                        <td>☐ Yes ☐ No</td>
+                                        <td>☐ Yes ☐ No</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Did it account for 8% overtime penalty?</td>
+                                        <td>☐ Yes ☐ No</td>
+                                        <td>☐ Yes ☐ No</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Did it account for 70% part-timer efficiency?</td>
+                                        <td>☐ Yes ☐ No</td>
+                                        <td>☐ Yes ☐ No</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Did it consider week 4 improvement?</td>
+                                        <td>☐ Yes ☐ No</td>
+                                        <td>☐ Yes ☐ No</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Did it show its work?</td>
+                                        <td>☐ Yes ☐ No</td>
+                                        <td>☐ Yes ☐ No</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <p><strong>Did both models reach the same conclusion?</strong></p>
+                            <p><strong>Which answer would you present to leadership?</strong></p>
+                        </div>
+                    </div>
+
+                    <div class="lab-step" id="labStep4">
+                        <div class="step-header">
+                            <div class="step-number">4</div>
+                            <div class="step-title">Reflection</div>
+                        </div>
+                        <div class="step-content">
+                            <p><strong>Answer these questions:</strong></p>
+
+                            <ol>
+                                <li><strong>Could you verify Haiku's answer?</strong> If not, what would you need to trust it?</li>
+                                <li><strong>What did the Thinking block reveal</strong> that the final answer didn't?</li>
+                                <li><strong>For decisions affecting real employees and budget,</strong> which response would you use?</li>
+                                <li><strong>Was the extra time for Opus worth it</strong> for this type of problem?</li>
+                            </ol>
+
+                            <div class="callout callout-insight" style="margin-top: 1.5rem;">
+                                <span class="callout-icon">🎯</span>
+                                <div>
+                                    <strong>Key Takeaway:</strong> The Thinking block is your audit trail. When stakes are high, five seconds of reading it can save hours of fixing mistakes. Match the model to the mission.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="lab-navigation">
+                        <button class="btn btn-secondary" id="labPrevBtn" onclick="prevLabStep()" style="visibility: hidden;">← Previous Step</button>
+                        <button class="btn btn-primary" id="labNextBtn" onclick="nextLabStep()">Next Step →</button>
+                    </div>
+                </div>
+
+                <div class="content-nav">
+                    <button class="btn btn-secondary" onclick="navigateTo('flashcards')">← Back</button>
+                    <button class="btn btn-primary" onclick="navigateTo('quiz')">Take the Quiz →</button>
+                </div>
+            </section>
+
+            <!-- Quiz Screen -->
+            <section class="screen" id="quiz">
+                <div class="quiz-container">
+                    <div class="quiz-header">
+                        <h2>Knowledge Check</h2>
+                        <div class="quiz-progress">
+                            <div class="quiz-dot current" data-q="0"></div>
+                            <div class="quiz-dot" data-q="1"></div>
+                            <div class="quiz-dot" data-q="2"></div>
+                            <div class="quiz-dot" data-q="3"></div>
+                            <div class="quiz-dot" data-q="4"></div>
+                            <div class="quiz-dot" data-q="5"></div>
+                            <div class="quiz-dot" data-q="6"></div>
+                        </div>
+                    </div>
+
+                    <!-- Questions will be dynamically rendered similar to Module 1 -->
+                    <div class="quiz-question active" data-question="0">
+                        <div class="question-number">Question 1 of 7</div>
+                        <div class="question-text">Which Claude model tier should you use for categorizing 500 customer support tickets into "Technical," "Billing," or "Feature Request"?</div>
+                        <div class="answer-options">
+                            <div class="answer-option" data-answer="a" onclick="selectAnswer(this, 0)">
+                                <span class="option-letter">A</span>
+                                <span>Opus with Extended Thinking for maximum accuracy</span>
+                            </div>
+                            <div class="answer-option" data-answer="b" onclick="selectAnswer(this, 0)">
+                                <span class="option-letter">B</span>
+                                <span>Sonnet for balanced performance</span>
+                            </div>
+                            <div class="answer-option" data-answer="c" onclick="selectAnswer(this, 0)">
+                                <span class="option-letter">C</span>
+                                <span>Haiku for speed and cost efficiency</span>
+                            </div>
+                            <div class="answer-option" data-answer="d" onclick="selectAnswer(this, 0)">
+                                <span class="option-letter">D</span>
+                                <span>It doesn't matter—all models perform the same</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="quiz-question" data-question="1">
+                        <div class="question-number">Question 2 of 7</div>
+                        <div class="question-text">True or False: Extended Thinking is primarily useful because it makes Claude respond faster.</div>
+                        <div class="answer-options">
+                            <div class="answer-option" data-answer="a" onclick="selectAnswer(this, 1)">
+                                <span class="option-letter">A</span>
+                                <span>True</span>
+                            </div>
+                            <div class="answer-option" data-answer="b" onclick="selectAnswer(this, 1)">
+                                <span class="option-letter">B</span>
+                                <span>False</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="quiz-question" data-question="2">
+                        <div class="question-number">Question 3 of 7</div>
+                        <div class="question-text">You need to analyze a complex customer situation with conflicting signals for an executive presentation. Which model/mode is most appropriate?</div>
+                        <div class="answer-options">
+                            <div class="answer-option" data-answer="a" onclick="selectAnswer(this, 2)">
+                                <span class="option-letter">A</span>
+                                <span>Haiku (standard mode)</span>
+                            </div>
+                            <div class="answer-option" data-answer="b" onclick="selectAnswer(this, 2)">
+                                <span class="option-letter">B</span>
+                                <span>Sonnet (standard mode)</span>
+                            </div>
+                            <div class="answer-option" data-answer="c" onclick="selectAnswer(this, 2)">
+                                <span class="option-letter">C</span>
+                                <span>Sonnet with Extended Thinking</span>
+                            </div>
+                            <div class="answer-option" data-answer="d" onclick="selectAnswer(this, 2)">
+                                <span class="option-letter">D</span>
+                                <span>Opus with Extended Thinking</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="quiz-question" data-question="3">
+                        <div class="question-number">Question 4 of 7</div>
+                        <div class="question-text">What are the two axes of the model selection decision matrix?</div>
+                        <div class="answer-options">
+                            <div class="answer-option" data-answer="a" onclick="selectAnswer(this, 3)">
+                                <span class="option-letter">A</span>
+                                <span>Speed and Cost</span>
+                            </div>
+                            <div class="answer-option" data-answer="b" onclick="selectAnswer(this, 3)">
+                                <span class="option-letter">B</span>
+                                <span>Task Complexity and Error Tolerance</span>
+                            </div>
+                            <div class="answer-option" data-answer="c" onclick="selectAnswer(this, 3)">
+                                <span class="option-letter">C</span>
+                                <span>Model Size and Response Time</span>
+                            </div>
+                            <div class="answer-option" data-answer="d" onclick="selectAnswer(this, 3)">
+                                <span class="option-letter">D</span>
+                                <span>Accuracy and Creativity</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="quiz-question" data-question="4">
+                        <div class="question-number">Question 5 of 7</div>
+                        <div class="question-text">What should you look for in the Thinking Block to verify Claude's reasoning is sound?</div>
+                        <div class="answer-options">
+                            <div class="answer-option" data-answer="a" onclick="selectAnswer(this, 4)">
+                                <span class="option-letter">A</span>
+                                <span>Short responses showing efficiency</span>
+                            </div>
+                            <div class="answer-option" data-answer="b" onclick="selectAnswer(this, 4)">
+                                <span class="option-letter">B</span>
+                                <span>Problem decomposition, checking work, and self-correction</span>
+                            </div>
+                            <div class="answer-option" data-answer="c" onclick="selectAnswer(this, 4)">
+                                <span class="option-letter">C</span>
+                                <span>Complex vocabulary and technical jargon</span>
+                            </div>
+                            <div class="answer-option" data-answer="d" onclick="selectAnswer(this, 4)">
+                                <span class="option-letter">D</span>
+                                <span>Agreement with your initial hypothesis</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="quiz-question" data-question="5">
+                        <div class="question-number">Question 6 of 7</div>
+                        <div class="question-text">A colleague says "I always use Opus because I want the best results." What's problematic about this approach?</div>
+                        <div class="answer-options">
+                            <div class="answer-option" data-answer="a" onclick="selectAnswer(this, 5)">
+                                <span class="option-letter">A</span>
+                                <span>Opus actually produces worse results on all tasks</span>
+                            </div>
+                            <div class="answer-option" data-answer="b" onclick="selectAnswer(this, 5)">
+                                <span class="option-letter">B</span>
+                                <span>Opus costs ~60x more and is slower, with no benefit on simple tasks</span>
+                            </div>
+                            <div class="answer-option" data-answer="c" onclick="selectAnswer(this, 5)">
+                                <span class="option-letter">C</span>
+                                <span>Opus requires special permissions to access</span>
+                            </div>
+                            <div class="answer-option" data-answer="d" onclick="selectAnswer(this, 5)">
+                                <span class="option-letter">D</span>
+                                <span>Nothing—this is the recommended approach</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="quiz-question" data-question="6">
+                        <div class="question-number">Question 7 of 7</div>
+                        <div class="question-text">You need to verify a revenue calculation is correct. Which approach is best?</div>
+                        <div class="answer-options">
+                            <div class="answer-option" data-answer="a" onclick="selectAnswer(this, 6)">
+                                <span class="option-letter">A</span>
+                                <span>Ask Haiku to confirm—it's a simple lookup</span>
+                            </div>
+                            <div class="answer-option" data-answer="b" onclick="selectAnswer(this, 6)">
+                                <span class="option-letter">B</span>
+                                <span>Ask Sonnet in standard mode—it's basic math</span>
+                            </div>
+                            <div class="answer-option" data-answer="c" onclick="selectAnswer(this, 6)">
+                                <span class="option-letter">C</span>
+                                <span>Use any model with Extended Thinking—math needs verification</span>
+                            </div>
+                            <div class="answer-option" data-answer="d" onclick="selectAnswer(this, 6)">
+                                <span class="option-letter">D</span>
+                                <span>Opus only—other models can't do math</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="quiz-question" data-question="results" style="display: none;">
+                        <div class="quiz-results">
+                            <div class="results-score" id="quizScore">0/7</div>
+                            <div class="results-label">Questions Correct</div>
+                            <div class="results-breakdown">
+                                <div class="breakdown-item">
+                                    <div class="breakdown-value correct" id="correctCount">0</div>
+                                    <div class="breakdown-label">Correct</div>
+                                </div>
+                                <div class="breakdown-item">
+                                    <div class="breakdown-value incorrect" id="incorrectCount">0</div>
+                                    <div class="breakdown-label">Incorrect</div>
+                                </div>
+                            </div>
+                            <p id="resultMessage" style="margin-bottom: 2rem; color: #6B7280;"></p>
+                            <button class="btn btn-primary" onclick="navigateTo('study-guide')">Review Study Guide →</button>
+                        </div>
+                    </div>
+
+                    <div class="feedback-panel" id="feedbackPanel">
+                        <div class="feedback-header" id="feedbackHeader"></div>
+                        <p id="feedbackText"></p>
+                    </div>
+
+                    <div class="quiz-footer">
+                        <button class="btn btn-primary" id="quizNextBtn" onclick="nextQuestion()" disabled>Next Question →</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Study Guide Screen -->
+            <section class="screen" id="study-guide">
+                <h1 style="margin-bottom: 2rem;">📋 Study Guide</h1>
+
+                <div class="study-guide-card">
+                    <h2>🎯 Core Concept</h2>
+                    <p style="font-size: 1.1rem; line-height: 1.7;"><strong>Claude is a fleet, not a single aircraft.</strong> Match the model tier and thinking mode to your mission requirements—don't default to the fastest or most expensive option.</p>
+                </div>
+
+                <div class="study-guide-card">
+                    <h2>✈️ The Claude Fleet</h2>
+                    <table class="comparison-table">
+                        <thead>
+                            <tr>
+                                <th>Model</th>
+                                <th>Role</th>
+                                <th>Best For</th>
+                                <th>Cost</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td style="color: var(--haiku-color); font-weight: 600;">Haiku</td>
+                                <td>The Scout</td>
+                                <td>Simple lookups, bulk processing</td>
+                                <td>Lowest</td>
+                            </tr>
+                            <tr>
+                                <td style="color: var(--sonnet-color); font-weight: 600;">Sonnet</td>
+                                <td>Daily Driver</td>
+                                <td>Coding, standard reasoning</td>
+                                <td>Moderate</td>
+                            </tr>
+                            <tr>
+                                <td style="color: var(--opus-color); font-weight: 600;">Opus</td>
+                                <td>Strategist</td>
+                                <td>Complex logic, strategy</td>
+                                <td>Highest</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="study-guide-card">
+                    <h2>🧠 System 1 vs System 2</h2>
+                    <div class="term-grid">
+                        <div class="term-item">
+                            <span class="term-name">Standard Mode</span>
+                            <span class="term-def">Fast pattern-matching. Prone to confident errors on complex tasks.</span>
+                        </div>
+                        <div class="term-item">
+                            <span class="term-name">Extended Thinking</span>
+                            <span class="term-def">Deliberate reasoning with scratchpad. Self-correcting. Use for math/logic.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="study-guide-card">
+                    <h2>📊 Decision Matrix</h2>
+                    <table class="comparison-table">
+                        <thead>
+                            <tr>
+                                <th>Complexity</th>
+                                <th>High Tolerance</th>
+                                <th>Low Tolerance</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Simple</td>
+                                <td style="color: var(--haiku-color);">Haiku</td>
+                                <td style="color: var(--sonnet-color);">Sonnet</td>
+                            </tr>
+                            <tr>
+                                <td>Standard</td>
+                                <td style="color: var(--sonnet-color);">Sonnet</td>
+                                <td style="color: var(--sonnet-color);">Sonnet + Extended</td>
+                            </tr>
+                            <tr>
+                                <td>Complex</td>
+                                <td style="color: var(--opus-color);">Opus</td>
+                                <td style="color: var(--opus-color);">Opus + Extended</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="study-guide-card">
+                    <h2>✓ Thinking Block Checklist</h2>
+                    <div class="do-dont-grid">
+                        <div class="do-column">
+                            <h3>✓ Good Signs</h3>
+                            <div class="do-dont-item"><span style="color: var(--success);">✓</span> Breaking problems into steps</div>
+                            <div class="do-dont-item"><span style="color: var(--success);">✓</span> Checking intermediate results</div>
+                            <div class="do-dont-item"><span style="color: var(--success);">✓</span> Self-correction</div>
+                        </div>
+                        <div class="dont-column">
+                            <h3>✗ Warning Signs</h3>
+                            <div class="do-dont-item"><span style="color: var(--error);">✗</span> Rushing to conclusion</div>
+                            <div class="do-dont-item"><span style="color: var(--error);">✗</span> No verification shown</div>
+                            <div class="do-dont-item"><span style="color: var(--error);">✗</span> Ignoring prompt parts</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="study-guide-card" style="background: linear-gradient(135deg, #7C3AED 0%, #5B21B6 100%); color: white;">
+                    <h2 style="color: white;">➡️ Next Module Preview</h2>
+                    <p><strong>Module 3: The Reasoning Engine (Advanced Prompt Architecture)</strong></p>
+                    <p style="opacity: 0.9;">Learn to "program in English" using XML tags. Master structured prompting to control Claude's attention and prevent context bleeding.</p>
+                </div>
+
+                <div class="content-nav">
+                    <button class="btn btn-secondary" onclick="navigateTo('quiz')">← Back to Quiz</button>
+                    <button class="btn btn-success">Module Complete ✓</button>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // Navigation State
+        const screens = ['welcome', 'video', 'lesson-1', 'lesson-2', 'lesson-3', 'lesson-4', 'flashcards', 'lab', 'quiz', 'study-guide'];
+        let currentScreen = 'welcome';
+        let completedScreens = new Set();
+
+        // Flashcard State
+        const flashcards = [
+            {
+                front: "What are the three Claude model tiers and their roles?",
+                back: "• Haiku (The Scout): Speed & cost efficiency\n• Sonnet (The Daily Driver): Balanced capability\n• Opus (The Strategist): Deep reasoning & nuance"
+            },
+            {
+                front: "What is the difference between System 1 and System 2 thinking?",
+                back: "System 1 (Standard): Fast, pattern-matching, prone to errors\n\nSystem 2 (Extended Thinking): Slow, deliberate, self-correcting"
+            },
+            {
+                front: "When should you use Extended Thinking?",
+                back: "• Mathematical reasoning\n• Low error tolerance tasks\n• Multi-step analysis\n• When you need to verify reasoning\n• Complex logic problems"
+            },
+            {
+                front: "What are the two axes of the decision matrix?",
+                back: "1. Task Complexity: Simple → Standard → Complex\n\n2. Error Tolerance: High → Low\n\nCross-reference to select model and mode."
+            },
+            {
+                front: "What should you look for in the Thinking Block?",
+                back: "Good: Breaking into steps, checking work, self-correction\n\nBad: Rushing to conclusion, no verification, ignoring parts of prompt"
+            },
+            {
+                front: "Why is 'Opus for everything' a mistake?",
+                back: "• 60x more expensive than Haiku\n• Slower responses break iteration flow\n• Simple tasks don't benefit from deep reasoning\n• Match resources to requirements instead"
+            },
+            {
+                front: "What does 'buying intelligence with latency' mean?",
+                back: "You can trade time for better reasoning. Extended Thinking is slower but more accurate. Make this trade consciously based on mission requirements."
+            },
+            {
+                front: "Match ActivTrak tasks to models:",
+                back: "• Support ticket categorization → Haiku\n• Customer email drafts → Sonnet\n• Dashboard building → Sonnet\n• Competitive analysis → Opus + Extended\n• Calculation verification → Any + Extended"
+            }
+        ];
+        let currentCard = 0;
+
+        // Lab State
+        let currentLabStep = 1;
+        const totalLabSteps = 4;
+
+        // Quiz State
+        const quizAnswers = ['c', 'b', 'd', 'b', 'b', 'b', 'c'];
+        const quizFeedback = [
+            {
+                correct: "Correct! This is a simple classification task with high volume. Haiku excels here—fast, cheap, and sufficient for pattern matching.",
+                incorrect: "For simple classification at high volume, Haiku is the right choice. It's fast, costs 1/60th of Opus, and handles pattern matching well."
+            },
+            {
+                correct: "Correct! Extended Thinking makes responses slower, not faster. Its value is accuracy through deliberate reasoning, not speed.",
+                incorrect: "Actually, Extended Thinking is slower—it trades speed for accuracy by giving Claude a 'scratchpad' for deliberate reasoning."
+            },
+            {
+                correct: "Correct! Complex task with conflicting signals + executive presentation (low tolerance) = Opus with Extended Thinking for maximum reasoning depth and self-verification.",
+                incorrect: "For complex strategic analysis going to executives, use Opus with Extended Thinking. The combination ensures deep reasoning with verification."
+            },
+            {
+                correct: "Correct! Task Complexity and Error Tolerance are the two axes. Cross-reference them to select the right model and mode.",
+                incorrect: "The decision matrix uses Task Complexity (Simple/Standard/Complex) and Error Tolerance (High/Low) as its two axes."
+            },
+            {
+                correct: "Correct! Good thinking blocks show problem decomposition, intermediate checks, and self-correction—indicators of genuine reasoning.",
+                incorrect: "Look for: breaking problems into steps, checking work, self-correction. These indicate genuine reasoning, not pattern-matching."
+            },
+            {
+                correct: "Correct! Opus costs ~60x more and is slower. Simple tasks don't benefit from deep reasoning—you're paying more for nothing.",
+                incorrect: "Using Opus for everything wastes money (60x cost) and time (slower) on simple tasks that don't benefit from deep reasoning."
+            },
+            {
+                correct: "Correct! Math needs Extended Thinking regardless of how 'simple' it looks. Standard mode pattern-matches numbers rather than calculating.",
+                incorrect: "For any math verification, use Extended Thinking. Standard mode pattern-matches numbers instead of actually calculating."
+            }
+        ];
+        let currentQuestion = 0;
+        let userAnswers = [];
+        let quizComplete = false;
+
+        // Matrix State
+        let matrixComplexity = 'simple';
+        let matrixTolerance = 'high';
+
+        // Navigation Functions
+        function navigateTo(screenId) {
+            completedScreens.add(currentScreen);
+
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+
+            document.getElementById(screenId).classList.add('active');
+            document.querySelector(`[data-screen="${screenId}"]`)?.classList.add('active');
+
+            completedScreens.forEach(id => {
+                const navItem = document.querySelector(`[data-screen="${id}"]`);
+                if (navItem && id !== screenId) {
+                    navItem.classList.add('completed');
+                }
+            });
+
+            currentScreen = screenId;
+            updateProgress();
+            window.scrollTo(0, 0);
+        }
+
+        function updateProgress() {
+            const progress = Math.round((completedScreens.size / screens.length) * 100);
+            document.getElementById('progressFill').style.width = `${progress}%`;
+            document.getElementById('progressText').textContent = `${progress}% Complete`;
+        }
+
+        // Flashcard Functions
+        function flipCard() {
+            document.getElementById('flashcard').classList.toggle('flipped');
+        }
+
+        function nextCard() {
+            currentCard = (currentCard + 1) % flashcards.length;
+            updateCard();
+        }
+
+        function prevCard() {
+            currentCard = (currentCard - 1 + flashcards.length) % flashcards.length;
+            updateCard();
+        }
+
+        function updateCard() {
+            document.getElementById('flashcard').classList.remove('flipped');
+            setTimeout(() => {
+                document.getElementById('cardFront').textContent = flashcards[currentCard].front;
+                document.getElementById('cardBack').innerHTML = flashcards[currentCard].back.replace(/\n/g, '<br>');
+                document.getElementById('cardNum').textContent = currentCard + 1;
+            }, 150);
+        }
+
+        // Lab Functions
+        function nextLabStep() {
+            if (currentLabStep < totalLabSteps) {
+                document.getElementById(`labStep${currentLabStep}`).classList.remove('active');
+                currentLabStep++;
+                document.getElementById(`labStep${currentLabStep}`).classList.add('active');
+                updateLabNav();
+            }
+        }
+
+        function prevLabStep() {
+            if (currentLabStep > 1) {
+                document.getElementById(`labStep${currentLabStep}`).classList.remove('active');
+                currentLabStep--;
+                document.getElementById(`labStep${currentLabStep}`).classList.add('active');
+                updateLabNav();
+            }
+        }
+
+        function updateLabNav() {
+            document.getElementById('labPrevBtn').style.visibility = currentLabStep > 1 ? 'visible' : 'hidden';
+            document.getElementById('labNextBtn').textContent = currentLabStep < totalLabSteps ? 'Next Step →' : 'Complete Lab ✓';
+            if (currentLabStep === totalLabSteps) {
+                document.getElementById('labNextBtn').onclick = () => navigateTo('quiz');
+            } else {
+                document.getElementById('labNextBtn').onclick = nextLabStep;
+            }
+        }
+
+        // Matrix Functions
+        function selectMatrixOption(element) {
+            const axis = element.dataset.axis;
+            const value = element.dataset.value;
+
+            // Update selection
+            document.querySelectorAll(`[data-axis="${axis}"]`).forEach(opt => opt.classList.remove('selected'));
+            element.classList.add('selected');
+
+            if (axis === 'complexity') matrixComplexity = value;
+            if (axis === 'tolerance') matrixTolerance = value;
+
+            updateMatrixResult();
+        }
+
+        function updateMatrixResult() {
+            const resultEl = document.getElementById('matrixResult');
+            const reasoningEl = document.getElementById('matrixReasoning');
+
+            const matrix = {
+                'simple-high': { model: 'Haiku', class: 'haiku', reasoning: 'Simple task with high tolerance → use the fastest, cheapest option' },
+                'simple-low': { model: 'Sonnet', class: 'sonnet', reasoning: 'Simple task but errors matter → upgrade for reliability' },
+                'standard-high': { model: 'Sonnet', class: 'sonnet', reasoning: 'Standard work with room for iteration → balanced choice' },
+                'standard-low': { model: 'Sonnet + Extended Thinking', class: 'sonnet', reasoning: 'Standard task, low tolerance → add deliberate reasoning' },
+                'complex-high': { model: 'Opus', class: 'opus', reasoning: 'Complex reasoning needed → deploy the strategist' },
+                'complex-low': { model: 'Opus + Extended Thinking', class: 'opus', reasoning: 'Complex + critical output → maximum reasoning depth' }
+            };
+
+            const key = `${matrixComplexity}-${matrixTolerance}`;
+            const result = matrix[key];
+
+            resultEl.textContent = result.model;
+            resultEl.className = `result-model ${result.class}`;
+            reasoningEl.textContent = result.reasoning;
+        }
+
+        // Thinking Demo
+        function toggleThinking(element) {
+            element.classList.toggle('expanded');
+        }
+
+        // Quiz Functions
+        function selectAnswer(element, questionIndex) {
+            if (quizComplete || userAnswers[questionIndex] !== undefined) return;
+
+            const question = document.querySelector(`[data-question="${questionIndex}"]`);
+            const options = question.querySelectorAll('.answer-option');
+            const selectedAnswer = element.dataset.answer;
+            const isCorrect = selectedAnswer === quizAnswers[questionIndex];
+
+            userAnswers[questionIndex] = selectedAnswer;
+
+            options.forEach(opt => {
+                opt.classList.add('disabled');
+                if (opt.dataset.answer === quizAnswers[questionIndex]) {
+                    opt.classList.add('correct');
+                }
+            });
+
+            if (!isCorrect) {
+                element.classList.add('incorrect');
+            }
+
+            const dot = document.querySelector(`.quiz-dot[data-q="${questionIndex}"]`);
+            dot.classList.remove('current');
+            dot.classList.add(isCorrect ? 'correct' : 'incorrect');
+
+            const feedbackPanel = document.getElementById('feedbackPanel');
+            const feedbackHeader = document.getElementById('feedbackHeader');
+            const feedbackText = document.getElementById('feedbackText');
+
+            feedbackHeader.className = `feedback-header ${isCorrect ? 'feedback-correct' : 'feedback-incorrect'}`;
+            feedbackHeader.innerHTML = isCorrect ? '✓ Correct!' : '✗ Incorrect';
+            feedbackText.textContent = isCorrect ? quizFeedback[questionIndex].correct : quizFeedback[questionIndex].incorrect;
+            feedbackPanel.classList.add('show');
+
+            document.getElementById('quizNextBtn').disabled = false;
+        }
+
+        function nextQuestion() {
+            if (currentQuestion < quizAnswers.length - 1) {
+                document.querySelector(`[data-question="${currentQuestion}"]`).classList.remove('active');
+                currentQuestion++;
+                document.querySelector(`[data-question="${currentQuestion}"]`).classList.add('active');
+
+                document.querySelector(`.quiz-dot[data-q="${currentQuestion}"]`).classList.add('current');
+
+                document.getElementById('feedbackPanel').classList.remove('show');
+                document.getElementById('quizNextBtn').disabled = true;
+
+                if (currentQuestion === quizAnswers.length - 1) {
+                    document.getElementById('quizNextBtn').textContent = 'See Results →';
+                }
+            } else {
+                showResults();
+            }
+        }
+
+        function showResults() {
+            quizComplete = true;
+            const correct = userAnswers.filter((a, i) => a === quizAnswers[i]).length;
+            const incorrect = quizAnswers.length - correct;
+
+            // SCORM: Report score and completion status
+            const scorePercent = Math.round((correct / quizAnswers.length) * 100);
+            if (typeof setSCORMScore === 'function') {
+                setSCORMScore(scorePercent);
+            }
+            if (typeof setSCORMStatus === 'function') {
+                setSCORMStatus(scorePercent >= 70 ? 'passed' : 'failed');
+            // Celebration confetti for passing
+            const passed = scorePercent >= 70;
+            if (passed && typeof confetti === 'function') {
+                // Initial burst
+                confetti({
+                    particleCount: 100,
+                    spread: 70,
+                    origin: { y: 0.6 },
+                    colors: ['#2ED4B5', '#1657A0', '#FFC83B', '#19316A']
+                });
+
+                // Follow-up bursts
+                setTimeout(() => {
+                    confetti({
+                        particleCount: 50,
+                        angle: 60,
+                        spread: 55,
+                        origin: { x: 0 },
+                        colors: ['#2ED4B5', '#1657A0', '#FFC83B']
+                    });
+                }, 250);
+
+                setTimeout(() => {
+                    confetti({
+                        particleCount: 50,
+                        angle: 120,
+                        spread: 55,
+                        origin: { x: 1 },
+                        colors: ['#2ED4B5', '#1657A0', '#FFC83B']
+                    });
+                }, 400);
+            }
+
+            // Close popup window after completion
+            if (window.opener !== null) {
+                setTimeout(() => {
+                    const shouldClose = confirm('Module completed! Close this window?');
+                    if (shouldClose) {
+                        window.close();
+                    }
+                }, 3000);
+            }
+            }
+
+            document.querySelector(`[data-question="${currentQuestion}"]`).classList.remove('active');
+            document.querySelector('[data-question="results"]').style.display = 'block';
+            document.querySelector('[data-question="results"]').classList.add('active');
+
+            document.getElementById('quizScore').textContent = `${correct}/${quizAnswers.length}`;
+            document.getElementById('correctCount').textContent = correct;
+            document.getElementById('incorrectCount').textContent = incorrect;
+
+            let message = '';
+            if (correct === quizAnswers.length) {
+                message = "Excellent! You understand model selection and thinking modes. Ready for Module 3!";
+            } else if (correct >= 5) {
+                message = "Good foundation! Review the concepts you missed before continuing.";
+            } else if (correct >= 3) {
+                message = "Review the video and flashcards, then retake the quiz.";
+            } else {
+                message = "Schedule time to review the module content before proceeding.";
+            }
+            document.getElementById('resultMessage').textContent = message;
+
+            document.getElementById('feedbackPanel').classList.remove('show');
+            document.querySelector('.quiz-footer').style.display = 'none';
+        }
+
+        // Copy to clipboard
+        function copyToClipboard(button) {
+            const codeBlock = button.parentElement.querySelector('pre');
+            navigator.clipboard.writeText(codeBlock.textContent).then(() => {
+                button.textContent = 'Copied!';
+                setTimeout(() => button.textContent = 'Copy', 2000);
+            });
+        }
+
+        // Initialize nav click handlers
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', () => {
+                const screen = item.dataset.screen;
+                if (screen) navigateTo(screen);
+            });
+        });
+
+        // Initialize
+        document.getElementById('cardTotal').textContent = flashcards.length;
+    </script>
+</body>
+</html>

@@ -1,0 +1,1553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module 3: Prompt Architecture | Solo Pilot to Squadron Leader</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sofia+Sans:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-blue: #0042F3;
+            --pelorous: #33A7B5;
+            --teal: #2FD3B4;
+            --violet-red: #EE2C82;
+            --dark-base: #252D38;
+            --light-gray: #D9D9D9;
+            --bg-light: #F8F9FA;
+            --white: #FFFFFF;
+            --success: #2FD3B4;
+            --error: #EE2C82;
+            --warning: #F5A623;
+            --module-accent: #F59E0B;
+            --module-accent-light: #FEF3C7;
+            --xml-color: #F59E0B;
+            --markdown-color: #3B82F6;
+            --sections-color: #10B981;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Sofia Sans', sans-serif;
+            background: var(--bg-light);
+            color: var(--dark-base);
+            line-height: 1.6;
+        }
+
+        /* Header */
+        .course-header {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, #384B76 100%);
+            color: white;
+            padding: 1rem 2rem;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .course-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .course-subtitle {
+            font-size: 0.85rem;
+            opacity: 0.9;
+        }
+
+        .progress-container {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .progress-bar {
+            width: 200px;
+            height: 8px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--module-accent);
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        .progress-text {
+            font-size: 0.85rem;
+        }
+
+        /* Main Layout */
+        .main-container {
+            display: flex;
+            margin-top: 60px;
+            min-height: calc(100vh - 60px);
+        }
+
+        /* Sidebar Navigation */
+        .sidebar {
+            width: 280px;
+            background: var(--white);
+            border-right: 1px solid var(--light-gray);
+            padding: 1.5rem;
+            position: fixed;
+            top: 60px;
+            left: 0;
+            bottom: 0;
+            overflow-y: auto;
+        }
+
+        .module-badge {
+            background: linear-gradient(135deg, var(--module-accent), #D97706);
+            color: white;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+        }
+
+        .module-badge h2 {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.9;
+        }
+
+        .module-badge h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .nav-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .nav-section-title {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #666;
+            margin-bottom: 0.75rem;
+            font-weight: 600;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-bottom: 0.25rem;
+        }
+
+        .nav-item:hover {
+            background: var(--bg-light);
+        }
+
+        .nav-item.active {
+            background: var(--module-accent-light);
+            color: var(--module-accent);
+        }
+
+        .nav-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: var(--light-gray);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .nav-item.active .nav-icon {
+            background: var(--module-accent);
+            color: white;
+        }
+
+        .nav-label {
+            font-size: 0.9rem;
+        }
+
+        /* Content Area */
+        .content-area {
+            margin-left: 280px;
+            flex: 1;
+            padding: 2rem 3rem;
+            max-width: 900px;
+        }
+
+        .content-section {
+            display: none;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        /* Video Section */
+        .video-container {
+            background: var(--dark-base);
+            border-radius: 12px;
+            aspect-ratio: 16/9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 2rem;
+        }
+
+        .video-placeholder {
+            text-align: center;
+            color: white;
+        }
+
+        .play-button {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: var(--module-accent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .play-button:hover {
+            transform: scale(1.1);
+        }
+
+        .play-button::after {
+            content: '';
+            width: 0;
+            height: 0;
+            border-left: 24px solid white;
+            border-top: 14px solid transparent;
+            border-bottom: 14px solid transparent;
+            margin-left: 6px;
+        }
+
+        /* Lesson Content */
+        .lesson-header {
+            margin-bottom: 2rem;
+        }
+
+        .lesson-header h1 {
+            font-size: 2rem;
+            color: var(--dark-base);
+            margin-bottom: 0.5rem;
+        }
+
+        .lesson-meta {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .lesson-content h2 {
+            font-size: 1.5rem;
+            color: var(--dark-base);
+            margin: 2rem 0 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--module-accent-light);
+        }
+
+        .lesson-content h3 {
+            font-size: 1.2rem;
+            color: var(--dark-base);
+            margin: 1.5rem 0 0.75rem;
+        }
+
+        .lesson-content p {
+            margin-bottom: 1rem;
+            color: #444;
+        }
+
+        .lesson-content ul, .lesson-content ol {
+            margin-bottom: 1rem;
+            padding-left: 1.5rem;
+        }
+
+        .lesson-content li {
+            margin-bottom: 0.5rem;
+            color: #444;
+        }
+
+        /* Format Selector */
+        .format-selector {
+            background: var(--white);
+            border: 2px solid var(--module-accent-light);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .format-selector-title {
+            font-weight: 600;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .format-tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .format-tab {
+            padding: 0.75rem 1.25rem;
+            border: 2px solid var(--light-gray);
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .format-tab:hover {
+            border-color: var(--module-accent);
+        }
+
+        .format-tab.active {
+            border-color: var(--module-accent);
+            background: var(--module-accent);
+            color: white;
+        }
+
+        .format-tab.xml { border-left: 4px solid var(--xml-color); }
+        .format-tab.markdown { border-left: 4px solid var(--markdown-color); }
+        .format-tab.sections { border-left: 4px solid var(--sections-color); }
+
+        .format-tab.active.xml { background: var(--xml-color); border-color: var(--xml-color); }
+        .format-tab.active.markdown { background: var(--markdown-color); border-color: var(--markdown-color); }
+        .format-tab.active.sections { background: var(--sections-color); border-color: var(--sections-color); }
+
+        .format-content {
+            display: none;
+        }
+
+        .format-content.active {
+            display: block;
+        }
+
+        .format-description {
+            background: var(--bg-light);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+
+        /* Code Blocks */
+        .code-block {
+            background: #1E293B;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            overflow-x: auto;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.85rem;
+            line-height: 1.6;
+            color: #E2E8F0;
+        }
+
+        .code-block .tag { color: var(--xml-color); }
+        .code-block .header { color: var(--markdown-color); }
+        .code-block .label { color: var(--sections-color); }
+        .code-block .content { color: #E2E8F0; }
+        .code-block .comment { color: #64748B; font-style: italic; }
+
+        /* Concept Cards */
+        .concept-card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            border-left: 4px solid var(--module-accent);
+        }
+
+        .concept-card h4 {
+            color: var(--module-accent);
+            margin-bottom: 0.75rem;
+            font-size: 1.1rem;
+        }
+
+        /* Key Insight Box */
+        .key-insight {
+            background: linear-gradient(135deg, var(--module-accent-light), #FEF9C3);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-left: 4px solid var(--module-accent);
+        }
+
+        .key-insight h4 {
+            color: var(--module-accent);
+            margin-bottom: 0.5rem;
+        }
+
+        /* Comparison Table */
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+        }
+
+        .comparison-table th {
+            background: var(--module-accent);
+            color: white;
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .comparison-table td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--light-gray);
+        }
+
+        .comparison-table tr:hover {
+            background: var(--module-accent-light);
+        }
+
+        /* When to Use Cards */
+        .when-cards {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .when-card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 1.25rem;
+            border: 2px solid var(--light-gray);
+        }
+
+        .when-card.use {
+            border-color: var(--success);
+        }
+
+        .when-card.skip {
+            border-color: var(--error);
+        }
+
+        .when-card h4 {
+            font-size: 0.9rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .when-card.use h4 { color: var(--success); }
+        .when-card.skip h4 { color: var(--error); }
+
+        .when-card ul {
+            list-style: none;
+            padding: 0;
+            font-size: 0.9rem;
+        }
+
+        .when-card li {
+            padding: 0.25rem 0;
+        }
+
+        /* Flashcards */
+        .flashcard-container {
+            perspective: 1000px;
+            margin: 2rem 0;
+        }
+
+        .flashcard {
+            width: 100%;
+            height: 300px;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.6s ease;
+            cursor: pointer;
+        }
+
+        .flashcard.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .flashcard-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 12px;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .flashcard-front {
+            background: linear-gradient(135deg, var(--module-accent), #D97706);
+            color: white;
+        }
+
+        .flashcard-back {
+            background: var(--white);
+            border: 2px solid var(--module-accent);
+            transform: rotateY(180deg);
+        }
+
+        .flashcard-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.8;
+            margin-bottom: 1rem;
+        }
+
+        .flashcard-content {
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        .flashcard-nav {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .flashcard-btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            background: var(--module-accent);
+            color: white;
+        }
+
+        .flashcard-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .flashcard-counter {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        /* Lab Section */
+        .lab-step {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            border: 1px solid var(--light-gray);
+        }
+
+        .lab-step-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .lab-step-number {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--module-accent);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+
+        .lab-step-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .copy-btn {
+            background: var(--module-accent);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .copy-btn:hover {
+            background: #D97706;
+        }
+
+        /* Quiz Section */
+        .quiz-question {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .quiz-question-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .quiz-question-number {
+            background: var(--module-accent);
+            color: white;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+
+        .quiz-question-type {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #666;
+            background: var(--bg-light);
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+        }
+
+        .quiz-question-text {
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .quiz-option {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            border: 2px solid var(--light-gray);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .quiz-option:hover {
+            border-color: var(--module-accent);
+            background: var(--module-accent-light);
+        }
+
+        .quiz-option.selected {
+            border-color: var(--module-accent);
+            background: var(--module-accent-light);
+        }
+
+        .quiz-option.correct {
+            border-color: var(--success);
+            background: rgba(47, 211, 180, 0.1);
+        }
+
+        .quiz-option.incorrect {
+            border-color: var(--error);
+            background: rgba(238, 44, 130, 0.1);
+        }
+
+        .quiz-option-marker {
+            width: 24px;
+            height: 24px;
+            border: 2px solid var(--light-gray);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        .quiz-option.selected .quiz-option-marker {
+            border-color: var(--module-accent);
+            background: var(--module-accent);
+            color: white;
+        }
+
+        .quiz-feedback {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .quiz-feedback.show {
+            display: block;
+        }
+
+        .quiz-feedback.correct {
+            background: rgba(47, 211, 180, 0.1);
+            border: 1px solid var(--success);
+        }
+
+        .quiz-feedback.incorrect {
+            background: rgba(238, 44, 130, 0.1);
+            border: 1px solid var(--error);
+        }
+
+        .check-answer-btn {
+            background: var(--module-accent);
+            color: white;
+            border: none;
+            padding: 0.75rem 2rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            margin-top: 1rem;
+        }
+
+        .check-answer-btn:hover {
+            background: #D97706;
+        }
+
+        /* Study Guide */
+        .study-guide-section {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .study-guide-section h3 {
+            color: var(--module-accent);
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+
+        /* Navigation Buttons */
+        .section-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--light-gray);
+        }
+
+        .nav-button {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .nav-button.primary {
+            background: var(--module-accent);
+            color: white;
+        }
+
+        .nav-button.secondary {
+            background: var(--bg-light);
+            color: var(--dark-base);
+        }
+
+        .nav-button:hover {
+            transform: translateY(-2px);
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .sidebar {
+                width: 240px;
+            }
+            .content-area {
+                margin-left: 240px;
+                padding: 1.5rem;
+            }
+            .when-cards {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                display: none;
+            }
+            .content-area {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="course-header">
+        <div>
+            <div class="course-title">Solo Pilot to Squadron Leader</div>
+            <div class="course-subtitle">ActivTrak AI Certification</div>
+        </div>
+        <div class="progress-container">
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 0%"></div>
+            </div>
+            <span class="progress-text">0% Complete</span>
+        </div>
+    </header>
+
+    <div class="main-container">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="module-badge">
+                <h2>Module 3</h2>
+                <h3>Prompt Architecture</h3>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Learn</div>
+                <div class="nav-item active" data-section="video">
+                    <div class="nav-icon">▶</div>
+                    <span class="nav-label">Video Lesson</span>
+                </div>
+                <div class="nav-item" data-section="lesson">
+                    <div class="nav-icon">📖</div>
+                    <span class="nav-label">Full Lesson</span>
+                </div>
+                <div class="nav-item" data-section="flashcards">
+                    <div class="nav-icon">🎴</div>
+                    <span class="nav-label">Flashcards</span>
+                </div>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Practice</div>
+                <div class="nav-item" data-section="lab">
+                    <div class="nav-icon">🧪</div>
+                    <span class="nav-label">Lab Exercise</span>
+                </div>
+                <div class="nav-item" data-section="quiz">
+                    <div class="nav-icon">✓</div>
+                    <span class="nav-label">Knowledge Check</span>
+                </div>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Reference</div>
+                <div class="nav-item" data-section="study-guide">
+                    <div class="nav-icon">📋</div>
+                    <span class="nav-label">Study Guide</span>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="content-area">
+            <!-- Video Section -->
+            <section id="video" class="content-section active">
+                <div class="video-container">
+                    <div class="video-placeholder">
+                        <div class="play-button"></div>
+                        <p>Module 3: The Reasoning Engine</p>
+                        <p style="opacity: 0.7; font-size: 0.9rem;">Duration: 10-11 minutes</p>
+                    </div>
+                </div>
+
+                <div class="lesson-header">
+                    <h1>The Reasoning Engine: Advanced Prompt Architecture</h1>
+                    <p class="lesson-meta">Learn to structure prompts for consistent, high-quality results</p>
+                </div>
+
+                <div class="lesson-content">
+                    <div class="key-insight">
+                        <h4>Key Insight</h4>
+                        <p>It's not about XML specifically—it's about <strong>clear separation of concerns</strong>. You can achieve this with XML tags, Markdown headers, or even simple labels. Choose what feels natural to you.</p>
+                    </div>
+
+                    <h2>What You'll Learn</h2>
+                    <ul>
+                        <li>Why unstructured prompts produce inconsistent results ("context bleeding")</li>
+                        <li>Three format options: XML tags, Markdown headers, or clear section labels</li>
+                        <li>When XML is superior (and when simpler formats work fine)</li>
+                        <li>How to ask Claude to structure messy data for you</li>
+                        <li>When you don't need formal structure at all</li>
+                    </ul>
+
+                    <h2>The Structure Spectrum</h2>
+                    <p>You have three options for structuring prompts. All three work—choose based on comfort level and task complexity:</p>
+
+                    <div class="format-selector">
+                        <div class="format-selector-title">Compare Format Options</div>
+                        <div class="format-tabs">
+                            <button class="format-tab xml active" onclick="showFormat('xml')">XML Tags</button>
+                            <button class="format-tab markdown" onclick="showFormat('markdown')">Markdown</button>
+                            <button class="format-tab sections" onclick="showFormat('sections')">Clear Sections</button>
+                        </div>
+
+                        <div id="format-xml" class="format-content active">
+                            <div class="format-description">
+                                <strong>Most Precise.</strong> Best for: complex prompts, nested data, reusable templates, structured outputs.
+                            </div>
+                            <div class="code-block">
+<span class="tag">&lt;system_role&gt;</span>
+<span class="content">You are a CSM at ActivTrak focused on "Insights, Not Oversight."</span>
+<span class="tag">&lt;/system_role&gt;</span>
+
+<span class="tag">&lt;task_context&gt;</span>
+<span class="content">Client productivity dropped 15% during EHR implementation.</span>
+<span class="tag">&lt;/task_context&gt;</span>
+
+<span class="tag">&lt;constraints&gt;</span>
+<span class="content">- Avoid: tracking, monitoring, surveillance
+- Use supportive framing</span>
+<span class="tag">&lt;/constraints&gt;</span>
+
+<span class="tag">&lt;output_format&gt;</span>
+<span class="content">Three hypotheses with supporting data.</span>
+<span class="tag">&lt;/output_format&gt;</span>
+                            </div>
+                        </div>
+
+                        <div id="format-markdown" class="format-content">
+                            <div class="format-description">
+                                <strong>Balanced.</strong> Best for: narrative prompts, documentation-style, people uncomfortable with XML.
+                            </div>
+                            <div class="code-block">
+<span class="header">## Role</span>
+<span class="content">You are a CSM at ActivTrak focused on "Insights, Not Oversight."</span>
+
+<span class="header">## Context</span>
+<span class="content">Client productivity dropped 15% during EHR implementation.</span>
+
+<span class="header">## Constraints</span>
+<span class="content">- Avoid: tracking, monitoring, surveillance
+- Use supportive framing</span>
+
+<span class="header">## What I Need</span>
+<span class="content">Three hypotheses with supporting data.</span>
+                            </div>
+                        </div>
+
+                        <div id="format-sections" class="format-content">
+                            <div class="format-description">
+                                <strong>Simplest.</strong> Best for: quick tasks, beginners, when formal structure feels like overkill.
+                            </div>
+                            <div class="code-block">
+<span class="label">ROLE:</span> <span class="content">CSM at ActivTrak, "Insights, Not Oversight"</span>
+
+<span class="label">SITUATION:</span> <span class="content">Client productivity dropped 15% during EHR implementation</span>
+
+<span class="label">AVOID:</span> <span class="content">tracking, monitoring, surveillance language</span>
+
+<span class="label">TASK:</span> <span class="content">Three hypotheses with supporting data</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h2>When to Use Structure (And When Not To)</h2>
+
+                    <div class="when-cards">
+                        <div class="when-card use">
+                            <h4>✓ Use Formal Structure When</h4>
+                            <ul>
+                                <li>• Multiple data sources</li>
+                                <li>• Several distinct requirements</li>
+                                <li>• Getting inconsistent results</li>
+                                <li>• Creating reusable templates</li>
+                            </ul>
+                        </div>
+                        <div class="when-card skip">
+                            <h4>✗ Skip Structure When</h4>
+                            <ul>
+                                <li>• Simple, single-purpose task</li>
+                                <li>• Back-and-forth conversation</li>
+                                <li>• Your writing is already clear</li>
+                                <li>• Quick questions</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="concept-card">
+                        <h4>Pro Tip: Let Claude Structure Your Data</h4>
+                        <p>Have messy meeting notes or raw data? Just ask Claude to organize it:</p>
+                        <p><em>"Here are my rough notes. Convert them into structured sections: Client Goals, Concerns, Action Items, Next Steps."</em></p>
+                        <p>Then use Claude's structured output as clean input for your next prompt.</p>
+                    </div>
+                </div>
+
+                <div class="section-nav">
+                    <button class="nav-button secondary" onclick="window.location.href='../Module 2 - Model Selection/index.html'">← Module 2</button>
+                    <button class="nav-button primary" onclick="navigateTo('lesson')">Continue to Full Lesson →</button>
+                </div>
+            </section>
+
+            <!-- Full Lesson Section -->
+            <section id="lesson" class="content-section">
+                <div class="lesson-header">
+                    <h1>The Reasoning Engine: Advanced Prompt Architecture</h1>
+                    <p class="lesson-meta">Estimated reading time: 15-20 minutes</p>
+                </div>
+
+                <div class="lesson-content">
+                    <h2>The Core Principle</h2>
+                    <p><strong>Clear structure prevents context bleeding.</strong> When you separate role, data, constraints and instructions—whether using XML tags, Markdown headers, or simple labels—the AI produces consistent, high-quality outputs.</p>
+
+                    <p>The goal is <strong>clarity, not a specific syntax</strong>. Choose the format that feels natural to you.</p>
+
+                    <h2>When XML Is Superior</h2>
+                    <p>While all formats work, XML has advantages in specific situations:</p>
+
+                    <table class="comparison-table">
+                        <tr>
+                            <th>Situation</th>
+                            <th>Why XML Works Best</th>
+                        </tr>
+                        <tr>
+                            <td>Nested data</td>
+                            <td>Tags inside tags (metrics within client_info within user_data)</td>
+                        </tr>
+                        <tr>
+                            <td>Structured output</td>
+                            <td>Signals you want data back in specific format</td>
+                        </tr>
+                        <tr>
+                            <td>Reusable templates</td>
+                            <td>Clear placeholders like [CLIENT_NAME]</td>
+                        </tr>
+                        <tr>
+                            <td>Markdown in data</td>
+                            <td>Prevents confusion when your data contains ## headers</td>
+                        </tr>
+                    </table>
+
+                    <h2>Standard Components</h2>
+                    <p>Regardless of format, include these components:</p>
+
+                    <table class="comparison-table">
+                        <tr>
+                            <th>Component</th>
+                            <th>Purpose</th>
+                        </tr>
+                        <tr>
+                            <td><strong>Role</strong></td>
+                            <td>Who the AI should be</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Context</strong></td>
+                            <td>Background situation</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Data</strong></td>
+                            <td>Content to process</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Constraints</strong></td>
+                            <td>What NOT to do</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Output Format</strong></td>
+                            <td>Desired structure</td>
+                        </tr>
+                    </table>
+
+                    <p><strong>Order matters:</strong> Role at top, data in middle, instructions at end (due to "Lost in the Middle" effect).</p>
+
+                    <h2>Common Mistakes</h2>
+
+                    <table class="comparison-table">
+                        <tr>
+                            <th>Mistake</th>
+                            <th>Fix</th>
+                        </tr>
+                        <tr>
+                            <td>Overloading (research + write + critique)</td>
+                            <td>Separate tasks across conversations</td>
+                        </tr>
+                        <tr>
+                            <td>Vague outputs ("make it better")</td>
+                            <td>Specify exactly what "better" means</td>
+                        </tr>
+                        <tr>
+                            <td>Missing constraints</td>
+                            <td>Always include what to AVOID</td>
+                        </tr>
+                        <tr>
+                            <td>Buried instructions</td>
+                            <td>Place key instructions at END</td>
+                        </tr>
+                        <tr>
+                            <td>Over-engineering</td>
+                            <td>Match structure to task complexity</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="section-nav">
+                    <button class="nav-button secondary" onclick="navigateTo('video')">← Back to Video</button>
+                    <button class="nav-button primary" onclick="navigateTo('flashcards')">Continue to Flashcards →</button>
+                </div>
+            </section>
+
+            <!-- Flashcards Section -->
+            <section id="flashcards" class="content-section">
+                <div class="lesson-header">
+                    <h1>Flashcards</h1>
+                    <p class="lesson-meta">Click cards to flip. 8 cards total.</p>
+                </div>
+
+                <div class="flashcard-container">
+                    <div class="flashcard" id="flashcard">
+                        <div class="flashcard-face flashcard-front">
+                            <div class="flashcard-label">Question</div>
+                            <div class="flashcard-content" id="flashcard-front-content">
+                                What are the three format options for structuring prompts?
+                            </div>
+                        </div>
+                        <div class="flashcard-face flashcard-back">
+                            <div class="flashcard-label">Answer</div>
+                            <div class="flashcard-content" id="flashcard-back-content">
+                                <strong>1. XML Tags</strong> - Most precise, best for complex prompts<br><br>
+                                <strong>2. Markdown Headers</strong> - Balanced, familiar syntax<br><br>
+                                <strong>3. Clear Sections</strong> - Simplest, good for quick tasks<br><br>
+                                <em>All three work—choose based on comfort and complexity.</em>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flashcard-nav">
+                    <button class="flashcard-btn" onclick="prevCard()">← Previous</button>
+                    <span class="flashcard-counter"><span id="currentCard">1</span> / <span id="totalCards">8</span></span>
+                    <button class="flashcard-btn" onclick="nextCard()">Next →</button>
+                </div>
+
+                <div class="section-nav">
+                    <button class="nav-button secondary" onclick="navigateTo('lesson')">← Back to Lesson</button>
+                    <button class="nav-button primary" onclick="navigateTo('lab')">Continue to Lab →</button>
+                </div>
+            </section>
+
+            <!-- Lab Section -->
+            <section id="lab" class="content-section">
+                <div class="lesson-header">
+                    <h1>Lab Exercise: The Prompt Architect Challenge</h1>
+                    <p class="lesson-meta">Duration: 25-30 minutes | Tools: Claude (claude.ai)</p>
+                </div>
+
+                <div class="lesson-content">
+                    <h2>Objective</h2>
+                    <p>Transform messy prompts into structured formats. Compare the three approaches and discover which feels most natural to you.</p>
+
+                    <div class="lab-step">
+                        <div class="lab-step-header">
+                            <div class="lab-step-number">1</div>
+                            <div class="lab-step-title">Test the Messy Prompt</div>
+                        </div>
+                        <p>Copy this unstructured prompt and paste into Claude:</p>
+                        <div class="code-block">I need to email our client about their productivity drop. They're a healthcare company and their numbers went down 15% last quarter. I think it's because of their EHR implementation but I don't want to make excuses. Make it consultative not defensive. We never say tracking or monitoring at ActivTrak. The VP is stressed. Keep it professional.</div>
+                        <button class="copy-btn" onclick="copyToClipboard(this.previousElementSibling.textContent)">📋 Copy</button>
+                    </div>
+
+                    <div class="lab-step">
+                        <div class="lab-step-header">
+                            <div class="lab-step-number">2</div>
+                            <div class="lab-step-title">Choose Your Format</div>
+                        </div>
+                        <p>Now restructure the same prompt using your preferred format. Use the format selector above to see examples, then create your own version.</p>
+                    </div>
+
+                    <div class="lab-step">
+                        <div class="lab-step-header">
+                            <div class="lab-step-number">3</div>
+                            <div class="lab-step-title">Ask Claude to Structure Data</div>
+                        </div>
+                        <p>Try this prompt to see Claude organize messy notes:</p>
+                        <div class="code-block">Here are my rough notes from a client call. Convert them into structured sections: Client Concerns, Key Insights, Action Items, Next Steps.
+
+MY NOTES:
+"""
+Call with Meridian - productivity drop discussed. VP Sarah worried but Epic rollout took longer than expected. IT had lots of tickets. Nurses frustrated. She asked about other healthcare clients. Want training. Budget approved Q1. Looked at Teramind but didn't like it. Send case studies, schedule training, follow up 2 weeks.
+"""</div>
+                        <button class="copy-btn" onclick="copyToClipboard(this.previousElementSibling.textContent)">📋 Copy</button>
+                    </div>
+                </div>
+
+                <div class="section-nav">
+                    <button class="nav-button secondary" onclick="navigateTo('flashcards')">← Back to Flashcards</button>
+                    <button class="nav-button primary" onclick="navigateTo('quiz')">Continue to Quiz →</button>
+                </div>
+            </section>
+
+            <!-- Quiz Section -->
+            <section id="quiz" class="content-section">
+                <div class="lesson-header">
+                    <h1>Knowledge Check</h1>
+                    <p class="lesson-meta">8 questions | Test your understanding of prompt architecture</p>
+                </div>
+
+                <div class="quiz-question" data-correct="B">
+                    <div class="quiz-question-header">
+                        <div class="quiz-question-number">1</div>
+                        <span class="quiz-question-type">Multiple Choice</span>
+                    </div>
+                    <div class="quiz-question-text">Which statement about prompt structure formats is TRUE?</div>
+                    <div class="quiz-options">
+                        <div class="quiz-option" data-value="A">
+                            <div class="quiz-option-marker">A</div>
+                            <span>XML is required for Claude to understand structured prompts</span>
+                        </div>
+                        <div class="quiz-option" data-value="B">
+                            <div class="quiz-option-marker">B</div>
+                            <span>XML, Markdown headers, and clear section labels can all achieve similar results</span>
+                        </div>
+                        <div class="quiz-option" data-value="C">
+                            <div class="quiz-option-marker">C</div>
+                            <span>Only XML can prevent context bleeding</span>
+                        </div>
+                        <div class="quiz-option" data-value="D">
+                            <div class="quiz-option-marker">D</div>
+                            <span>Unstructured prompts never work well</span>
+                        </div>
+                    </div>
+                    <div class="quiz-feedback"></div>
+                    <button class="check-answer-btn">Check Answer</button>
+                </div>
+
+                <div class="quiz-question" data-correct="B">
+                    <div class="quiz-question-header">
+                        <div class="quiz-question-number">2</div>
+                        <span class="quiz-question-type">Multiple Choice</span>
+                    </div>
+                    <div class="quiz-question-text">When is XML superior to Markdown or clear section labels?</div>
+                    <div class="quiz-options">
+                        <div class="quiz-option" data-value="A">
+                            <div class="quiz-option-marker">A</div>
+                            <span>Always—XML is the only professional option</span>
+                        </div>
+                        <div class="quiz-option" data-value="B">
+                            <div class="quiz-option-marker">B</div>
+                            <span>When you need nested data, structured outputs, or reusable templates</span>
+                        </div>
+                        <div class="quiz-option" data-value="C">
+                            <div class="quiz-option-marker">C</div>
+                            <span>Only when working with code</span>
+                        </div>
+                        <div class="quiz-option" data-value="D">
+                            <div class="quiz-option-marker">D</div>
+                            <span>When prompts are longer than 500 words</span>
+                        </div>
+                    </div>
+                    <div class="quiz-feedback"></div>
+                    <button class="check-answer-btn">Check Answer</button>
+                </div>
+
+                <div class="quiz-question" data-correct="B">
+                    <div class="quiz-question-header">
+                        <div class="quiz-question-number">3</div>
+                        <span class="quiz-question-type">True/False</span>
+                    </div>
+                    <div class="quiz-question-text">You should always use formal structure (XML, Markdown, or labels) for every prompt.</div>
+                    <div class="quiz-options">
+                        <div class="quiz-option" data-value="A">
+                            <div class="quiz-option-marker">A</div>
+                            <span>True</span>
+                        </div>
+                        <div class="quiz-option" data-value="B">
+                            <div class="quiz-option-marker">B</div>
+                            <span>False</span>
+                        </div>
+                    </div>
+                    <div class="quiz-feedback"></div>
+                    <button class="check-answer-btn">Check Answer</button>
+                </div>
+
+                <div class="quiz-question" data-correct="B">
+                    <div class="quiz-question-header">
+                        <div class="quiz-question-number">4</div>
+                        <span class="quiz-question-type">Multiple Choice</span>
+                    </div>
+                    <div class="quiz-question-text">What is a key benefit of asking Claude to structure messy data for you?</div>
+                    <div class="quiz-options">
+                        <div class="quiz-option" data-value="A">
+                            <div class="quiz-option-marker">A</div>
+                            <span>It makes Claude work faster</span>
+                        </div>
+                        <div class="quiz-option" data-value="B">
+                            <div class="quiz-option-marker">B</div>
+                            <span>It converts unorganized notes into clean format you can use in subsequent prompts</span>
+                        </div>
+                        <div class="quiz-option" data-value="C">
+                            <div class="quiz-option-marker">C</div>
+                            <span>It reduces the cost of API calls</span>
+                        </div>
+                        <div class="quiz-option" data-value="D">
+                            <div class="quiz-option-marker">D</div>
+                            <span>It only works with XML output</span>
+                        </div>
+                    </div>
+                    <div class="quiz-feedback"></div>
+                    <button class="check-answer-btn">Check Answer</button>
+                </div>
+
+                <div class="section-nav">
+                    <button class="nav-button secondary" onclick="navigateTo('lab')">← Back to Lab</button>
+                    <button class="nav-button primary" onclick="navigateTo('study-guide')">View Study Guide →</button>
+                </div>
+            </section>
+
+            <!-- Study Guide Section -->
+            <section id="study-guide" class="content-section">
+                <div class="lesson-header">
+                    <h1>Study Guide</h1>
+                    <p class="lesson-meta">Quick reference for Module 3 concepts</p>
+                </div>
+
+                <div class="study-guide-section">
+                    <h3>Core Concept</h3>
+                    <p><strong>Clear structure prevents context bleeding.</strong> The goal is clarity, not a specific syntax. Choose XML, Markdown, or simple labels based on comfort and task complexity.</p>
+                </div>
+
+                <div class="study-guide-section">
+                    <h3>The Structure Spectrum</h3>
+                    <table class="comparison-table">
+                        <tr>
+                            <th>Format</th>
+                            <th>Best For</th>
+                        </tr>
+                        <tr>
+                            <td><strong>XML Tags</strong></td>
+                            <td>Complex prompts, nested data, templates, structured outputs</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Markdown Headers</strong></td>
+                            <td>Narrative prompts, documentation-style, XML-uncomfortable users</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Clear Sections</strong></td>
+                            <td>Simple tasks, beginners, when formal structure feels like overkill</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="study-guide-section">
+                    <h3>When XML Is Superior</h3>
+                    <ul>
+                        <li>Nested data (tags inside tags)</li>
+                        <li>Requesting structured output</li>
+                        <li>Reusable templates with placeholders</li>
+                        <li>When your data contains Markdown formatting</li>
+                    </ul>
+                </div>
+
+                <div class="study-guide-section">
+                    <h3>Pro Tip</h3>
+                    <p><strong>Ask Claude to structure messy data:</strong> "Here are my rough notes. Convert them into sections: Goals, Concerns, Action Items, Next Steps."</p>
+                </div>
+
+                <div class="section-nav">
+                    <button class="nav-button secondary" onclick="navigateTo('quiz')">← Back to Quiz</button>
+                    <button class="nav-button primary" onclick="window.location.href='../Module 4 - Data Analysis/index.html'">Next Module →</button>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // Navigation
+        function navigateTo(sectionId) {
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+                if (item.dataset.section === sectionId) {
+                    item.classList.add('active');
+                }
+            });
+
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.getElementById(sectionId).classList.add('active');
+
+            window.scrollTo(0, 0);
+            updateProgress();
+        }
+
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', () => {
+                navigateTo(item.dataset.section);
+            });
+        });
+
+        function updateProgress() {
+            const sections = ['video', 'lesson', 'flashcards', 'lab', 'quiz', 'study-guide'];
+            const activeIndex = sections.findIndex(s =>
+                document.getElementById(s).classList.contains('active')
+            );
+            const progress = Math.round(((activeIndex + 1) / sections.length) * 100);
+            document.querySelector('.progress-fill').style.width = progress + '%';
+            document.querySelector('.progress-text').textContent = progress + '% Complete';
+        }
+
+        // Format Selector
+        function showFormat(format) {
+            document.querySelectorAll('.format-tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.format-content').forEach(content => content.classList.remove('active'));
+
+            document.querySelector(`.format-tab.${format}`).classList.add('active');
+            document.getElementById(`format-${format}`).classList.add('active');
+        }
+
+        // Flashcards
+        const flashcards = [
+            {
+                front: 'What are the three format options for structuring prompts?',
+                back: '<strong>1. XML Tags</strong> - Most precise<br><strong>2. Markdown Headers</strong> - Balanced<br><strong>3. Clear Sections</strong> - Simplest<br><br><em>All three work—choose based on comfort and complexity.</em>'
+            },
+            {
+                front: 'When is XML superior to other formats?',
+                back: '1. <strong>Nested data</strong> - Tags inside tags<br>2. <strong>Structured output</strong> - Request specific format back<br>3. <strong>Reusable templates</strong> - Clear placeholders<br>4. <strong>Edge cases</strong> - When data contains Markdown'
+            },
+            {
+                front: 'When do you NOT need formal structure?',
+                back: '<strong>Skip structure when:</strong><br>• Simple, single-purpose task<br>• Back-and-forth conversation<br>• Your writing is already clear<br>• Quick questions<br><br><em>The goal is clarity, not ceremony.</em>'
+            },
+            {
+                front: 'How can you ask Claude to structure messy data?',
+                back: 'Simply ask:<br><br><em>"Here are my rough notes. Convert them into structured sections: Client Goals, Concerns, Action Items, Next Steps."</em><br><br>Then use the structured output as clean input for your next prompt.'
+            },
+            {
+                front: 'What are the six standard components of a structured prompt?',
+                back: '1. <strong>Role</strong> - Who the AI should be<br>2. <strong>Context</strong> - Background situation<br>3. <strong>Data</strong> - Content to process<br>4. <strong>Constraints</strong> - What NOT to do<br>5. <strong>Output Format</strong> - Desired structure<br>6. <strong>Examples</strong> - (Optional) Samples to emulate'
+            },
+            {
+                front: 'What is the correct order for prompt sections?',
+                back: '<strong>Role → Context → Data → Constraints → Output</strong><br><br>Why? Role at top primes the persona. Data in middle. Instructions at END get highest attention (Lost in the Middle effect).'
+            },
+            {
+                front: 'What are five common prompt mistakes?',
+                back: '1. <strong>Overloading</strong> - Fix: Separate tasks<br>2. <strong>Vague outputs</strong> - Fix: Be specific<br>3. <strong>Missing constraints</strong> - Fix: Include don\'ts<br>4. <strong>Buried instructions</strong> - Fix: Put at END<br>5. <strong>Over-engineering</strong> - Fix: Match complexity'
+            },
+            {
+                front: 'What is meta-prompting?',
+                back: 'Using AI to analyze and improve your prompts—the tool sharpening itself.<br><br><em>"Analyze this prompt and suggest improvements: [paste prompt]"</em><br><br>Works in any format, not just XML.'
+            }
+        ];
+
+        let currentCardIndex = 0;
+
+        function updateFlashcard() {
+            const card = flashcards[currentCardIndex];
+            document.getElementById('flashcard-front-content').innerHTML = card.front;
+            document.getElementById('flashcard-back-content').innerHTML = card.back;
+            document.getElementById('currentCard').textContent = currentCardIndex + 1;
+            document.getElementById('flashcard').classList.remove('flipped');
+        }
+
+        document.getElementById('flashcard').addEventListener('click', function() {
+            this.classList.toggle('flipped');
+        });
+
+        function nextCard() {
+            currentCardIndex = (currentCardIndex + 1) % flashcards.length;
+            updateFlashcard();
+        }
+
+        function prevCard() {
+            currentCardIndex = (currentCardIndex - 1 + flashcards.length) % flashcards.length;
+            updateFlashcard();
+        }
+
+        // Quiz
+        const quizFeedback = {
+            1: 'All three formats (XML, Markdown, Clear Sections) create separation between prompt components. The goal is clarity, not a specific syntax.',
+            2: 'XML has specific advantages: nesting data, requesting structured output, creating templates, and avoiding confusion when data contains Markdown.',
+            3: 'Simple tasks work fine without formal structure. Match complexity to the task—the goal is clarity, not ceremony.',
+            4: 'You can ask Claude to organize messy notes into structured sections, then use that clean output as input for subsequent prompts.'
+        };
+
+        document.querySelectorAll('.quiz-option').forEach(option => {
+            option.addEventListener('click', function() {
+                const question = this.closest('.quiz-question');
+                question.querySelectorAll('.quiz-option').forEach(opt => {
+                    opt.classList.remove('selected');
+                });
+                this.classList.add('selected');
+            });
+        });
+
+        document.querySelectorAll('.check-answer-btn').forEach((btn, index) => {
+            btn.addEventListener('click', function() {
+                const question = this.closest('.quiz-question');
+                const selected = question.querySelector('.quiz-option.selected');
+                const feedback = question.querySelector('.quiz-feedback');
+                const correctAnswer = question.dataset.correct;
+
+                if (!selected) {
+                    alert('Please select an answer');
+                    return;
+                }
+
+                const selectedValue = selected.dataset.value;
+                const isCorrect = selectedValue === correctAnswer;
+
+                question.querySelectorAll('.quiz-option').forEach(opt => {
+                    opt.classList.remove('correct', 'incorrect');
+                    if (opt.dataset.value === correctAnswer) {
+                        opt.classList.add('correct');
+                    } else if (opt === selected && !isCorrect) {
+                        opt.classList.add('incorrect');
+                    }
+                });
+
+                feedback.className = 'quiz-feedback show ' + (isCorrect ? 'correct' : 'incorrect');
+                feedback.innerHTML = `<strong>${isCorrect ? '✓ Correct!' : '✗ Incorrect'}</strong><br>${quizFeedback[index + 1] || ''}`;
+
+                this.disabled = true;
+                this.textContent = isCorrect ? '✓ Correct' : 'See Above';
+            });
+        });
+
+        // Copy to clipboard
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                alert('Copied to clipboard!');
+            });
+        }
+
+        // Initialize
+        document.getElementById('totalCards').textContent = flashcards.length;
+        updateProgress();
+    </script>
+</body>
+</html>

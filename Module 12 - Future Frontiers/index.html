@@ -1,0 +1,2204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module 10: Future Frontiers | Solo Pilot to Squadron Leader</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sofia+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* ActivTrak Official Brand Colors */
+            --dark-navy: #14203F;
+            --medium-navy: #19316A;
+            --blue: #1657A0;
+            --teal: #2ED4B5;
+            --yellow: #FFC83B;
+            --white: #FFFFFF;
+            --light-gray: #E5E7EB;
+            --bg-light: #F8FAFC;
+
+            /* Semantic mappings */
+            --primary-blue: #19316A;
+            --pelorous: #1657A0;
+            --dark-base: #14203F;
+            --success: #2ED4B5;
+            --error: #DC2626;
+            --warning: #F59E0B;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Sofia Sans', sans-serif;
+            background: var(--bg-light);
+            color: var(--dark-base);
+            line-height: 1.6;
+        }
+
+        /* Header */
+        .course-header {
+            background: linear-gradient(135deg, var(--dark-navy) 0%, var(--medium-navy) 100%);
+            color: white;
+            padding: 1rem 2rem;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .course-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .course-subtitle {
+            font-size: 0.85rem;
+            opacity: 0.9;
+        }
+
+        .progress-container {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .progress-bar {
+            width: 200px;
+            height: 8px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--teal);
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        .progress-text {
+            font-size: 0.85rem;
+        }
+
+        /* Main Layout */
+        .main-container {
+            display: flex;
+            margin-top: 60px;
+            min-height: calc(100vh - 60px);
+        }
+
+        /* Sidebar Navigation */
+        .sidebar {
+            width: 280px;
+            background: var(--white);
+            border-right: 1px solid var(--light-gray);
+            position: fixed;
+            top: 60px;
+            bottom: 0;
+            left: 0;
+            overflow-y: auto;
+            padding: 1.5rem 0;
+        }
+
+        .nav-section {
+            padding: 0 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .nav-section-title {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #6B7280;
+            margin-bottom: 0.75rem;
+            padding: 0 0.75rem;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 0.25rem;
+        }
+
+        .nav-item:hover {
+            background: var(--bg-light);
+        }
+
+        .nav-item.active {
+            background: rgba(0, 66, 243, 0.1);
+            color: var(--primary-blue);
+        }
+
+        .nav-item.completed .nav-icon {
+            background: var(--success);
+            color: white;
+        }
+
+        .nav-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: var(--light-gray);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .nav-item.active .nav-icon {
+            background: var(--primary-blue);
+            color: white;
+        }
+
+        .nav-label {
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .nav-duration {
+            font-size: 0.75rem;
+            color: #6B7280;
+            margin-left: auto;
+        }
+
+        /* Content Area */
+        .content-area {
+            flex: 1;
+            margin-left: 280px;
+            padding: 2rem 3rem;
+            max-width: 1000px;
+        }
+
+        /* Screen Sections */
+        .screen {
+            display: none;
+        }
+
+        .screen.active {
+            display: block;
+            animation: fadeIn 0.4s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Welcome Screen */
+        .welcome-hero {
+            background: linear-gradient(135deg, var(--dark-navy) 0%, var(--medium-navy) 100%);
+            border-radius: 16px;
+            padding: 3rem;
+            color: white;
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .welcome-hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 400px;
+            height: 400px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+        }
+
+        .welcome-hero h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            position: relative;
+        }
+
+        .welcome-hero .module-tag {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            margin-bottom: 1rem;
+        }
+
+        .welcome-hero p {
+            font-size: 1.1rem;
+            opacity: 0.95;
+            max-width: 600px;
+            position: relative;
+        }
+
+        .objectives-card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .objectives-card h2 {
+            font-size: 1.25rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .objective-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--bg-light);
+        }
+
+        .objective-item:last-child {
+            border-bottom: none;
+        }
+
+        .objective-level {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .level-retrieval { background: #E0F2FE; color: #0369A1; }
+        .level-comprehension { background: #FEF3C7; color: #B45309; }
+        .level-analysis { background: #FCE7F3; color: #BE185D; }
+        .level-utilization { background: #D1FAE5; color: #047857; }
+
+        .time-estimate {
+            display: flex;
+            gap: 2rem;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--bg-light);
+        }
+
+        .time-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #6B7280;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            font-family: inherit;
+        }
+
+        .btn-primary {
+            background: var(--primary-blue);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #0035CC;
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: var(--white);
+            color: var(--dark-base);
+            border: 1px solid var(--light-gray);
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg-light);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .content-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--light-gray);
+        }
+
+        /* Lesson Content */
+        .lesson-content {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 2.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .lesson-content h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            color: var(--primary-blue);
+        }
+
+        .lesson-content h2 {
+            font-size: 1.5rem;
+            margin: 2rem 0 1rem;
+            color: var(--dark-base);
+        }
+
+        .lesson-content h3 {
+            font-size: 1.2rem;
+            margin: 1.5rem 0 0.75rem;
+        }
+
+        .lesson-content p {
+            margin-bottom: 1rem;
+            color: #4B5563;
+        }
+
+        .lesson-content ul, .lesson-content ol {
+            margin: 1rem 0;
+            padding-left: 1.5rem;
+        }
+
+        .lesson-content li {
+            margin-bottom: 0.5rem;
+            color: #4B5563;
+        }
+
+        .concept-card {
+            background: var(--bg-light);
+            border-left: 4px solid var(--primary-blue);
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .concept-card h4 {
+            color: var(--primary-blue);
+            margin-bottom: 0.75rem;
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+        }
+
+        .comparison-table th, .comparison-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--light-gray);
+        }
+
+        .comparison-table th {
+            background: var(--bg-light);
+            font-weight: 600;
+        }
+
+        .comparison-table tr:hover {
+            background: var(--bg-light);
+        }
+
+        .prompt-box {
+            background: #1E293B;
+            color: #E2E8F0;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            position: relative;
+            white-space: pre-wrap;
+        }
+
+        .prompt-box.good {
+            border-left: 4px solid var(--success);
+        }
+
+        .prompt-label {
+            position: absolute;
+            top: -10px;
+            left: 12px;
+            background: var(--success);
+            color: white;
+            padding: 0.2rem 0.6rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-family: 'Sofia Sans', sans-serif;
+        }
+
+        /* Flashcards */
+        .flashcard-container {
+            perspective: 1000px;
+            margin: 2rem 0;
+        }
+
+        .flashcard {
+            width: 100%;
+            height: 300px;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.6s;
+            cursor: pointer;
+        }
+
+        .flashcard.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .flashcard-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .flashcard-front {
+            background: linear-gradient(135deg, var(--dark-navy) 0%, var(--medium-navy) 100%);
+            color: white;
+            font-size: 1.3rem;
+            font-weight: 500;
+        }
+
+        .flashcard-back {
+            background: var(--white);
+            border: 2px solid var(--primary-blue);
+            transform: rotateY(180deg);
+            font-size: 1rem;
+            white-space: pre-line;
+            text-align: left;
+            overflow-y: auto;
+        }
+
+        .flashcard-nav {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 2rem;
+            margin-top: 1.5rem;
+        }
+
+        .flashcard-counter {
+            font-size: 1rem;
+            color: #6B7280;
+        }
+
+        /* Lab Styles */
+        .lab-step {
+            display: none;
+            background: var(--white);
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .lab-step.active {
+            display: block;
+        }
+
+        .lab-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .step-number {
+            width: 40px;
+            height: 40px;
+            background: var(--primary-blue);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+        }
+
+        .lab-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+        }
+
+        /* Quiz Styles */
+        .quiz-progress {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .quiz-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--light-gray);
+            transition: all 0.3s;
+        }
+
+        .quiz-dot.current {
+            background: var(--primary-blue);
+            transform: scale(1.2);
+        }
+
+        .quiz-dot.correct {
+            background: var(--success);
+        }
+
+        .quiz-dot.incorrect {
+            background: var(--error);
+        }
+
+        .question-card {
+            display: none;
+            background: var(--white);
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .question-card.active {
+            display: block;
+        }
+
+        .question-text {
+            font-size: 1.2rem;
+            font-weight: 500;
+            margin-bottom: 1.5rem;
+        }
+
+        .answer-options {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .answer-option {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            border: 2px solid var(--light-gray);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .answer-option:hover:not(.disabled) {
+            border-color: var(--primary-blue);
+            background: rgba(0, 66, 243, 0.05);
+        }
+
+        .answer-option.correct {
+            border-color: var(--success);
+            background: rgba(47, 211, 180, 0.1);
+        }
+
+        .answer-option.incorrect {
+            border-color: var(--error);
+            background: rgba(238, 44, 130, 0.1);
+        }
+
+        .answer-option.disabled {
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        .option-letter {
+            width: 32px;
+            height: 32px;
+            background: var(--bg-light);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+
+        .feedback-panel {
+            margin-top: 1.5rem;
+            padding: 1.5rem;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .feedback-panel.show {
+            display: block;
+        }
+
+        .feedback-header {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .feedback-correct {
+            background: rgba(47, 211, 180, 0.1);
+            border-left: 4px solid var(--success);
+        }
+
+        .feedback-incorrect {
+            background: rgba(238, 44, 130, 0.1);
+            border-left: 4px solid var(--error);
+        }
+
+        .quiz-nav {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 1.5rem;
+        }
+
+        /* Results */
+        .results-card {
+            text-align: center;
+            padding: 3rem;
+        }
+
+        .results-score {
+            font-size: 4rem;
+            font-weight: 700;
+            color: var(--primary-blue);
+        }
+
+        .results-message {
+            font-size: 1.5rem;
+            margin: 1rem 0;
+        }
+
+        .results-breakdown {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            margin: 2rem 0;
+        }
+
+        .breakdown-item {
+            text-align: center;
+        }
+
+        .breakdown-number {
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .breakdown-number.correct { color: var(--success); }
+        .breakdown-number.incorrect { color: var(--error); }
+
+        /* Study Guide */
+        .study-guide-card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .study-guide-card h2 {
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .quick-ref-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .quick-ref-table th, .quick-ref-table td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid var(--bg-light);
+        }
+
+        .quick-ref-table th {
+            background: var(--bg-light);
+            font-weight: 600;
+        }
+
+        .do-dont-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        .do-column h3 { color: var(--success); }
+        .dont-column h3 { color: var(--error); }
+
+        .do-dont-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin: 0.5rem 0;
+        }
+
+        /* Copy Block */
+        .copy-block {
+            position: relative;
+            background: #1E293B;
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background: rgba(255,255,255,0.1);
+            color: white;
+            border: none;
+            padding: 0.4rem 0.8rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+
+        .copy-btn:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .copy-block pre {
+            color: #E2E8F0;
+            padding: 1.5rem;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            white-space: pre-wrap;
+        }
+
+        /* Video placeholder */
+        .video-placeholder {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            border-radius: 12px;
+            padding: 4rem 2rem;
+            text-align: center;
+            color: white;
+            margin-bottom: 2rem;
+        }
+
+        .video-placeholder h3 {
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .video-placeholder p {
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="course-header">
+        <div>
+            <div class="course-title">Solo Pilot to Squadron Leader</div>
+            <div class="course-subtitle">Module 10: Future Frontiers</div>
+        </div>
+        <div class="progress-container">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+            </div>
+            <span class="progress-text" id="progressText">0% Complete</span>
+        </div>
+    </header>
+
+    <div class="main-container">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="nav-section">
+                <div class="nav-section-title">Module Content</div>
+                <div class="nav-item active" data-screen="welcome" onclick="navigateTo('welcome')">
+                    <div class="nav-icon">1</div>
+                    <span class="nav-label">Welcome</span>
+                    <span class="nav-duration">2 min</span>
+                </div>
+                <div class="nav-item" data-screen="video" onclick="navigateTo('video')">
+                    <div class="nav-icon">2</div>
+                    <span class="nav-label">Video</span>
+                    <span class="nav-duration">11 min</span>
+                </div>
+                <div class="nav-item" data-screen="lesson-1" onclick="navigateTo('lesson-1')">
+                    <div class="nav-icon">3</div>
+                    <span class="nav-label">The Evolution</span>
+                    <span class="nav-duration">8 min</span>
+                </div>
+                <div class="nav-item" data-screen="lesson-2" onclick="navigateTo('lesson-2')">
+                    <div class="nav-icon">4</div>
+                    <span class="nav-label">MCP & Agents</span>
+                    <span class="nav-duration">10 min</span>
+                </div>
+                <div class="nav-item" data-screen="lesson-3" onclick="navigateTo('lesson-3')">
+                    <div class="nav-icon">5</div>
+                    <span class="nav-label">Preparing Now</span>
+                    <span class="nav-duration">8 min</span>
+                </div>
+            </div>
+            <div class="nav-section">
+                <div class="nav-section-title">Practice & Assessment</div>
+                <div class="nav-item" data-screen="flashcards" onclick="navigateTo('flashcards')">
+                    <div class="nav-icon">6</div>
+                    <span class="nav-label">Flashcards</span>
+                    <span class="nav-duration">5 min</span>
+                </div>
+                <div class="nav-item" data-screen="lab" onclick="navigateTo('lab')">
+                    <div class="nav-icon">7</div>
+                    <span class="nav-label">Lab Exercise</span>
+                    <span class="nav-duration">25 min</span>
+                </div>
+                <div class="nav-item" data-screen="quiz" onclick="navigateTo('quiz')">
+                    <div class="nav-icon">8</div>
+                    <span class="nav-label">Quiz</span>
+                    <span class="nav-duration">10 min</span>
+                </div>
+                <div class="nav-item" data-screen="study-guide" onclick="navigateTo('study-guide')">
+                    <div class="nav-icon">9</div>
+                    <span class="nav-label">Study Guide</span>
+                    <span class="nav-duration">5 min</span>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="content-area">
+            <!-- Welcome Screen -->
+            <section id="welcome" class="screen active">
+                <div class="welcome-hero">
+                    <span class="module-tag">Module 10 of 11</span>
+                    <h1>Future Frontiers</h1>
+                    <p>Agents, MCP & The Next Evolution of AI</p>
+                </div>
+
+                <div class="concept-card" style="border-left-color: var(--warning); margin-bottom: 2rem;">
+                        <h4 style="color: var(--warning);">Note for Learners</h4>
+                        <p>This module covers advanced concepts. If you're still building fluency with Modules 1-9, feel free to skim this module now and return when you're ready to implement these capabilities. The core course skills don't require mastering this material immediately.</p>
+                    </div>
+
+                <div class="objectives-card">
+                    <h2>Learning Objectives</h2>
+                    <div class="objective-item">
+                        <span class="objective-level level-comprehension">Comprehension</span>
+                        <span>Explain the evolution from Chat to Tools to Agents and what distinguishes each phase</span>
+                    </div>
+                    <div class="objective-item">
+                        <span class="objective-level level-retrieval">Retrieval</span>
+                        <span>Define MCP (Model Context Protocol) and its role in enabling agent capabilities</span>
+                    </div>
+                    <div class="objective-item">
+                        <span class="objective-level level-analysis">Analysis</span>
+                        <span>Convert task-based requests into goal-based designs suitable for agentic workflows</span>
+                    </div>
+                    <div class="objective-item">
+                        <span class="objective-level level-utilization">Utilization</span>
+                        <span>Design workflows with appropriate human checkpoints and governance considerations</span>
+                    </div>
+
+                    <div class="time-estimate">
+                        <div class="time-item">
+                            <span>Total Time:</span>
+                            <strong>~75 minutes</strong>
+                        </div>
+                        <div class="time-item">
+                            <span>Lab:</span>
+                            <strong>25-30 minutes</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="btn btn-primary" onclick="navigateTo('video')">Start Module →</button>
+            </section>
+
+            <!-- Video Screen -->
+            <section id="video" class="screen">
+                <div class="video-placeholder">
+                    <h3>Module 10 Video</h3>
+                    <p>Future Frontiers: Agents & MCP (~11 minutes)</p>
+                    <p style="margin-top: 1rem; font-size: 0.9rem;">Video content will be embedded here</p>
+                </div>
+
+                <div class="content-nav">
+                    <button class="btn btn-secondary" onclick="navigateTo('welcome')">← Back</button>
+                    <button class="btn btn-primary" onclick="navigateTo('lesson-1')">Continue to Lesson →</button>
+                </div>
+            </section>
+
+            <!-- Lesson 1: The Evolution -->
+            <section id="lesson-1" class="screen">
+                <div class="lesson-content">
+                    <h1>The Evolution: Chat → Tools → Agents</h1>
+                    <p class="subtitle" style="color: #6B7280; margin-bottom: 2rem;">Understanding where AI is heading</p>
+
+                    <h2>From Chat to Command</h2>
+                    <p>Throughout this course, you've transformed from Solo Pilot to Squadron Leader. But there's been a consistent limitation: <strong>you're still the one pushing all the buttons.</strong></p>
+                    <p>Module 10 introduces the next evolution: AI Agents and the Model Context Protocol (MCP). This is where AI shifts from "answering questions" to "completing missions."</p>
+
+                    <h2>The Three Phases</h2>
+
+                    <table class="comparison-table">
+                        <thead>
+                            <tr>
+                                <th>Phase</th>
+                                <th>Capability</th>
+                                <th>Human Role</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Chat</strong></td>
+                                <td>AI responds with text</td>
+                                <td>Asks questions, receives answers</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Tools</strong></td>
+                                <td>AI executes code, creates files, searches</td>
+                                <td>Triggers each action manually</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Agents</strong></td>
+                                <td>AI plans and executes multi-step workflows</td>
+                                <td>Defines goals, reviews results</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="concept-card">
+                        <h4>The Key Shift</h4>
+                        <p>In the Agent phase, you define the <strong>mission objective</strong>. The agent executes the <strong>flight plan</strong>. Your role changes from "orchestrating every step" to "defining outcomes and reviewing results."</p>
+                    </div>
+
+                    <h2>Traditional vs. Agent Approach</h2>
+
+                    <h3>Traditional (What You Do Today)</h3>
+                    <ol>
+                        <li>Ask Gemini to research competitor pricing</li>
+                        <li>Copy the results</li>
+                        <li>Paste into Claude</li>
+                        <li>Ask Claude to analyze</li>
+                        <li>Request a comparison table</li>
+                        <li>Download the output</li>
+                    </ol>
+
+                    <h3>Agent Approach (The Future)</h3>
+                    <div class="prompt-box good">
+                        <span class="prompt-label">Goal-Based Prompt</span>
+Goal: "Research current pricing for Teramind, Hubstaff, and Insightful.
+Compare to our pricing. Identify opportunities and risks.
+Output a competitive pricing memo."
+
+Agent autonomously:
+1. Searches for current pricing data
+2. Structures findings into comparison
+3. Analyzes against ActivTrak pricing
+4. Identifies strategic implications
+5. Generates memo
+6. Presents for review</div>
+                </div>
+
+                <div class="content-nav">
+                    <button class="btn btn-secondary" onclick="navigateTo('video')">← Back</button>
+                    <button class="btn btn-primary" onclick="navigateTo('lesson-2')">Continue →</button>
+                </div>
+            </section>
+
+            <!-- Lesson 2: MCP & Agents -->
+            <section id="lesson-2" class="screen">
+                <div class="lesson-content">
+                    <h1>Model Context Protocol & Agents</h1>
+                    <p class="subtitle" style="color: #6B7280; margin-bottom: 2rem;">The infrastructure enabling autonomous AI</p>
+
+                    <h2>What Are AI Agents?</h2>
+                    <p>An AI Agent is an LLM that can <strong>Plan</strong>, <strong>Act</strong>, <strong>Observe</strong>, and <strong>Iterate</strong>.</p>
+
+                    <div class="concept-card">
+                        <h4>The Agent Loop</h4>
+                        <p><strong>Traditional AI:</strong> Input → Model → Output → Done</p>
+                        <p><strong>Agent AI:</strong> Goal → Plan → Act → Observe → (Repeat if needed) → Final Output</p>
+                        <p style="margin-top: 1rem;">The loop continues until the agent determines the goal is achieved or it needs human input.</p>
+                    </div>
+
+                    <h2>Model Context Protocol (MCP)</h2>
+                    <p>MCP is the infrastructure that makes agents possible. Think of it as the "USB standard" for connecting AI to external tools and data sources.</p>
+
+                    <table class="comparison-table">
+                        <thead>
+                            <tr>
+                                <th>Without MCP</th>
+                                <th>With MCP</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Claude only works with what you paste</td>
+                                <td>Claude can query databases directly</td>
+                            </tr>
+                            <tr>
+                                <td>No access to external systems</td>
+                                <td>Claude can read/write to file systems</td>
+                            </tr>
+                            <tr>
+                                <td>No ability to take actions outside chat</td>
+                                <td>Claude can interact with APIs</td>
+                            </tr>
+                            <tr>
+                                <td>Custom code for every integration</td>
+                                <td>Standardized connections to tools</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h2>Connectors: MCP in Action Today</h2>
+                    <p>While full agentic capabilities are maturing, you can already use <strong>connectors</strong>—pre-built integrations that give Claude access to external tools.</p>
+
+                    <h3>Web-Based Connectors (Claude.ai)</h3>
+                    <table class="comparison-table">
+                        <thead>
+                            <tr>
+                                <th>Connector</th>
+                                <th>What It Enables</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Slack</strong></td>
+                                <td>Read channels, search messages, post updates</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Google Drive</strong></td>
+                                <td>Access and analyze documents, spreadsheets</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Google Calendar</strong></td>
+                                <td>View schedule, find availability</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Gmail</strong></td>
+                                <td>Read and compose emails</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Jira</strong></td>
+                                <td>View tickets, create issues, update status</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Monday.com</strong></td>
+                                <td>Access boards, create tasks, update items</td>
+                            </tr>
+                            <tr>
+                                <td><strong>GitHub</strong></td>
+                                <td>Access repositories, review code, manage issues</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h3>Desktop Connectors (Advanced)</h3>
+                    <p>The Claude Desktop app supports deeper integrations through MCP servers:</p>
+                    <ul>
+                        <li><strong>Apple Notes</strong> - Read and write to your Notes app</li>
+                        <li><strong>Granola MCP</strong> - Access meeting transcripts</li>
+                        <li><strong>File System</strong> - Read/write files on your computer</li>
+                    </ul>
+
+                    <div class="concept-card" style="border-left-color: var(--warning);">
+                        <h4>Advanced Feature</h4>
+                        <p>Desktop connectors require technical configuration. Start with web-based connectors and return to desktop integration when ready.</p>
+                    </div>
+
+                    <h2>Goal Thinking vs. Task Thinking</h2>
+
+                    <table class="comparison-table">
+                        <thead>
+                            <tr>
+                                <th>Task Thinking</th>
+                                <th>Goal Thinking</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>"Summarize this document"</td>
+                                <td>"Prepare me for my client meeting"</td>
+                            </tr>
+                            <tr>
+                                <td>"Create a chart"</td>
+                                <td>"Identify cost-saving opportunities"</td>
+                            </tr>
+                            <tr>
+                                <td>"Write an email"</td>
+                                <td>"Monitor competitors and alert me to changes"</td>
+                            </tr>
+                            <tr>
+                                <td>Single action</td>
+                                <td>Outcome (multiple actions)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h2>Structured Output as Agent Language</h2>
+                    <p>When AI operates as an agent, structured output becomes essential. Agents need to pass information between steps reliably and interface with external systems.</p>
+
+                    <div class="prompt-box good">
+                        <span class="prompt-label">If/Then Logic</span>
+Analyze the uploaded sales data.
+
+IF total_revenue < target:
+  - Identify the three accounts with largest shortfalls
+  - Draft follow-up emails for each account
+  - Flag for my review before sending
+
+IF total_revenue >= target:
+  - Generate celebratory summary for team Slack
+  - Create visual for executive dashboard
+  - Mark as "auto-post" approved</div>
+
+                    <p>This transforms the prompt from a question into a <strong>decision tree</strong> that the agent can navigate.</p>
+                </div>
+
+                <div class="content-nav">
+                    <button class="btn btn-secondary" onclick="navigateTo('lesson-1')">← Back</button>
+                    <button class="btn btn-primary" onclick="navigateTo('lesson-3')">Continue →</button>
+                </div>
+            </section>
+
+            <!-- Lesson 3: Preparing Now -->
+            <section id="lesson-3" class="screen">
+                <div class="lesson-content">
+                    <h1>Preparing for an Agentic Future</h1>
+                    <p class="subtitle" style="color: #6B7280; margin-bottom: 2rem;">Skills you can build today</p>
+
+                    <p>You don't need to wait for mature agent systems. The skills you build now directly translate to agent effectiveness.</p>
+
+                    <h2>1. Master Structured Communication</h2>
+                    <p>Agents parse structured input more reliably than natural language. Your XML and schema skills are agent-readiness skills.</p>
+
+                    <div class="prompt-box">
+                        <span class="prompt-label" style="background: var(--error);">Human-Friendly</span>
+"Send an email to the team about the meeting being moved to Thursday at 2pm"</div>
+
+                    <div class="prompt-box good">
+                        <span class="prompt-label">Agent-Friendly</span>
+&lt;task&gt;send_email&lt;/task&gt;
+&lt;recipients&gt;team_distribution&lt;/recipients&gt;
+&lt;subject&gt;Meeting Rescheduled&lt;/subject&gt;
+&lt;content&gt;
+  &lt;change&gt;Meeting moved to Thursday, 2:00 PM&lt;/change&gt;
+  &lt;reason&gt;Conflict with client call&lt;/reason&gt;
+  &lt;action_required&gt;Update calendars&lt;/action_required&gt;
+&lt;/content&gt;</div>
+
+                    <h2>2. Define Clear Success Criteria</h2>
+                    <p>Agents need to know when they're done. Vague goals create problems.</p>
+
+                    <div class="prompt-box">
+                        <span class="prompt-label" style="background: var(--error);">Vague</span>
+"Improve the report"</div>
+
+                    <div class="prompt-box good">
+                        <span class="prompt-label">Clear</span>
+"Revise the report to include:
+- Executive summary (max 200 words)
+- Data tables with Q3 comparisons
+- Three specific recommendations with supporting evidence
+- Mark complete when all three sections pass review checklist"</div>
+
+                    <h2>3. Build Modular Workflows</h2>
+                    <p>The Skills framework from Module 8 is exactly this—modular, reusable components that can be chained together.</p>
+
+                    <div class="concept-card">
+                        <h4>Agent Skill Chain Example</h4>
+                        <p>A "Competitive Analysis" agent might chain:</p>
+                        <ol>
+                            <li>RESEARCH_COMPETITOR skill</li>
+                            <li>STRUCTURE_COMPARISON skill</li>
+                            <li>STRATEGIC_IMPLICATIONS skill</li>
+                            <li>FORMAT_DELIVERABLE skill</li>
+                        </ol>
+                        <p>Each skill is a defined module. The agent orchestrates the sequence.</p>
+                    </div>
+
+                    <h2>4. Plan for Human Checkpoints</h2>
+                    <p>Even with agents, human oversight remains essential. Design workflows with clear review points:</p>
+
+                    <div class="prompt-box good">
+                        <span class="prompt-label">Checkpoint Design</span>
+PHASE 1: Data Gathering (Autonomous)
+  → Agent researches and compiles
+
+CHECKPOINT: Human reviews data quality
+
+PHASE 2: Analysis (Autonomous)
+  → Agent processes and synthesizes
+
+CHECKPOINT: Human validates conclusions
+
+PHASE 3: Delivery (Human-Approved)
+  → Agent formats output
+  → Human sends/publishes</div>
+
+                    <h2>Governance Considerations</h2>
+
+                    <table class="comparison-table">
+                        <thead>
+                            <tr>
+                                <th>Area</th>
+                                <th>Consideration</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Permission Boundaries</strong></td>
+                                <td>What can the agent access? Which actions require approval?</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Audit Trails</strong></td>
+                                <td>Log all tool invocations, record decision points, maintain rollback capability</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Escalation Triggers</strong></td>
+                                <td>Unusual situations, high-consequence decisions, error conditions</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Human Accountability</strong></td>
+                                <td>"Agents execute. Humans remain accountable."</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="concept-card" style="border-left-color: var(--warning);">
+                        <h4>The Human Accountability Principle</h4>
+                        <p><strong>"You clear missions for takeoff and own what leaves the runway."</strong></p>
+                        <p>Agents execute. Humans remain accountable. Every agent output that affects customers, partners, or external stakeholders requires human review before release.</p>
+                    </div>
+                </div>
+
+                <div class="content-nav">
+                    <button class="btn btn-secondary" onclick="navigateTo('lesson-2')">← Back</button>
+                    <button class="btn btn-primary" onclick="navigateTo('flashcards')">Continue to Flashcards →</button>
+                </div>
+            </section>
+
+            <!-- Flashcards -->
+            <section id="flashcards" class="screen">
+                <h1 style="margin-bottom: 0.5rem;">Flashcards</h1>
+                <p style="color: #6B7280; margin-bottom: 2rem;">Click to flip. Test your knowledge of key concepts.</p>
+
+                <div class="flashcard-container">
+                    <div class="flashcard" id="flashcard" onclick="flipCard()">
+                        <div class="flashcard-face flashcard-front" id="cardFront">
+                            What are the three phases of AI capability evolution?
+                        </div>
+                        <div class="flashcard-face flashcard-back" id="cardBack">
+                            1. Chat: Human asks, AI responds with text
+2. Tools: AI executes code, creates files, searches (human triggers each action)
+3. Agents: AI receives goals, autonomously plans and executes multiple steps
+
+Key shift: From orchestrating every step to defining mission and reviewing results.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flashcard-nav">
+                    <button class="btn btn-secondary" onclick="prevCard()">← Previous</button>
+                    <span class="flashcard-counter">Card <span id="cardNum">1</span> of 9</span>
+                    <button class="btn btn-primary" onclick="nextCard()">Next →</button>
+                </div>
+
+                <div class="content-nav">
+                    <button class="btn btn-secondary" onclick="navigateTo('lesson-3')">← Back to Lesson</button>
+                    <button class="btn btn-primary" onclick="navigateTo('lab')">Continue to Lab →</button>
+                </div>
+            </section>
+
+            <!-- Lab Exercise -->
+            <section id="lab" class="screen">
+                <h1 style="margin-bottom: 0.5rem;">Lab Exercise</h1>
+                <p style="color: #6B7280; margin-bottom: 2rem;">Designing for the Agentic Future (25-30 minutes)</p>
+
+                <!-- Lab Step 1 -->
+                <div class="lab-step active" id="labStep1">
+                    <div class="lab-header">
+                        <div class="step-number">1</div>
+                        <div>
+                            <h3>Task-to-Goal Conversion</h3>
+                            <p style="color: #6B7280;">Convert task-based workflows into goal-based designs</p>
+                        </div>
+                    </div>
+
+                    <h4>Current Tasks (Manual Approach)</h4>
+                    <p><strong>Meeting Action Items to Monday.com:</strong></p>
+                    <ol>
+                        <li>Review meeting notes for action items</li>
+                        <li>Identify who is responsible for each item</li>
+                        <li>Determine priority and due dates</li>
+                        <li>Open Monday.com</li>
+                        <li>Create tasks for each action item</li>
+                        <li>Assign to appropriate team members</li>
+                    </ol>
+
+                    <h4 style="margin-top: 1.5rem;">Your Task</h4>
+                    <p>Rewrite this as a single <strong>goal statement</strong> that an agent could execute.</p>
+
+                    <div class="copy-block">
+                        <button class="copy-btn" onclick="copyToClipboard(this)">Copy Template</button>
+                        <pre>GOAL: [Outcome description]
+
+SUCCESS CRITERIA:
+- [Measurable outcome 1]
+- [Measurable outcome 2]
+- [Measurable outcome 3]
+
+HUMAN CHECKPOINTS:
+- [Where human review is required]</pre>
+                    </div>
+
+                    <div class="lab-nav">
+                        <span></span>
+                        <button class="btn btn-primary" id="labNextBtn" onclick="nextLabStep()">Next Step →</button>
+                    </div>
+                </div>
+
+                <!-- Lab Step 2 -->
+                <div class="lab-step" id="labStep2">
+                    <div class="lab-header">
+                        <div class="step-number">2</div>
+                        <div>
+                            <h3>If/Then Prompt Design</h3>
+                            <p style="color: #6B7280;">Create prompts with conditional logic</p>
+                        </div>
+                    </div>
+
+                    <h4>Scenario: Monthly Account Health Check</h4>
+                    <p>The agent should analyze account usage data, categorize accounts (Healthy >80%, At-Risk 50-80%, Critical <50%), and take different actions based on category.</p>
+
+                    <div class="copy-block">
+                        <button class="copy-btn" onclick="copyToClipboard(this)">Copy Template</button>
+                        <pre>GOAL: Monthly account health assessment
+
+INPUT:
+&lt;account_data&gt;[Usage CSV will be provided]&lt;/account_data&gt;
+
+PROCESS:
+1. Analyze engagement metrics for each account
+2. Categorize by engagement level
+
+CONDITIONAL ACTIONS:
+
+IF engagement >= 80% (Healthy):
+  [What should the agent do?]
+
+IF engagement 50-80% (At-Risk):
+  [What should the agent do?]
+
+IF engagement < 50% (Critical):
+  [What should the agent do?]
+
+OUTPUT FORMAT:
+[Specify the structure]
+
+HUMAN CHECKPOINT:
+[When should a human review before action?]</pre>
+                    </div>
+
+                    <div class="lab-nav">
+                        <button class="btn btn-secondary" id="labPrevBtn" onclick="prevLabStep()">← Previous</button>
+                        <button class="btn btn-primary" onclick="nextLabStep()">Next Step →</button>
+                    </div>
+                </div>
+
+                <!-- Lab Step 3 -->
+                <div class="lab-step" id="labStep3">
+                    <div class="lab-header">
+                        <div class="step-number">3</div>
+                        <div>
+                            <h3>Modular Workflow Design</h3>
+                            <p style="color: #6B7280;">Identify component Skills for agent chains</p>
+                        </div>
+                    </div>
+
+                    <h4>Goal: Generate a competitive battle card for [COMPETITOR]</h4>
+                    <p>List the component Skills (modules) needed for this workflow:</p>
+
+                    <table class="comparison-table">
+                        <thead>
+                            <tr>
+                                <th>Skill Name</th>
+                                <th>Purpose</th>
+                                <th>Input</th>
+                                <th>Output</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>RESEARCH_COMPETITOR</td>
+                                <td>Gather current intelligence</td>
+                                <td>Competitor name</td>
+                                <td>Fact brief with citations</td>
+                            </tr>
+                            <tr>
+                                <td>[Your Skill 2]</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>[Your Skill 3]</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>[Your Skill 4]</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h4 style="margin-top: 1.5rem;">Workflow Chain</h4>
+                    <p>Draw the sequence showing how Skills connect and where checkpoints occur.</p>
+
+                    <div class="lab-nav">
+                        <button class="btn btn-secondary" onclick="prevLabStep()">← Previous</button>
+                        <button class="btn btn-primary" onclick="nextLabStep()">Next Step →</button>
+                    </div>
+                </div>
+
+                <!-- Lab Step 4 -->
+                <div class="lab-step" id="labStep4">
+                    <div class="lab-header">
+                        <div class="step-number">4</div>
+                        <div>
+                            <h3>Governance Framework</h3>
+                            <p style="color: #6B7280;">Design agent permissions and escalation triggers</p>
+                        </div>
+                    </div>
+
+                    <h4>Scenario: Customer Success QBR Preparation Agent</h4>
+                    <p>Define what the agent should and should not be able to do:</p>
+
+                    <table class="comparison-table">
+                        <thead>
+                            <tr>
+                                <th>Action</th>
+                                <th>Allowed?</th>
+                                <th>Requires Approval?</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Read client usage data</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>Write to internal database</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>Send email to client</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>Post to internal Slack</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>Access client PII</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h4 style="margin-top: 1.5rem;">Escalation Triggers</h4>
+                    <p>Define situations that should automatically stop the agent and escalate to human:</p>
+                    <ol>
+                        <li>[Situation 1]</li>
+                        <li>[Situation 2]</li>
+                        <li>[Situation 3]</li>
+                    </ol>
+
+                    <div class="lab-nav">
+                        <button class="btn btn-secondary" onclick="prevLabStep()">← Previous</button>
+                        <button class="btn btn-success" onclick="navigateTo('quiz')">Complete Lab ✓</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Quiz -->
+            <section id="quiz" class="screen">
+                <h1 style="margin-bottom: 0.5rem;">Knowledge Check</h1>
+                <p style="color: #6B7280; margin-bottom: 2rem;">Test your understanding of Agents & MCP concepts</p>
+
+                <div class="quiz-progress">
+                    <div class="quiz-dot current" data-q="0"></div>
+                    <div class="quiz-dot" data-q="1"></div>
+                    <div class="quiz-dot" data-q="2"></div>
+                    <div class="quiz-dot" data-q="3"></div>
+                    <div class="quiz-dot" data-q="4"></div>
+                    <div class="quiz-dot" data-q="5"></div>
+                    <div class="quiz-dot" data-q="6"></div>
+                </div>
+
+                <!-- Question 1 -->
+                <div class="question-card active" data-question="0">
+                    <div class="question-text">What is the key difference between "Tools" phase AI and "Agents" phase AI?</div>
+                    <div class="answer-options">
+                        <div class="answer-option" data-answer="a" onclick="selectAnswer(this, 0)">
+                            <span class="option-letter">A</span>
+                            <span>Agents can access the internet; Tools cannot</span>
+                        </div>
+                        <div class="answer-option" data-answer="b" onclick="selectAnswer(this, 0)">
+                            <span class="option-letter">B</span>
+                            <span>Agents receive goals and autonomously execute multiple steps; Tools require human triggering for each action</span>
+                        </div>
+                        <div class="answer-option" data-answer="c" onclick="selectAnswer(this, 0)">
+                            <span class="option-letter">C</span>
+                            <span>Agents are faster than Tools</span>
+                        </div>
+                        <div class="answer-option" data-answer="d" onclick="selectAnswer(this, 0)">
+                            <span class="option-letter">D</span>
+                            <span>Tools can create files; Agents can only generate text</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Question 2 -->
+                <div class="question-card" data-question="1">
+                    <div class="question-text">TRUE or FALSE: MCP (Model Context Protocol) allows AI to access external tools without requiring custom integration code for each tool.</div>
+                    <div class="answer-options">
+                        <div class="answer-option" data-answer="a" onclick="selectAnswer(this, 1)">
+                            <span class="option-letter">A</span>
+                            <span>TRUE</span>
+                        </div>
+                        <div class="answer-option" data-answer="b" onclick="selectAnswer(this, 1)">
+                            <span class="option-letter">B</span>
+                            <span>FALSE</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Question 3 -->
+                <div class="question-card" data-question="2">
+                    <div class="question-text">What is "goal thinking" in an agentic context?</div>
+                    <div class="answer-options">
+                        <div class="answer-option" data-answer="a" onclick="selectAnswer(this, 2)">
+                            <span class="option-letter">A</span>
+                            <span>Setting ambitious targets for AI performance</span>
+                        </div>
+                        <div class="answer-option" data-answer="b" onclick="selectAnswer(this, 2)">
+                            <span class="option-letter">B</span>
+                            <span>Defining outcomes that may require multiple actions, rather than specifying individual tasks</span>
+                        </div>
+                        <div class="answer-option" data-answer="c" onclick="selectAnswer(this, 2)">
+                            <span class="option-letter">C</span>
+                            <span>Using visualization techniques to improve AI results</span>
+                        </div>
+                        <div class="answer-option" data-answer="d" onclick="selectAnswer(this, 2)">
+                            <span class="option-letter">D</span>
+                            <span>Planning AI implementation timelines</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Question 4 -->
+                <div class="question-card" data-question="3">
+                    <div class="question-text">Which approach best demonstrates agent-ready design for competitive monitoring?</div>
+                    <div class="answer-options">
+                        <div class="answer-option" data-answer="a" onclick="selectAnswer(this, 3)">
+                            <span class="option-letter">A</span>
+                            <span>"Check competitor websites every Monday. If there are changes, notify me."</span>
+                        </div>
+                        <div class="answer-option" data-answer="b" onclick="selectAnswer(this, 3)">
+                            <span class="option-letter">B</span>
+                            <span>"Goal: Maintain current competitive intelligence. Success criteria: All pricing changes detected within 24 hours; significant announcements flagged with impact assessment. Human checkpoint: Review before external distribution."</span>
+                        </div>
+                        <div class="answer-option" data-answer="c" onclick="selectAnswer(this, 3)">
+                            <span class="option-letter">C</span>
+                            <span>"Research competitors and write a report."</span>
+                        </div>
+                        <div class="answer-option" data-answer="d" onclick="selectAnswer(this, 3)">
+                            <span class="option-letter">D</span>
+                            <span>"Use Gemini to search for competitor news, then paste into Claude for analysis."</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Question 5 -->
+                <div class="question-card" data-question="4">
+                    <div class="question-text">Why does structured output (XML/JSON) become MORE important with agents?</div>
+                    <div class="answer-options">
+                        <div class="answer-option" data-answer="a" onclick="selectAnswer(this, 4)">
+                            <span class="option-letter">A</span>
+                            <span>Agents can only read structured data</span>
+                        </div>
+                        <div class="answer-option" data-answer="b" onclick="selectAnswer(this, 4)">
+                            <span class="option-letter">B</span>
+                            <span>Structured output is faster to process</span>
+                        </div>
+                        <div class="answer-option" data-answer="c" onclick="selectAnswer(this, 4)">
+                            <span class="option-letter">C</span>
+                            <span>Agents need to pass information between steps reliably and interface with external systems that expect specific formats</span>
+                        </div>
+                        <div class="answer-option" data-answer="d" onclick="selectAnswer(this, 4)">
+                            <span class="option-letter">D</span>
+                            <span>Structured output uses fewer tokens</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Question 6 -->
+                <div class="question-card" data-question="5">
+                    <div class="question-text">TRUE or FALSE: With AI agents, human oversight becomes less important because the AI can handle more autonomously.</div>
+                    <div class="answer-options">
+                        <div class="answer-option" data-answer="a" onclick="selectAnswer(this, 5)">
+                            <span class="option-letter">A</span>
+                            <span>TRUE</span>
+                        </div>
+                        <div class="answer-option" data-answer="b" onclick="selectAnswer(this, 5)">
+                            <span class="option-letter">B</span>
+                            <span>FALSE</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Question 7 -->
+                <div class="question-card" data-question="6">
+                    <div class="question-text">For a Customer Success QBR prep agent (analyzes data, identifies trends, generates presentation), where should you place the human checkpoint?</div>
+                    <div class="answer-options">
+                        <div class="answer-option" data-answer="a" onclick="selectAnswer(this, 6)">
+                            <span class="option-letter">A</span>
+                            <span>Before the agent starts—human should review the goal first</span>
+                        </div>
+                        <div class="answer-option" data-answer="b" onclick="selectAnswer(this, 6)">
+                            <span class="option-letter">B</span>
+                            <span>After data analysis but before presentation generation—human validates the insights</span>
+                        </div>
+                        <div class="answer-option" data-answer="c" onclick="selectAnswer(this, 6)">
+                            <span class="option-letter">C</span>
+                            <span>Only at the end—human reviews the final presentation</span>
+                        </div>
+                        <div class="answer-option" data-answer="d" onclick="selectAnswer(this, 6)">
+                            <span class="option-letter">D</span>
+                            <span>No checkpoint needed—the agent should handle everything autonomously</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Results -->
+                <div class="question-card results-card" data-question="results" style="display: none;">
+                    <div class="results-score" id="quizScore">0/7</div>
+                    <div class="results-message" id="quizMessage">Quiz Complete!</div>
+                    <div class="results-breakdown">
+                        <div class="breakdown-item">
+                            <div class="breakdown-number correct" id="correctCount">0</div>
+                            <div>Correct</div>
+                        </div>
+                        <div class="breakdown-item">
+                            <div class="breakdown-number incorrect" id="incorrectCount">0</div>
+                            <div>Incorrect</div>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" onclick="navigateTo('study-guide')">View Study Guide →</button>
+                </div>
+
+                <div class="feedback-panel" id="feedbackPanel">
+                    <div class="feedback-header" id="feedbackHeader"></div>
+                    <div id="feedbackText"></div>
+                </div>
+
+                <div class="quiz-nav">
+                    <button class="btn btn-primary" id="quizNextBtn" onclick="nextQuestion()" disabled>Next Question →</button>
+                </div>
+            </section>
+
+            <!-- Study Guide -->
+            <section id="study-guide" class="screen">
+                <h1 style="margin-bottom: 0.5rem;">Study Guide</h1>
+                <p style="color: #6B7280; margin-bottom: 2rem;">Module 10 Quick Reference</p>
+
+                <div class="study-guide-card">
+                    <h2>Core Concept</h2>
+                    <p><strong>Squadron Commander Model:</strong> You've built infrastructure (Projects, Skills, Gems). Now prepare for autonomous operations where AI agents execute multi-step missions under your strategic direction.</p>
+                </div>
+
+                <div class="study-guide-card">
+                    <h2>The Three Phases of AI</h2>
+                    <table class="quick-ref-table">
+                        <thead>
+                            <tr>
+                                <th>Phase</th>
+                                <th>Capability</th>
+                                <th>Human Role</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Chat</td>
+                                <td>AI responds with text</td>
+                                <td>Asks questions, receives answers</td>
+                            </tr>
+                            <tr>
+                                <td>Tools</td>
+                                <td>AI executes code, creates files, searches</td>
+                                <td>Triggers each action manually</td>
+                            </tr>
+                            <tr>
+                                <td>Agents</td>
+                                <td>AI plans and executes multi-step workflows</td>
+                                <td>Defines goals, reviews results</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="study-guide-card">
+                    <h2>Goal vs. Task Thinking</h2>
+                    <table class="quick-ref-table">
+                        <thead>
+                            <tr>
+                                <th>Task Thinking</th>
+                                <th>Goal Thinking</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>"Summarize this document"</td>
+                                <td>"Prepare me for my client meeting"</td>
+                            </tr>
+                            <tr>
+                                <td>"Create a chart"</td>
+                                <td>"Identify cost-saving opportunities"</td>
+                            </tr>
+                            <tr>
+                                <td>Single action</td>
+                                <td>Outcome (multiple actions)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="study-guide-card">
+                    <h2>Four Preparation Skills</h2>
+                    <table class="quick-ref-table">
+                        <thead>
+                            <tr>
+                                <th>Skill</th>
+                                <th>Why It Matters</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Master structured communication</td>
+                                <td>Agents parse XML/JSON reliably</td>
+                            </tr>
+                            <tr>
+                                <td>Define clear success criteria</td>
+                                <td>Agents need to know when they're done</td>
+                            </tr>
+                            <tr>
+                                <td>Build modular workflows</td>
+                                <td>Skills enable chainable operations</td>
+                            </tr>
+                            <tr>
+                                <td>Plan human checkpoints</td>
+                                <td>Design review points into automation</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="study-guide-card">
+                    <h2>Governance Framework</h2>
+                    <div class="do-dont-grid">
+                        <div class="do-column">
+                            <h3>✓ Do</h3>
+                            <div class="do-dont-item">
+                                <span style="color: var(--success);">✓</span>
+                                <span>Define permission boundaries</span>
+                            </div>
+                            <div class="do-dont-item">
+                                <span style="color: var(--success);">✓</span>
+                                <span>Maintain audit trails</span>
+                            </div>
+                            <div class="do-dont-item">
+                                <span style="color: var(--success);">✓</span>
+                                <span>Set escalation triggers</span>
+                            </div>
+                            <div class="do-dont-item">
+                                <span style="color: var(--success);">✓</span>
+                                <span>Place checkpoints at decision points</span>
+                            </div>
+                        </div>
+                        <div class="dont-column">
+                            <h3>✗ Don't</h3>
+                            <div class="do-dont-item">
+                                <span style="color: var(--error);">✗</span>
+                                <span>Skip human review for external outputs</span>
+                            </div>
+                            <div class="do-dont-item">
+                                <span style="color: var(--error);">✗</span>
+                                <span>Use vague success criteria</span>
+                            </div>
+                            <div class="do-dont-item">
+                                <span style="color: var(--error);">✗</span>
+                                <span>Automate high-consequence decisions</span>
+                            </div>
+                            <div class="do-dont-item">
+                                <span style="color: var(--error);">✗</span>
+                                <span>Assume agents reduce oversight needs</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="study-guide-card" style="background: linear-gradient(135deg, var(--dark-navy) 0%, var(--medium-navy) 100%); color: white;">
+                    <h2 style="color: white;">Next Module Preview</h2>
+                    <p><strong>Module 11: Capstone & Governance</strong></p>
+                    <p style="opacity: 0.9;">Bring everything together in the Capstone Mission—a comprehensive project demonstrating your mastery. Complete certification requirements and establish accountability frameworks.</p>
+                </div>
+
+                <div class="content-nav">
+                    <button class="btn btn-secondary" onclick="navigateTo('quiz')">← Back to Quiz</button>
+                    <button class="btn btn-success">Module Complete ✓</button>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // Navigation State
+        const screens = ['welcome', 'video', 'lesson-1', 'lesson-2', 'lesson-3', 'flashcards', 'lab', 'quiz', 'study-guide'];
+        let currentScreen = 'welcome';
+        let completedScreens = new Set();
+
+        // Flashcard State
+        const flashcards = [
+            {
+                front: "What are the three phases of AI capability evolution?",
+                back: "1. Chat: Human asks, AI responds with text\n2. Tools: AI executes code, creates files, searches (human triggers each action)\n3. Agents: AI receives goals, autonomously plans and executes multiple steps\n\nKey shift: From orchestrating every step to defining mission and reviewing results."
+            },
+            {
+                front: "What is an AI Agent?",
+                back: "An AI Agent can Plan, Act, Observe, and Iterate.\n\nTraditional AI: Input → Model → Output → Done\n\nAgent AI: Goal → Plan → Act → Observe → (Repeat if needed) → Final Output\n\nAgents determine what tools they need and adapt based on results."
+            },
+            {
+                front: "What is MCP (Model Context Protocol)?",
+                back: "MCP is the standardized protocol that connects AI models to external tools and data sources.\n\nThink of it as 'USB for AI'—one standard instead of custom integrations.\n\nEnables: Database connections, file system access, API interactions, cross-system workflows."
+            },
+            {
+                front: "What connectors are available in Claude today?",
+                back: "Web-Based (Claude.ai) - Easy to enable:\nSlack, Google Drive, Gmail, Google Calendar, Jira, Monday.com, GitHub\n\nDesktop (Claude App) - Advanced setup:\nApple Notes, Granola MCP, File System\n\nStart with web connectors and explore desktop MCPs when ready."
+            },
+            {
+                front: "What is 'goal thinking' vs. 'task thinking'?",
+                back: "Task thinking: Single actions ('Summarize this document')\nHuman specifies each step\n\nGoal thinking: Outcomes ('Prepare me for my client meeting')\nAgent determines the path\n\nGoals may require multiple actions. The agent figures out how."
+            },
+            {
+                front: "Why does structured output matter more with agents?",
+                back: "Agents need structure to:\n• Pass information between steps reliably\n• Interface with external systems\n• Make programmatic decisions\n\nPrompts become programs with If/Then logic.\n\nStructure is the programming language of autonomous workflows."
+            },
+            {
+                front: "What four skills prepare you for an agentic future?",
+                back: "1. Master structured communication (XML/JSON)\n2. Define clear success criteria\n3. Build modular workflows (Skills)\n4. Plan human checkpoints\n\nEverything you've learned in this course prepares you for agents."
+            },
+            {
+                front: "What governance applies to AI agents?",
+                back: "Permission boundaries: What can the agent access?\n\nAudit trails: Log decisions, maintain rollback capability\n\nEscalation triggers: When to stop and involve human\n\nHuman accountability: 'Agents execute. Humans remain accountable.'"
+            },
+            {
+                front: "Where should human checkpoints be placed?",
+                back: "Place checkpoints at DECISION POINTS, not just endpoints.\n\nExample: After data analysis but BEFORE presentation generation—validate the insights before building deliverables on them.\n\n'Validate the thinking, not just the output.'"
+            }
+        ];
+        let currentCard = 0;
+
+        // Lab State
+        let currentLabStep = 1;
+        const totalLabSteps = 4;
+
+        // Quiz State
+        const quizAnswers = ['b', 'a', 'b', 'b', 'c', 'b', 'b'];
+        const quizFeedback = [
+            {
+                correct: "Exactly right. The fundamental shift is operational autonomy: Tools require human triggering for each action; Agents receive goals, plan the approach, execute multiple steps, and iterate based on results.",
+                incorrect: "The key difference is operational autonomy. Tools can do things but humans trigger each action. Agents receive goals and autonomously execute multiple steps, adapting based on results."
+            },
+            {
+                correct: "Correct! MCP is like 'USB for AI'—a standardized protocol so tools built for MCP work with any MCP-compatible model. This eliminates custom integration code and accelerates the ecosystem.",
+                incorrect: "MCP's core purpose IS to standardize AI-to-tool connections. Like USB eliminated proprietary cables, MCP allows tools to work across MCP-compatible models without custom code."
+            },
+            {
+                correct: "Exactly. Goal thinking defines outcomes that may require multiple actions. The agent figures out the path. Task thinking specifies individual actions you trigger directly.",
+                incorrect: "Goal thinking isn't about ambition or planning timelines. It's about defining outcomes (like 'prepare me for my meeting') rather than individual tasks, letting agents determine the execution path."
+            },
+            {
+                correct: "This demonstrates proper agent-ready design: goal-focused, clear success criteria, human checkpoint defined. The agent can determine how to achieve the criteria while maintaining oversight.",
+                incorrect: "Agent-ready design requires: 1) Goal-focused (not prescribing every step), 2) Clear success criteria, 3) Human checkpoints. Option B demonstrates all three elements."
+            },
+            {
+                correct: "Exactly. In agentic workflows, structure is essential for passing information between steps reliably and interfacing with external systems. Your XML skills are agent-readiness skills.",
+                incorrect: "The critical point is reliability in multi-step, multi-system workflows. Agents need to pass information reliably between steps and interface with systems expecting specific formats."
+            },
+            {
+                correct: "Correct! Human oversight becomes MORE important with agents. Greater autonomy means greater potential impact. Agent design requires permission boundaries, checkpoints, escalation triggers, and audit trails.",
+                incorrect: "Human oversight becomes MORE important, not less. Agents can take actions with real-world consequences. The principle: 'Agents execute. Humans remain accountable.'"
+            },
+            {
+                correct: "Excellent! Place checkpoints at decision points. After analysis but before deliverable creation validates the thinking BEFORE building on it. Early validation prevents wasted effort.",
+                incorrect: "Place checkpoints at decision points, not just endpoints. After analysis but before presentation catches flawed insights BEFORE the agent builds a deliverable on them."
+            }
+        ];
+        let currentQuestion = 0;
+        let userAnswers = [];
+        let quizComplete = false;
+
+        // Navigation Functions
+        function navigateTo(screenId) {
+            completedScreens.add(currentScreen);
+
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+
+            document.getElementById(screenId).classList.add('active');
+            document.querySelector(`[data-screen="${screenId}"]`)?.classList.add('active');
+
+            completedScreens.forEach(id => {
+                const navItem = document.querySelector(`[data-screen="${id}"]`);
+                if (navItem && id !== screenId) {
+                    navItem.classList.add('completed');
+                }
+            });
+
+            currentScreen = screenId;
+            updateProgress();
+            window.scrollTo(0, 0);
+        }
+
+        function updateProgress() {
+            const progress = Math.round((completedScreens.size / screens.length) * 100);
+            document.getElementById('progressFill').style.width = `${progress}%`;
+            document.getElementById('progressText').textContent = `${progress}% Complete`;
+        }
+
+        // Flashcard Functions
+        function flipCard() {
+            document.getElementById('flashcard').classList.toggle('flipped');
+        }
+
+        function nextCard() {
+            currentCard = (currentCard + 1) % flashcards.length;
+            updateCard();
+        }
+
+        function prevCard() {
+            currentCard = (currentCard - 1 + flashcards.length) % flashcards.length;
+            updateCard();
+        }
+
+        function updateCard() {
+            document.getElementById('flashcard').classList.remove('flipped');
+            setTimeout(() => {
+                document.getElementById('cardFront').textContent = flashcards[currentCard].front;
+                document.getElementById('cardBack').textContent = flashcards[currentCard].back;
+                document.getElementById('cardNum').textContent = currentCard + 1;
+            }, 150);
+        }
+
+        // Lab Functions
+        function nextLabStep() {
+            if (currentLabStep < totalLabSteps) {
+                document.getElementById(`labStep${currentLabStep}`).classList.remove('active');
+                currentLabStep++;
+                document.getElementById(`labStep${currentLabStep}`).classList.add('active');
+                updateLabNav();
+            }
+        }
+
+        function prevLabStep() {
+            if (currentLabStep > 1) {
+                document.getElementById(`labStep${currentLabStep}`).classList.remove('active');
+                currentLabStep--;
+                document.getElementById(`labStep${currentLabStep}`).classList.add('active');
+                updateLabNav();
+            }
+        }
+
+        function updateLabNav() {
+            document.getElementById('labPrevBtn').style.visibility = currentLabStep > 1 ? 'visible' : 'hidden';
+        }
+
+        // Quiz Functions
+        function selectAnswer(element, questionIndex) {
+            if (quizComplete || userAnswers[questionIndex] !== undefined) return;
+
+            const question = document.querySelector(`[data-question="${questionIndex}"]`);
+            const options = question.querySelectorAll('.answer-option');
+            const selectedAnswer = element.dataset.answer;
+            const isCorrect = selectedAnswer === quizAnswers[questionIndex];
+
+            userAnswers[questionIndex] = selectedAnswer;
+
+            options.forEach(opt => {
+                opt.classList.add('disabled');
+                if (opt.dataset.answer === quizAnswers[questionIndex]) {
+                    opt.classList.add('correct');
+                }
+            });
+
+            if (!isCorrect) {
+                element.classList.add('incorrect');
+            }
+
+            const dot = document.querySelector(`.quiz-dot[data-q="${questionIndex}"]`);
+            dot.classList.remove('current');
+            dot.classList.add(isCorrect ? 'correct' : 'incorrect');
+
+            const feedbackPanel = document.getElementById('feedbackPanel');
+            const feedbackHeader = document.getElementById('feedbackHeader');
+            const feedbackText = document.getElementById('feedbackText');
+
+            feedbackHeader.className = `feedback-header ${isCorrect ? 'feedback-correct' : 'feedback-incorrect'}`;
+            feedbackHeader.innerHTML = isCorrect ? '✓ Correct!' : '✗ Incorrect';
+            feedbackText.textContent = isCorrect ? quizFeedback[questionIndex].correct : quizFeedback[questionIndex].incorrect;
+            feedbackPanel.classList.add('show');
+
+            document.getElementById('quizNextBtn').disabled = false;
+        }
+
+        function nextQuestion() {
+            if (currentQuestion < quizAnswers.length - 1) {
+                document.querySelector(`[data-question="${currentQuestion}"]`).classList.remove('active');
+                currentQuestion++;
+                document.querySelector(`[data-question="${currentQuestion}"]`).classList.add('active');
+
+                document.querySelector(`.quiz-dot[data-q="${currentQuestion}"]`).classList.add('current');
+
+                document.getElementById('feedbackPanel').classList.remove('show');
+                document.getElementById('quizNextBtn').disabled = true;
+
+                if (currentQuestion === quizAnswers.length - 1) {
+                    document.getElementById('quizNextBtn').textContent = 'See Results →';
+                }
+            } else {
+                showResults();
+            }
+        }
+
+        function showResults() {
+            quizComplete = true;
+            const correct = userAnswers.filter((a, i) => a === quizAnswers[i]).length;
+            const incorrect = quizAnswers.length - correct;
+
+            document.querySelector(`[data-question="${currentQuestion}"]`).classList.remove('active');
+            document.querySelector('[data-question="results"]').style.display = 'block';
+            document.querySelector('[data-question="results"]').classList.add('active');
+
+            document.getElementById('quizScore').textContent = `${correct}/${quizAnswers.length}`;
+            document.getElementById('correctCount').textContent = correct;
+            document.getElementById('incorrectCount').textContent = incorrect;
+
+            let message = '';
+            if (correct === quizAnswers.length) {
+                message = 'Perfect! Future-ready!';
+            } else if (correct >= 5) {
+                message = 'Great work! Solid understanding.';
+            } else if (correct >= 3) {
+                message = 'Good start. Review the lesson for concepts you missed.';
+            } else {
+                message = 'Review recommended before proceeding.';
+            }
+            document.getElementById('quizMessage').textContent = message;
+
+            document.querySelector('.quiz-nav').style.display = 'none';
+            document.getElementById('feedbackPanel').classList.remove('show');
+        
+            // SCORM reporting
+            const scorePercent = Math.round((correct / quizAnswers.length) * 100);
+            const passed = scorePercent >= 70;
+
+            if (typeof setSCORMScore === 'function') {
+                setSCORMScore(scorePercent);
+            }
+            if (typeof setSCORMStatus === 'function') {
+                setSCORMStatus(passed ? 'passed' : 'failed');
+            }
+
+            // Celebration confetti for passing
+            if (passed && typeof confetti === 'function') {
+                confetti({
+                    particleCount: 100,
+                    spread: 70,
+                    origin: { y: 0.6 },
+                    colors: ['#2ED4B5', '#1657A0', '#FFC83B', '#19316A']
+                });
+
+                setTimeout(() => {
+                    confetti({
+                        particleCount: 50,
+                        angle: 60,
+                        spread: 55,
+                        origin: { x: 0 },
+                        colors: ['#2ED4B5', '#1657A0', '#FFC83B']
+                    });
+                }, 250);
+
+                setTimeout(() => {
+                    confetti({
+                        particleCount: 50,
+                        angle: 120,
+                        spread: 55,
+                        origin: { x: 1 },
+                        colors: ['#2ED4B5', '#1657A0', '#FFC83B']
+                    });
+                }, 400);
+            }
+
+            // Close popup window after completion
+            if (window.opener !== null) {
+                setTimeout(() => {
+                    const shouldClose = confirm('Module completed! Close this window?');
+                    if (shouldClose) {
+                        window.close();
+                    }
+                }, 3000);
+            }
+        }
+
+        // Copy function
+        function copyToClipboard(button) {
+            const pre = button.parentElement.querySelector('pre');
+            navigator.clipboard.writeText(pre.textContent);
+            button.textContent = 'Copied!';
+            setTimeout(() => button.textContent = 'Copy', 2000);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solo Pilot to Squadron Leader | ActivTrak</title>
+    <script src="scorm_api.js"></script>
+    <style>
+        :root {
+            --primary-blue: #0042F3;
+            --pelorous: #33A7B5;
+            --teal: #2FD3B4;
+            --dark-base: #252D38;
+            --light-gray: #D9D9D9;
+            --bg-light: #F8F9FA;
+            --white: #FFFFFF;
+            --success: #2FD3B4;
+            --error: #EE2C82;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Century Gothic', 'Segoe UI', sans-serif;
+            background: var(--bg-light);
+            color: var(--dark-base);
+            line-height: 1.6;
+        }
+        .section { display: none; }
+        .section.active { display: block; }
+        .header {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, #384B76 100%);
+            color: white;
+            padding: 1.5rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .header-content {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header h1 { font-size: 1.3rem; }
+        .progress-bar {
+            width: 200px;
+            height: 8px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            background: var(--teal);
+            transition: width 0.3s ease;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .welcome-card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 2.5rem;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            margin-bottom: 2rem;
+        }
+        .welcome-card h2 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: var(--primary-blue);
+        }
+        .module-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1rem;
+        }
+        .module-card {
+            background: var(--white);
+            border-radius: 8px;
+            padding: 1.5rem;
+            cursor: pointer;
+            border-left: 4px solid var(--light-gray);
+            transition: all 0.2s;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .module-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .module-card.completed { border-left-color: var(--success); }
+        .module-card.current { border-left-color: var(--primary-blue); }
+        .module-num {
+            font-size: 0.8rem;
+            color: #666;
+            margin-bottom: 0.5rem;
+        }
+        .module-card h3 { font-size: 1.1rem; margin-bottom: 0.25rem; }
+        .module-card p { font-size: 0.9rem; color: #666; }
+        .btn {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            font-size: 1rem;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s;
+        }
+        .btn-primary {
+            background: var(--primary-blue);
+            color: white;
+        }
+        .btn-primary:hover { background: #0035C7; }
+        .btn-secondary {
+            background: var(--white);
+            color: var(--dark-base);
+            border: 1px solid var(--light-gray);
+        }
+        .lesson-content {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        .lesson-content h1 { font-size: 1.8rem; margin-bottom: 1.5rem; color: var(--primary-blue); }
+        .lesson-content h2 { font-size: 1.4rem; margin: 1.5rem 0 1rem; color: var(--dark-base); }
+        .lesson-content p { margin-bottom: 1rem; }
+        .lesson-content ul, .lesson-content ol { margin: 1rem 0; padding-left: 1.5rem; }
+        .lesson-content li { margin-bottom: 0.5rem; }
+        .concept-box {
+            background: var(--bg-light);
+            border-left: 4px solid var(--pelorous);
+            padding: 1rem 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+        .traffic-light {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        .zone {
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .zone.green { background: #DCFCE7; border: 2px solid #22C55E; }
+        .zone.yellow { background: #FEF9C3; border: 2px solid #F59E0B; }
+        .zone.red { background: #FEE2E2; border: 2px solid #EF4444; }
+        .zone h4 { margin-bottom: 0.5rem; }
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--light-gray);
+        }
+        .quiz-question {
+            background: var(--white);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .quiz-option {
+            display: block;
+            padding: 0.75rem 1rem;
+            margin: 0.5rem 0;
+            background: var(--bg-light);
+            border-radius: 6px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.2s;
+        }
+        .quiz-option:hover { background: #E5E7EB; }
+        .quiz-option.selected { border-color: var(--primary-blue); background: rgba(0,66,243,0.05); }
+        .quiz-option.correct { border-color: var(--success); background: #DCFCE7; }
+        .quiz-option.incorrect { border-color: var(--error); background: #FEE2E2; }
+        .feedback { padding: 1rem; margin-top: 1rem; border-radius: 6px; display: none; }
+        .feedback.show { display: block; }
+        .feedback.correct { background: #DCFCE7; }
+        .feedback.incorrect { background: #FEE2E2; }
+        .score-display {
+            text-align: center;
+            padding: 2rem;
+            background: var(--white);
+            border-radius: 12px;
+        }
+        .score-circle {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-blue), #384B76);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            font-size: 2rem;
+            font-weight: bold;
+        }
+        @media (max-width: 768px) {
+            .traffic-light { grid-template-columns: 1fr; }
+            .header-content { flex-direction: column; gap: 1rem; }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <h1>Solo Pilot to Squadron Leader</h1>
+            <div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressBar" style="width: 0%"></div>
+                </div>
+                <div style="font-size: 0.85rem; margin-top: 0.25rem;" id="progressText">0% Complete</div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Section: Course Menu -->
+    <div id="section-menu" class="section active">
+        <div class="container">
+            <div class="welcome-card">
+                <h2>Welcome, Squadron Leader</h2>
+                <p>Transform from a casual AI user into an AI Architect capable of orchestrating Claude, Gemini and Granola.</p>
+                <p style="margin-top: 1rem;"><strong>"AI drafts. Humans send."</strong></p>
+            </div>
+            <div class="module-grid" id="moduleGrid"></div>
+            <div style="text-align: center; margin-top: 2rem;">
+                <button class="btn btn-primary" id="completeBtn" onclick="completeCourse()" disabled>Complete Course</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section: Module 0 -->
+    <div id="section-mod0" class="section">
+        <div class="container">
+            <div class="lesson-content">
+                <h1>Module 0: Pre-Flight Check</h1>
+                <p><strong>Setup, Policy & Boundaries</strong></p>
+
+                <h2>The Squadron Framework</h2>
+                <p>Think in terms of <strong>Squadron roles</strong>—functional capabilities that various tools can fill:</p>
+                <ul>
+                    <li><strong>Mission Control</strong> (Reasoning): Claude, ChatGPT, Claude Code</li>
+                    <li><strong>Recon & Radar</strong> (Research): Gemini, Bing AI, NotebookLM</li>
+                    <li><strong>Flight Recorder</strong> (Capture): Granola, Chorus.ai, Zoom AI</li>
+                    <li><strong>Specialized Units</strong>: Figma AI, Zendesk AI, etc.</li>
+                </ul>
+
+                <h2>The Traffic Light Protocol</h2>
+                <div class="traffic-light">
+                    <div class="zone green">
+                        <h4>🟢 Green: Go Freely</h4>
+                        <p>Customer data, internal docs, analytics</p>
+                    </div>
+                    <div class="zone yellow">
+                        <h4>🟡 Yellow: Review Required</h4>
+                        <p>Marketing with PII, competitive intel</p>
+                    </div>
+                    <div class="zone red">
+                        <h4>🔴 Red: Never Share</h4>
+                        <p>API keys, passwords, credentials</p>
+                    </div>
+                </div>
+
+                <div class="concept-box">
+                    <strong>Core Principle:</strong> "AI drafts. Humans send."<br>
+                    You clear missions for takeoff and own what leaves the runway.
+                </div>
+            </div>
+            <div class="nav-buttons">
+                <button class="btn btn-secondary" onclick="navigateTo('menu')">← Back to Menu</button>
+                <button class="btn btn-primary" onclick="navigateTo('quiz0')">Take Quiz →</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section: Module 0 Quiz -->
+    <div id="section-quiz0" class="section">
+        <div class="container">
+            <h1 style="margin-bottom: 1.5rem;">Module 0 Quiz</h1>
+            <div class="quiz-question" id="q0-1">
+                <p><strong>Question 1:</strong> What is Mission Control in the Squadron framework?</p>
+                <label class="quiz-option" onclick="selectAnswer('q0-1', this, 'c')">
+                    <input type="radio" name="q0-1" style="display:none">
+                    A) Real-time web search
+                </label>
+                <label class="quiz-option" onclick="selectAnswer('q0-1', this, 'c')">
+                    <input type="radio" name="q0-1" style="display:none">
+                    B) Meeting transcription
+                </label>
+                <label class="quiz-option" data-correct="true" onclick="selectAnswer('q0-1', this, 'c')">
+                    <input type="radio" name="q0-1" style="display:none">
+                    C) Reasoning, strategy, writing, synthesis
+                </label>
+                <label class="quiz-option" onclick="selectAnswer('q0-1', this, 'c')">
+                    <input type="radio" name="q0-1" style="display:none">
+                    D) Document search
+                </label>
+                <div class="feedback" id="fb-q0-1"></div>
+            </div>
+            <div class="quiz-question" id="q0-2">
+                <p><strong>Question 2:</strong> Which data type is RED zone (never share)?</p>
+                <label class="quiz-option" onclick="selectAnswer('q0-2', this, 'b')">
+                    <input type="radio" name="q0-2" style="display:none">
+                    A) Customer usage data
+                </label>
+                <label class="quiz-option" data-correct="true" onclick="selectAnswer('q0-2', this, 'b')">
+                    <input type="radio" name="q0-2" style="display:none">
+                    B) API keys and passwords
+                </label>
+                <label class="quiz-option" onclick="selectAnswer('q0-2', this, 'b')">
+                    <input type="radio" name="q0-2" style="display:none">
+                    C) Meeting notes
+                </label>
+                <label class="quiz-option" onclick="selectAnswer('q0-2', this, 'b')">
+                    <input type="radio" name="q0-2" style="display:none">
+                    D) Internal documents
+                </label>
+                <div class="feedback" id="fb-q0-2"></div>
+            </div>
+            <div id="quiz0-result" style="display: none;"></div>
+            <div class="nav-buttons">
+                <button class="btn btn-secondary" onclick="navigateTo('mod0')">← Back to Lesson</button>
+                <button class="btn btn-primary" id="submit-quiz0" onclick="submitQuiz(0)">Submit Quiz</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Additional modules follow same pattern - simplified for SCORM compliance -->
+    <div id="section-mod1" class="section">
+        <div class="container">
+            <div class="lesson-content">
+                <h1>Module 1: The Cognitive Shift</h1>
+                <p><strong>Understanding the Reasoning Engine</strong></p>
+                <h2>Key Concept: Probabilistic Reasoning Engine</h2>
+                <p>LLMs are not search engines. They're reasoning engines that predict the most probable next token based on patterns in training data.</p>
+                <div class="concept-box">
+                    <strong>The Water Glass Effect:</strong> Every piece of context you add to the conversation shapes the output. More relevant context = better results.
+                </div>
+                <h2>Context Window Management</h2>
+                <ul>
+                    <li>Front-load important context</li>
+                    <li>Remove irrelevant information</li>
+                    <li>Structure with clear sections</li>
+                    <li>Use XML tags for organization</li>
+                </ul>
+            </div>
+            <div class="nav-buttons">
+                <button class="btn btn-secondary" onclick="navigateTo('menu')">← Back to Menu</button>
+                <button class="btn btn-primary" onclick="completeModule(1); navigateTo('menu')">Complete Module →</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Continue pattern for remaining modules -->
+    <div id="section-mod2" class="section">
+        <div class="container">
+            <div class="lesson-content">
+                <h1>Module 2: Model Selection</h1>
+                <p><strong>The Thinking Protocol</strong></p>
+                <h2>When to Use Extended Thinking</h2>
+                <ul>
+                    <li><strong>Complex analysis</strong> - Multi-step reasoning required</li>
+                    <li><strong>Strategic decisions</strong> - Weighing multiple factors</li>
+                    <li><strong>Code review</strong> - Finding subtle bugs</li>
+                </ul>
+                <div class="concept-box">
+                    <strong>Model Selection Rule:</strong> Start with the fastest model that can handle the task. Escalate only when needed.
+                </div>
+            </div>
+            <div class="nav-buttons">
+                <button class="btn btn-secondary" onclick="navigateTo('menu')">← Back</button>
+                <button class="btn btn-primary" onclick="completeModule(2); navigateTo('menu')">Complete →</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="section-mod3" class="section">
+        <div class="container">
+            <div class="lesson-content">
+                <h1>Module 3: Prompt Architecture</h1>
+                <p><strong>Advanced Prompt Architecture (XML)</strong></p>
+                <h2>XML Tagging for Structure</h2>
+                <p>Use XML tags to organize your prompts:</p>
+                <pre style="background: #1E293B; color: #E2E8F0; padding: 1rem; border-radius: 8px; overflow-x: auto;">&lt;context&gt;
+  Background information here
+&lt;/context&gt;
+
+&lt;task&gt;
+  What you want done
+&lt;/task&gt;
+
+&lt;format&gt;
+  How you want the output
+&lt;/format&gt;</pre>
+                <div class="concept-box">
+                    <strong>COSTAR Framework:</strong> Context, Objective, Style, Tone, Audience, Response format
+                </div>
+            </div>
+            <div class="nav-buttons">
+                <button class="btn btn-secondary" onclick="navigateTo('menu')">← Back</button>
+                <button class="btn btn-primary" onclick="completeModule(3); navigateTo('menu')">Complete →</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="section-mod4" class="section">
+        <div class="container">
+            <div class="lesson-content">
+                <h1>Module 4: Agentic Data Analysis</h1>
+                <p><strong>The "No Math" Rule</strong></p>
+                <h2>The Calculator Problem</h2>
+                <p>LLMs predict tokens, they don't calculate. For data analysis:</p>
+                <ul>
+                    <li>Use code execution (Claude's Analysis tool)</li>
+                    <li>Let Python/pandas do the math</li>
+                    <li>Verify outputs with spot checks</li>
+                </ul>
+                <div class="concept-box">
+                    <strong>Golden Rule:</strong> "Never trust an LLM to do math. Make it write code instead."
+                </div>
+            </div>
+            <div class="nav-buttons">
+                <button class="btn btn-secondary" onclick="navigateTo('menu')">← Back</button>
+                <button class="btn btn-primary" onclick="completeModule(4); navigateTo('menu')">Complete →</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="section-mod5" class="section">
+        <div class="container">
+            <div class="lesson-content">
+                <h1>Module 5: The Sensory System</h1>
+                <p><strong>Gemini & Granola</strong></p>
+                <h2>Recon & Radar (Gemini)</h2>
+                <ul>
+                    <li>Real-time web search</li>
+                    <li>Google Workspace integration</li>
+                    <li>Fact verification and grounding</li>
+                </ul>
+                <h2>Flight Recorder (Granola)</h2>
+                <ul>
+                    <li>Meeting transcription</li>
+                    <li>Structured note templates</li>
+                    <li>Action item extraction</li>
+                </ul>
+            </div>
+            <div class="nav-buttons">
+                <button class="btn btn-secondary" onclick="navigateTo('menu')">← Back</button>
+                <button class="btn btn-primary" onclick="completeModule(5); navigateTo('menu')">Complete →</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="section-mod6" class="section">
+        <div class="container">
+            <div class="lesson-content">
+                <h1>Module 6: Decision Hygiene</h1>
+                <p><strong>Beating Sycophancy</strong></p>
+                <h2>The Sycophancy Problem</h2>
+                <p>LLMs tend to agree with you. Combat this with:</p>
+                <ul>
+                    <li><strong>Neutral framing</strong> - Don't telegraph your preference</li>
+                    <li><strong>Red teaming</strong> - Ask for counterarguments</li>
+                    <li><strong>Pre-mortems</strong> - "What could go wrong?"</li>
+                </ul>
+                <div class="concept-box">
+                    <strong>Anti-Sycophancy Prompt:</strong> "Challenge this idea. What are the strongest arguments against it?"
+                </div>
+            </div>
+            <div class="nav-buttons">
+                <button class="btn btn-secondary" onclick="navigateTo('menu')">← Back</button>
+                <button class="btn btn-primary" onclick="completeModule(6); navigateTo('menu')">Complete →</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="section-mod7" class="section">
+        <div class="container">
+            <div class="lesson-content">
+                <h1>Module 7: The Hybrid Agent</h1>
+                <p><strong>Mac, Mobile & Docs</strong></p>
+                <h2>Cross-Platform Workflows</h2>
+                <ul>
+                    <li>Claude Desktop for Mac</li>
+                    <li>Mobile apps for capture</li>
+                    <li>Google Docs integration</li>
+                </ul>
+                <div class="concept-box">
+                    <strong>Workflow Pattern:</strong> Capture (mobile) → Process (desktop) → Distribute (docs)
+                </div>
+            </div>
+            <div class="nav-buttons">
+                <button class="btn btn-secondary" onclick="navigateTo('menu')">← Back</button>
+                <button class="btn btn-primary" onclick="completeModule(7); navigateTo('menu')">Complete →</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="section-mod8" class="section">
+        <div class="container">
+            <div class="lesson-content">
+                <h1>Module 8: Systemizing Intelligence</h1>
+                <p><strong>Projects, GPTs and Gems</strong></p>
+                <h2>Building Reusable Systems</h2>
+                <ul>
+                    <li><strong>Claude Projects</strong> - Persistent context and files</li>
+                    <li><strong>Custom GPTs</strong> - Specialized assistants</li>
+                    <li><strong>Gemini Gems</strong> - Google Workspace automation</li>
+                </ul>
+                <div class="concept-box">
+                    <strong>Mission Cards:</strong> Reusable prompt templates for common tasks
+                </div>
+            </div>
+            <div class="nav-buttons">
+                <button class="btn btn-secondary" onclick="navigateTo('menu')">← Back</button>
+                <button class="btn btn-primary" onclick="completeModule(8); navigateTo('menu')">Complete →</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="section-mod9" class="section">
+        <div class="container">
+            <div class="lesson-content">
+                <h1>Module 9: Code Execution</h1>
+                <p><strong>File Creation (Excel, PPT, PDF)</strong></p>
+                <h2>Artifacts and File Generation</h2>
+                <ul>
+                    <li>Claude's Artifacts for previews</li>
+                    <li>Python for Excel (openpyxl)</li>
+                    <li>Python for PowerPoint (python-pptx)</li>
+                    <li>HTML as universal bridge</li>
+                </ul>
+                <div class="concept-box">
+                    <strong>Vibe Coding:</strong> Describe what you want, let AI write the code, iterate on results
+                </div>
+            </div>
+            <div class="nav-buttons">
+                <button class="btn btn-secondary" onclick="navigateTo('menu')">← Back</button>
+                <button class="btn btn-primary" onclick="completeModule(9); navigateTo('menu')">Complete →</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="section-mod10" class="section">
+        <div class="container">
+            <div class="lesson-content">
+                <h1>Module 10: Future Frontiers</h1>
+                <p><strong>Agents & MCP</strong></p>
+                <h2>The Agent Evolution</h2>
+                <ul>
+                    <li>Computer Use - AI controlling your screen</li>
+                    <li>MCP (Model Context Protocol) - Tool connections</li>
+                    <li>Multi-agent orchestration</li>
+                </ul>
+                <div class="concept-box">
+                    <strong>Human-in-the-Loop:</strong> As AI gains capabilities, human oversight becomes more critical, not less
+                </div>
+            </div>
+            <div class="nav-buttons">
+                <button class="btn btn-secondary" onclick="navigateTo('menu')">← Back</button>
+                <button class="btn btn-primary" onclick="completeModule(10); navigateTo('menu')">Complete →</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="section-mod11" class="section">
+        <div class="container">
+            <div class="lesson-content">
+                <h1>Module 11: Capstone & Governance</h1>
+                <p><strong>Accountability & Certification</strong></p>
+                <h2>The Three Pillars of AI Governance</h2>
+                <ol>
+                    <li><strong>Accountability</strong> - You own what you send</li>
+                    <li><strong>Verification</strong> - Check before you share</li>
+                    <li><strong>Transparency</strong> - Know what AI contributed</li>
+                </ol>
+                <h2>Squadron Leader Pledge</h2>
+                <div class="concept-box">
+                    <p>I take responsibility for all AI-assisted outputs I share.</p>
+                    <p>I verify facts before external distribution.</p>
+                    <p>I never share Red zone data with AI tools.</p>
+                    <p>I continuously improve my AI orchestration skills.</p>
+                    <p>I help colleagues adopt responsible AI practices.</p>
+                </div>
+            </div>
+            <div class="nav-buttons">
+                <button class="btn btn-secondary" onclick="navigateTo('menu')">← Back</button>
+                <button class="btn btn-primary" onclick="completeModule(11); navigateTo('menu')">Complete →</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const modules = [
+            { id: 0, title: "Pre-Flight Check", subtitle: "Setup, Policy & Boundaries" },
+            { id: 1, title: "The Cognitive Shift", subtitle: "Understanding the Reasoning Engine" },
+            { id: 2, title: "Model Selection", subtitle: "The Thinking Protocol" },
+            { id: 3, title: "Prompt Architecture", subtitle: "Advanced Prompt Architecture (XML)" },
+            { id: 4, title: "Agentic Data Analysis", subtitle: "The No Math Rule" },
+            { id: 5, title: "The Sensory System", subtitle: "Gemini & Granola" },
+            { id: 6, title: "Decision Hygiene", subtitle: "Beating Sycophancy" },
+            { id: 7, title: "The Hybrid Agent", subtitle: "Mac, Mobile & Docs" },
+            { id: 8, title: "Systemizing Intelligence", subtitle: "Projects, GPTs and Gems" },
+            { id: 9, title: "Code Execution", subtitle: "File Creation (Excel, PPT, PDF)" },
+            { id: 10, title: "Future Frontiers", subtitle: "Agents & MCP" },
+            { id: 11, title: "Capstone & Governance", subtitle: "Accountability & Certification" }
+        ];
+
+        let completedModules = new Set();
+        let quizScores = {};
+
+        function navigateTo(sectionId) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.getElementById('section-' + sectionId).classList.add('active');
+            window.scrollTo(0, 0);
+            updateProgress();
+        }
+
+        function renderModuleGrid() {
+            const grid = document.getElementById('moduleGrid');
+            grid.innerHTML = modules.map(m => `
+                <div class="module-card ${completedModules.has(m.id) ? 'completed' : ''}" onclick="navigateTo('mod${m.id}')">
+                    <div class="module-num">Module ${m.id}</div>
+                    <h3>${m.title}</h3>
+                    <p>${m.subtitle}</p>
+                    ${completedModules.has(m.id) ? '<div style="color: var(--success); margin-top: 0.5rem;">✓ Completed</div>' : ''}
+                </div>
+            `).join('');
+        }
+
+        function completeModule(id) {
+            completedModules.add(id);
+            saveProgress();
+            updateProgress();
+            renderModuleGrid();
+        }
+
+        function updateProgress() {
+            const pct = Math.round((completedModules.size / modules.length) * 100);
+            document.getElementById('progressBar').style.width = pct + '%';
+            document.getElementById('progressText').textContent = pct + '% Complete';
+            document.getElementById('completeBtn').disabled = completedModules.size < modules.length;
+        }
+
+        function saveProgress() {
+            try { localStorage.setItem('squadron_progress', JSON.stringify([...completedModules])); } catch(e) {}
+        }
+
+        function loadProgress() {
+            try {
+                const saved = localStorage.getItem('squadron_progress');
+                if (saved) completedModules = new Set(JSON.parse(saved));
+            } catch(e) {}
+        }
+
+        function selectAnswer(qId, el, correctLetter) {
+            const question = document.getElementById(qId);
+            question.querySelectorAll('.quiz-option').forEach(o => o.classList.remove('selected', 'correct', 'incorrect'));
+            el.classList.add('selected');
+        }
+
+        function submitQuiz(modId) {
+            const questions = document.querySelectorAll(`[id^="q${modId}-"]`);
+            let correct = 0;
+            questions.forEach(q => {
+                const selected = q.querySelector('.quiz-option.selected');
+                const correctOpt = q.querySelector('[data-correct="true"]');
+                if (selected) {
+                    if (selected === correctOpt) {
+                        selected.classList.add('correct');
+                        correct++;
+                    } else {
+                        selected.classList.add('incorrect');
+                        correctOpt.classList.add('correct');
+                    }
+                }
+            });
+            const total = questions.length;
+            const score = Math.round((correct / total) * 100);
+            quizScores[modId] = score;
+
+            const resultDiv = document.getElementById(`quiz${modId}-result`);
+            resultDiv.innerHTML = `<div class="score-display"><div class="score-circle">${score}%</div><h3>${score >= 80 ? 'Passed!' : 'Review needed'}</h3></div>`;
+            resultDiv.style.display = 'block';
+
+            if (score >= 80) {
+                completeModule(modId);
+                setSCORMScore(score);
+            }
+        }
+
+        function completeCourse() {
+            if (completedModules.size >= modules.length) {
+                setSCORMScore(100);
+                setSCORMPassed(true);
+                alert('Congratulations, Squadron Leader! Course completed.');
+            }
+        }
+
+        // Initialize
+        loadProgress();
+        renderModuleGrid();
+        updateProgress();
+    </script>
+</body>
+</html>

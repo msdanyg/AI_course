@@ -1,0 +1,2412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module 4: Agentic Data Analysis | Solo Pilot to Squadron Leader</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sofia+Sans:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-blue: #0042F3;
+            --pelorous: #33A7B5;
+            --teal: #2FD3B4;
+            --violet-red: #EE2C82;
+            --dark-base: #252D38;
+            --light-gray: #D9D9D9;
+            --bg-light: #F8F9FA;
+            --white: #FFFFFF;
+            --success: #2FD3B4;
+            --error: #EE2C82;
+            --warning: #F5A623;
+            --module-accent: #8B5CF6; /* Purple for data/code theme */
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Sofia Sans', sans-serif;
+            background: var(--bg-light);
+            color: var(--dark-base);
+            line-height: 1.6;
+        }
+
+        /* Header */
+        .course-header {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, #384B76 100%);
+            color: white;
+            padding: 1rem 2rem;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .course-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .course-subtitle {
+            font-size: 0.85rem;
+            opacity: 0.9;
+        }
+
+        .progress-container {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .progress-bar {
+            width: 200px;
+            height: 8px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--teal);
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        .progress-text {
+            font-size: 0.85rem;
+        }
+
+        /* Main Layout */
+        .main-container {
+            display: flex;
+            margin-top: 60px;
+            min-height: calc(100vh - 60px);
+        }
+
+        /* Sidebar Navigation */
+        .sidebar {
+            width: 280px;
+            background: var(--white);
+            border-right: 1px solid var(--light-gray);
+            position: fixed;
+            top: 60px;
+            bottom: 0;
+            left: 0;
+            overflow-y: auto;
+            padding: 1.5rem 0;
+        }
+
+        .nav-section {
+            padding: 0 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .nav-section-title {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #6B7280;
+            margin-bottom: 0.75rem;
+            padding: 0 0.75rem;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 0.25rem;
+        }
+
+        .nav-item:hover {
+            background: var(--bg-light);
+        }
+
+        .nav-item.active {
+            background: rgba(139, 92, 246, 0.1);
+            color: var(--module-accent);
+        }
+
+        .nav-item.completed .nav-icon {
+            background: var(--success);
+            color: white;
+        }
+
+        .nav-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: var(--light-gray);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .nav-item.active .nav-icon {
+            background: var(--module-accent);
+            color: white;
+        }
+
+        .nav-label {
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .nav-duration {
+            font-size: 0.75rem;
+            color: #6B7280;
+            margin-left: auto;
+        }
+
+        /* Content Area */
+        .content-area {
+            flex: 1;
+            margin-left: 280px;
+            padding: 2rem 3rem;
+            max-width: 1000px;
+        }
+
+        /* Screen Sections */
+        .screen {
+            display: none;
+        }
+
+        .screen.active {
+            display: block;
+            animation: fadeIn 0.4s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Welcome Screen */
+        .welcome-hero {
+            background: linear-gradient(135deg, var(--module-accent) 0%, #6D28D9 100%);
+            border-radius: 16px;
+            padding: 3rem;
+            color: white;
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .welcome-hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 400px;
+            height: 400px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+        }
+
+        .welcome-hero h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            position: relative;
+        }
+
+        .welcome-hero .module-tag {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            margin-bottom: 1rem;
+        }
+
+        .welcome-hero p {
+            font-size: 1.1rem;
+            opacity: 0.95;
+            max-width: 600px;
+            position: relative;
+        }
+
+        .objectives-card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .objectives-card h2 {
+            font-size: 1.25rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .objective-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--bg-light);
+        }
+
+        .objective-item:last-child {
+            border-bottom: none;
+        }
+
+        .objective-level {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .level-retrieval { background: #E0F2FE; color: #0369A1; }
+        .level-comprehension { background: #FEF3C7; color: #B45309; }
+        .level-analysis { background: #FCE7F3; color: #BE185D; }
+        .level-utilization { background: #D1FAE5; color: #047857; }
+
+        .time-estimate {
+            display: flex;
+            gap: 2rem;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--bg-light);
+        }
+
+        .time-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #6B7280;
+        }
+
+        .start-btn {
+            background: var(--module-accent);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .start-btn:hover {
+            background: #7C3AED;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+        }
+
+        /* Lesson Content */
+        .lesson-content {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 2.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .lesson-content h1 {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            color: var(--dark-base);
+        }
+
+        .lesson-content h2 {
+            font-size: 1.5rem;
+            margin: 2rem 0 1rem;
+            color: var(--dark-base);
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--bg-light);
+        }
+
+        .lesson-content h3 {
+            font-size: 1.2rem;
+            margin: 1.5rem 0 0.75rem;
+            color: var(--module-accent);
+        }
+
+        .lesson-content p {
+            margin-bottom: 1rem;
+            font-size: 1.05rem;
+            line-height: 1.8;
+        }
+
+        .lesson-content ul, .lesson-content ol {
+            margin: 1rem 0 1rem 1.5rem;
+        }
+
+        .lesson-content li {
+            margin-bottom: 0.5rem;
+            line-height: 1.7;
+        }
+
+        .callout {
+            padding: 1.25rem 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+            display: flex;
+            gap: 1rem;
+        }
+
+        .callout-icon {
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .callout-insight {
+            background: rgba(139, 92, 246, 0.08);
+            border-left: 4px solid var(--module-accent);
+        }
+
+        .callout-warning {
+            background: rgba(238, 44, 130, 0.08);
+            border-left: 4px solid var(--violet-red);
+        }
+
+        .callout-tip {
+            background: rgba(47, 211, 180, 0.1);
+            border-left: 4px solid var(--teal);
+        }
+
+        .callout-code {
+            background: rgba(30, 30, 30, 0.05);
+            border-left: 4px solid var(--dark-base);
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .comparison-table th {
+            background: var(--dark-base);
+            color: white;
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .comparison-table td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--bg-light);
+        }
+
+        .comparison-table tr:nth-child(even) {
+            background: var(--bg-light);
+        }
+
+        /* Code Blocks */
+        .code-block {
+            background: #1E1E1E;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            overflow-x: auto;
+            position: relative;
+        }
+
+        .code-block pre {
+            color: #D4D4D4;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        .code-block .keyword { color: #569CD6; }
+        .code-block .string { color: #CE9178; }
+        .code-block .comment { color: #6A9955; }
+        .code-block .function { color: #DCDCAA; }
+        .code-block .number { color: #B5CEA8; }
+
+        .code-label {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background: var(--module-accent);
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        /* Interactive Demo */
+        .interactive-demo {
+            background: var(--bg-light);
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .demo-title {
+            font-weight: 600;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Calculator Problem Demo */
+        .calc-demo {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .calc-panel {
+            background: var(--white);
+            border-radius: 8px;
+            padding: 1.5rem;
+            border: 2px solid var(--light-gray);
+        }
+
+        .calc-panel.bad {
+            border-color: var(--error);
+        }
+
+        .calc-panel.good {
+            border-color: var(--success);
+        }
+
+        .calc-panel-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .calc-panel.bad .calc-panel-header { color: var(--error); }
+        .calc-panel.good .calc-panel-header { color: var(--success); }
+
+        .calc-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #6B7280;
+        }
+
+        .calc-value {
+            font-family: 'Fira Code', monospace;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .calc-explanation {
+            font-size: 0.9rem;
+            color: #6B7280;
+            margin-top: 0.5rem;
+        }
+
+        /* Verification Protocol Cards */
+        .protocol-cards {
+            display: grid;
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .protocol-card {
+            background: var(--white);
+            border-radius: 8px;
+            padding: 1.25rem;
+            border-left: 4px solid var(--module-accent);
+            display: flex;
+            gap: 1rem;
+            align-items: flex-start;
+        }
+
+        .protocol-number {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--module-accent);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .protocol-content h4 {
+            font-size: 1rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .protocol-content p {
+            font-size: 0.9rem;
+            color: #6B7280;
+            margin: 0;
+        }
+
+        /* Video Player */
+        .video-container {
+            background: var(--dark-base);
+            border-radius: 12px;
+            aspect-ratio: 16/9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .video-placeholder {
+            text-align: center;
+            color: white;
+        }
+
+        .play-btn {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: var(--module-accent);
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            margin-bottom: 1rem;
+        }
+
+        .play-btn:hover {
+            transform: scale(1.1);
+            background: #7C3AED;
+        }
+
+        .play-btn svg {
+            width: 32px;
+            height: 32px;
+            fill: white;
+            margin-left: 4px;
+        }
+
+        /* Flashcards */
+        .flashcard-container {
+            perspective: 1000px;
+            margin: 2rem auto;
+            max-width: 600px;
+        }
+
+        .flashcard {
+            width: 100%;
+            height: 300px;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.6s;
+            cursor: pointer;
+        }
+
+        .flashcard.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .flashcard-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .flashcard-front {
+            background: linear-gradient(135deg, var(--module-accent) 0%, #6D28D9 100%);
+            color: white;
+        }
+
+        .flashcard-back {
+            background: var(--white);
+            border: 2px solid var(--module-accent);
+            transform: rotateY(180deg);
+            color: var(--dark-base);
+        }
+
+        .flashcard-front h3 {
+            font-size: 1.4rem;
+            line-height: 1.5;
+        }
+
+        .flashcard-back p {
+            font-size: 1rem;
+            line-height: 1.6;
+            text-align: left;
+        }
+
+        .flashcard-nav {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 2rem;
+            margin-top: 1.5rem;
+        }
+
+        .flashcard-btn {
+            background: var(--bg-light);
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .flashcard-btn:hover {
+            background: var(--module-accent);
+            color: white;
+        }
+
+        .flashcard-counter {
+            font-weight: 600;
+            color: #6B7280;
+        }
+
+        .flip-hint {
+            text-align: center;
+            color: #6B7280;
+            font-size: 0.9rem;
+            margin-top: 1rem;
+        }
+
+        /* Lab Exercise */
+        .lab-header {
+            background: linear-gradient(135deg, var(--pelorous) 0%, #2A8A96 100%);
+            border-radius: 12px;
+            padding: 2rem;
+            color: white;
+            margin-bottom: 2rem;
+        }
+
+        .lab-header h1 {
+            font-size: 1.75rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .lab-meta {
+            display: flex;
+            gap: 2rem;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .lab-steps {
+            background: var(--white);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .lab-step {
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid var(--bg-light);
+            display: none;
+        }
+
+        .lab-step.active {
+            display: block;
+        }
+
+        .step-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .step-number {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--module-accent);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .step-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .step-content {
+            padding-left: 52px;
+        }
+
+        .copy-block {
+            background: #1E1E1E;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+            position: relative;
+            overflow-x: auto;
+        }
+
+        .copy-block pre {
+            color: #D4D4D4;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.85rem;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background: #3C3C3C;
+            border: none;
+            color: white;
+            padding: 0.5rem 0.75rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .copy-btn:hover {
+            background: var(--module-accent);
+        }
+
+        .lab-navigation {
+            display: flex;
+            justify-content: space-between;
+            padding: 1.5rem 2rem;
+            border-top: 1px solid var(--bg-light);
+        }
+
+        /* Quiz */
+        .quiz-container {
+            background: var(--white);
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            overflow: hidden;
+        }
+
+        .quiz-header {
+            background: var(--bg-light);
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .quiz-progress {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .quiz-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--light-gray);
+        }
+
+        .quiz-dot.current {
+            background: var(--module-accent);
+        }
+
+        .quiz-dot.correct {
+            background: var(--success);
+        }
+
+        .quiz-dot.incorrect {
+            background: var(--error);
+        }
+
+        .quiz-question {
+            padding: 2rem;
+            display: none;
+        }
+
+        .quiz-question.active {
+            display: block;
+        }
+
+        .question-number {
+            font-size: 0.85rem;
+            color: #6B7280;
+            margin-bottom: 0.5rem;
+        }
+
+        .question-text {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            line-height: 1.5;
+        }
+
+        .answer-options {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .answer-option {
+            padding: 1rem 1.25rem;
+            border: 2px solid var(--light-gray);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .answer-option:hover:not(.disabled) {
+            border-color: var(--module-accent);
+            background: rgba(139, 92, 246, 0.03);
+        }
+
+        .answer-option.selected {
+            border-color: var(--module-accent);
+            background: rgba(139, 92, 246, 0.08);
+        }
+
+        .answer-option.correct {
+            border-color: var(--success);
+            background: rgba(47, 211, 180, 0.1);
+        }
+
+        .answer-option.incorrect {
+            border-color: var(--error);
+            background: rgba(238, 44, 130, 0.08);
+        }
+
+        .answer-option.disabled {
+            cursor: default;
+        }
+
+        .option-letter {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--bg-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .answer-option.selected .option-letter {
+            background: var(--module-accent);
+            color: white;
+        }
+
+        .answer-option.correct .option-letter {
+            background: var(--success);
+            color: white;
+        }
+
+        .answer-option.incorrect .option-letter {
+            background: var(--error);
+            color: white;
+        }
+
+        .feedback-panel {
+            padding: 1.5rem 2rem;
+            background: var(--bg-light);
+            display: none;
+        }
+
+        .feedback-panel.show {
+            display: block;
+        }
+
+        .feedback-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+        }
+
+        .feedback-correct {
+            color: var(--success);
+        }
+
+        .feedback-incorrect {
+            color: var(--error);
+        }
+
+        .quiz-footer {
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: flex-end;
+            border-top: 1px solid var(--bg-light);
+        }
+
+        /* Quiz Results */
+        .quiz-results {
+            text-align: center;
+            padding: 3rem 2rem;
+        }
+
+        .results-score {
+            font-size: 4rem;
+            font-weight: 700;
+            color: var(--module-accent);
+            margin-bottom: 0.5rem;
+        }
+
+        .results-label {
+            font-size: 1.25rem;
+            color: #6B7280;
+            margin-bottom: 2rem;
+        }
+
+        .results-breakdown {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            margin-bottom: 2rem;
+        }
+
+        .breakdown-item {
+            text-align: center;
+        }
+
+        .breakdown-value {
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .breakdown-value.correct { color: var(--success); }
+        .breakdown-value.incorrect { color: var(--error); }
+
+        .breakdown-label {
+            font-size: 0.9rem;
+            color: #6B7280;
+        }
+
+        /* Study Guide */
+        .study-guide-card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .study-guide-card h2 {
+            font-size: 1.25rem;
+            margin-bottom: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--module-accent);
+        }
+
+        .term-grid {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .term-item {
+            display: grid;
+            grid-template-columns: 200px 1fr;
+            gap: 1rem;
+            padding: 1rem;
+            background: var(--bg-light);
+            border-radius: 8px;
+        }
+
+        .term-name {
+            font-weight: 600;
+            color: var(--dark-base);
+        }
+
+        .term-def {
+            color: #4B5563;
+        }
+
+        .do-dont-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        .do-column h3 {
+            color: var(--success);
+            margin-bottom: 1rem;
+        }
+
+        .dont-column h3 {
+            color: var(--error);
+            margin-bottom: 1rem;
+        }
+
+        .do-dont-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.5rem;
+            margin-bottom: 0.75rem;
+            font-size: 0.95rem;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            border: none;
+        }
+
+        .btn-primary {
+            background: var(--module-accent);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #7C3AED;
+        }
+
+        .btn-secondary {
+            background: var(--bg-light);
+            color: var(--dark-base);
+        }
+
+        .btn-secondary:hover {
+            background: var(--light-gray);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .content-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--bg-light);
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .sidebar {
+                width: 240px;
+            }
+            .content-area {
+                margin-left: 240px;
+                padding: 1.5rem 2rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                display: none;
+            }
+            .content-area {
+                margin-left: 0;
+                padding: 1rem;
+            }
+            .do-dont-grid, .calc-demo {
+                grid-template-columns: 1fr;
+            }
+            .term-item {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="course-header">
+        <div>
+            <div class="course-title">Solo Pilot → Squadron Leader</div>
+            <div class="course-subtitle">Module 4: Agentic Data Analysis</div>
+        </div>
+        <div class="progress-container">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+            </div>
+            <span class="progress-text" id="progressText">0% Complete</span>
+        </div>
+    </header>
+
+    <div class="main-container">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="nav-section">
+                <div class="nav-section-title">Module Content</div>
+                <div class="nav-item active" data-screen="welcome">
+                    <div class="nav-icon">▶</div>
+                    <span class="nav-label">Welcome</span>
+                    <span class="nav-duration">2 min</span>
+                </div>
+                <div class="nav-item" data-screen="video">
+                    <div class="nav-icon">🎬</div>
+                    <span class="nav-label">Video Lesson</span>
+                    <span class="nav-duration">11 min</span>
+                </div>
+                <div class="nav-item" data-screen="lesson-1">
+                    <div class="nav-icon">1</div>
+                    <span class="nav-label">The Calculator Problem</span>
+                    <span class="nav-duration">5 min</span>
+                </div>
+                <div class="nav-item" data-screen="lesson-2">
+                    <div class="nav-icon">2</div>
+                    <span class="nav-label">Code Execution</span>
+                    <span class="nav-duration">5 min</span>
+                </div>
+                <div class="nav-item" data-screen="lesson-3">
+                    <div class="nav-icon">3</div>
+                    <span class="nav-label">Vibe Coding</span>
+                    <span class="nav-duration">5 min</span>
+                </div>
+                <div class="nav-item" data-screen="lesson-4">
+                    <div class="nav-icon">4</div>
+                    <span class="nav-label">Verification Protocol</span>
+                    <span class="nav-duration">5 min</span>
+                </div>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Practice & Assessment</div>
+                <div class="nav-item" data-screen="flashcards">
+                    <div class="nav-icon">🗂</div>
+                    <span class="nav-label">Flashcards</span>
+                    <span class="nav-duration">5 min</span>
+                </div>
+                <div class="nav-item" data-screen="lab">
+                    <div class="nav-icon">🧪</div>
+                    <span class="nav-label">Lab Exercise</span>
+                    <span class="nav-duration">25 min</span>
+                </div>
+                <div class="nav-item" data-screen="quiz">
+                    <div class="nav-icon">✓</div>
+                    <span class="nav-label">Knowledge Check</span>
+                    <span class="nav-duration">10 min</span>
+                </div>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Reference</div>
+                <div class="nav-item" data-screen="study-guide">
+                    <div class="nav-icon">📋</div>
+                    <span class="nav-label">Study Guide</span>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Content Area -->
+        <main class="content-area">
+            <!-- Welcome Screen -->
+            <section class="screen active" id="welcome">
+                <div class="welcome-hero">
+                    <span class="module-tag">Module 4 of 11</span>
+                    <h1>Agentic Data Analysis</h1>
+                    <p>Master the "No Math" rule: Never trust AI to do math—but always trust it to write code that does math.</p>
+                </div>
+
+                <div class="objectives-card">
+                    <h2>🎯 Learning Objectives</h2>
+                    <div class="objective-item">
+                        <span class="objective-level level-retrieval">Retrieval</span>
+                        <span>Define "The Calculator Problem" and explain why AI-generated numbers can be unreliable</span>
+                    </div>
+                    <div class="objective-item">
+                        <span class="objective-level level-comprehension">Comprehension</span>
+                        <span>Explain the difference between probabilistic and deterministic output</span>
+                    </div>
+                    <div class="objective-item">
+                        <span class="objective-level level-analysis">Analysis</span>
+                        <span>Apply the Verification Protocol to identify and validate code-backed calculations</span>
+                    </div>
+                    <div class="objective-item">
+                        <span class="objective-level level-utilization">Utilization</span>
+                        <span>Use Vibe Coding to create professional data visualizations without writing Python</span>
+                    </div>
+
+                    <div class="time-estimate">
+                        <div class="time-item">
+                            <span>⏱</span>
+                            <span><strong>Total Time:</strong> ~65 minutes</span>
+                        </div>
+                        <div class="time-item">
+                            <span>🧪</span>
+                            <span><strong>Lab:</strong> 25 minutes hands-on</span>
+                        </div>
+                        <div class="time-item">
+                            <span>✓</span>
+                            <span><strong>Quiz:</strong> 10 questions</span>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="start-btn" onclick="navigateTo('video')">
+                    Begin Module
+                    <span>→</span>
+                </button>
+            </section>
+
+            <!-- Video Screen -->
+            <section class="screen" id="video">
+                <div class="video-container">
+                    <div class="video-placeholder">
+                        <button class="play-btn" aria-label="Play video">
+                            <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                        </button>
+                        <p>Video: The "No Math" Rule (10:45)</p>
+                    </div>
+                </div>
+
+                <div class="lesson-content">
+                    <h2>Video Summary</h2>
+                    <p>This video demonstrates why AI math can be unreliable and how to solve it:</p>
+                    <ul>
+                        <li><strong>The Calculator Problem</strong> — AI predicts numbers rather than calculating them</li>
+                        <li><strong>Code Execution</strong> — When Claude writes Python, the math is calculated precisely</li>
+                        <li><strong>Vibe Coding</strong> — Describe outcomes in natural language; let AI handle implementation</li>
+                        <li><strong>Verification Protocol</strong> — Three rules for trustworthy data analysis</li>
+                    </ul>
+
+                    <div class="callout callout-tip">
+                        <span class="callout-icon">💡</span>
+                        <div>
+                            <strong>Key Mantra:</strong> Never trust AI to do math—but always trust it to write code that does math.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="content-nav">
+                    <button class="btn btn-secondary" onclick="navigateTo('welcome')">← Back</button>
+                    <button class="btn btn-primary" onclick="navigateTo('lesson-1')">Continue to Lesson →</button>
+                </div>
+            </section>
+
+            <!-- Lesson 1: The Calculator Problem -->
+            <section class="screen" id="lesson-1">
+                <div class="lesson-content">
+                    <h1>The Calculator Problem</h1>
+
+                    <p>Here's a truth that surprises most people: Claude, the same system that can write sophisticated legal arguments and debug complex code, struggles with multiplication.</p>
+
+                    <div class="interactive-demo">
+                        <div class="demo-title">🔢 The Hallucination Test</div>
+                        <div class="calc-demo">
+                            <div class="calc-panel bad">
+                                <div class="calc-panel-header">
+                                    <span>✗</span> Without Code Execution
+                                </div>
+                                <div class="calc-label">Question</div>
+                                <p>What is 847 × 293?</p>
+                                <div class="calc-label" style="margin-top: 1rem;">AI Response</div>
+                                <div class="calc-value">248,271</div>
+                                <div class="calc-explanation">AI predicted digits that "look right"</div>
+                            </div>
+                            <div class="calc-panel good">
+                                <div class="calc-panel-header">
+                                    <span>✓</span> With Code Execution
+                                </div>
+                                <div class="calc-label">Question</div>
+                                <p>Use Python to calculate 847 × 293</p>
+                                <div class="calc-label" style="margin-top: 1rem;">AI Response</div>
+                                <div class="calc-value">248,171</div>
+                                <div class="calc-explanation">Python calculated the exact answer</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h3>Why This Happens</h3>
+                    <p>Remember from Module 1—Claude is a <strong>probabilistic reasoning engine</strong>. It doesn't retrieve answers or calculate them in a logic circuit. It <em>predicts</em> the most likely sequence of characters that should follow your input.</p>
+
+                    <p>For simple math (2 + 2), the training data contains so many examples that the prediction is reliable. For complex or unusual calculations, the model is essentially guessing which digits "look right."</p>
+
+                    <div class="callout callout-warning">
+                        <span class="callout-icon">⚠️</span>
+                        <div>
+                            <strong>The Danger:</strong> AI doesn't express uncertainty about math. It will confidently give you a wrong number. A plausible-sounding incorrect figure in a QBR can erode client trust and lead to bad decisions.
+                        </div>
+                    </div>
+
+                    <h3>Where This Matters at ActivTrak</h3>
+                    <table class="comparison-table">
+                        <thead>
+                            <tr>
+                                <th>Scenario</th>
+                                <th>Why Accuracy Matters</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>QBR presentations</td>
+                                <td>Percentage changes shown to clients must be exact</td>
+                            </tr>
+                            <tr>
+                                <td>Renewal conversations</td>
+                                <td>ROI calculations drive contract decisions</td>
+                            </tr>
+                            <tr>
+                                <td>Executive summaries</td>
+                                <td>Aggregate statistics inform strategy</td>
+                            </tr>
+                            <tr>
+                                <td>Competitive analysis</td>
+                                <td>Feature and pricing comparisons must be accurate</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="content-nav">
+                    <button class="btn btn-secondary" onclick="navigateTo('video')">← Back</button>
+                    <button class="btn btn-primary" onclick="navigateTo('lesson-2')">Continue →</button>
+                </div>
+            </section>
+
+            <!-- Lesson 2: Code Execution -->
+            <section class="screen" id="lesson-2">
+                <div class="lesson-content">
+                    <h1>Code Execution: The Solution</h1>
+
+                    <p>The breakthrough insight is understanding two types of AI output:</p>
+
+                    <table class="comparison-table">
+                        <thead>
+                            <tr>
+                                <th>Output Type</th>
+                                <th>How It Works</th>
+                                <th>Reliability</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Probabilistic</strong></td>
+                                <td>AI predicts likely text</td>
+                                <td>Variable—great for language, unreliable for math</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Deterministic</strong></td>
+                                <td>Code executes calculations</td>
+                                <td>Precise—computer actually computes the answer</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h3>The Analysis Tool</h3>
+                    <p>Claude's <strong>Analysis Tool</strong> (Code Execution) transforms data work. When enabled, Claude can:</p>
+                    <ul>
+                        <li><strong>Write Python code</strong> to process your data</li>
+                        <li><strong>Execute that code</strong> in a secure sandbox</li>
+                        <li><strong>Return calculated results</strong> that are mathematically precise</li>
+                        <li><strong>Generate visualizations</strong> based on actual data</li>
+                    </ul>
+
+                    <div class="code-block">
+                        <span class="code-label">Python</span>
+                        <pre><span class="comment"># When you ask Claude to calculate with code:</span>
+<span class="keyword">import</span> pandas <span class="keyword">as</span> pd
+
+<span class="comment"># Load and analyze data</span>
+df = pd.read_csv(<span class="string">'metrics.csv'</span>)
+q2_total = df[<span class="string">'Q2_Hours'</span>].sum()
+q3_total = df[<span class="string">'Q3_Hours'</span>].sum()
+
+<span class="comment"># Calculate exact percentage change</span>
+pct_change = ((q3_total - q2_total) / q2_total) * <span class="number">100</span>
+<span class="function">print</span>(<span class="string">f"Change: </span>{pct_change:.2f}<span class="string">%"</span>)</pre>
+                    </div>
+
+                    <h3>How to Trigger Code Execution</h3>
+                    <div class="protocol-cards">
+                        <div class="protocol-card">
+                            <div class="protocol-number">1</div>
+                            <div class="protocol-content">
+                                <h4>Explicit Requests</h4>
+                                <p>"Write and run Python code to calculate..." or "Use the Analysis Tool to..."</p>
+                            </div>
+                        </div>
+                        <div class="protocol-card">
+                            <div class="protocol-number">2</div>
+                            <div class="protocol-content">
+                                <h4>Upload Data Files</h4>
+                                <p>Drag CSV or Excel files into Claude—system enables code processing automatically</p>
+                            </div>
+                        </div>
+                        <div class="protocol-card">
+                            <div class="protocol-number">3</div>
+                            <div class="protocol-content">
+                                <h4>Request Precision</h4>
+                                <p>"Calculate the exact percentage change..." or "Show me the code you're using"</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="callout callout-tip">
+                        <span class="callout-icon">💡</span>
+                        <div>
+                            <strong>The Key Phrase:</strong> "Show me the code." If Claude shows code, the numbers are calculated, not guessed.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="content-nav">
+                    <button class="btn btn-secondary" onclick="navigateTo('lesson-1')">← Back</button>
+                    <button class="btn btn-primary" onclick="navigateTo('lesson-3')">Continue →</button>
+                </div>
+            </section>
+
+            <!-- Lesson 3: Vibe Coding -->
+            <section class="screen" id="lesson-3">
+                <div class="lesson-content">
+                    <h1>Vibe Coding for Non-Technical Users</h1>
+
+                    <p>You might be thinking: "I'm not a programmer. I don't know Python."</p>
+
+                    <p>Good news: <strong>you don't need to.</strong></p>
+
+                    <h3>What Is Vibe Coding?</h3>
+                    <p><strong>Vibe Coding</strong> is describing what you want in natural language—focusing on the outcome, the "vibe"—while AI handles all the technical implementation.</p>
+
+                    <div class="interactive-demo">
+                        <div class="demo-title">🎨 From Vibe to Visualization</div>
+                        <div class="calc-demo">
+                            <div class="calc-panel">
+                                <div class="calc-label">Your Natural Language Request</div>
+                                <p style="font-style: italic; margin-top: 0.5rem;">"Create a bar chart comparing productivity by department. Make it look professional—dark background, sort from highest to lowest, add data labels. Use ActivTrak blue."</p>
+                            </div>
+                            <div class="calc-panel good">
+                                <div class="calc-label">What Claude Does</div>
+                                <ul style="margin: 0.5rem 0 0 1rem; font-size: 0.9rem;">
+                                    <li>Interprets "professional" → specific styling</li>
+                                    <li>Applies "dark background" → plt.style</li>
+                                    <li>Implements sorting logic</li>
+                                    <li>Uses #0042F3 for ActivTrak blue</li>
+                                    <li>Generates download-ready chart</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h3>The Refinement Loop</h3>
+                    <p>Vibe Coding works through iteration:</p>
+                    <ol>
+                        <li><strong>Initial request:</strong> Describe the general outcome</li>
+                        <li><strong>Review output:</strong> Check if it matches your vision</li>
+                        <li><strong>Refine specifics:</strong> Add constraints as needed</li>
+                        <li><strong>Verify accuracy:</strong> Ensure data is represented correctly</li>
+                    </ol>
+
+                    <div class="code-block">
+                        <span class="code-label">Refinement Prompts</span>
+                        <pre><span class="comment"># Example refinement conversation:</span>
+
+<span class="string">"Good start. Now sort the bars from largest decline
+to largest improvement."</span>
+
+<span class="string">"Color-code the bars: red for declines,
+green for improvements."</span>
+
+<span class="string">"Add the exact percentage as a label on each bar."</span>
+
+<span class="string">"Make the font larger for projection."</span></pre>
+                    </div>
+
+                    <div class="callout callout-insight">
+                        <span class="callout-icon">🎯</span>
+                        <div>
+                            <strong>You Direct; AI Implements.</strong> Each refinement, Claude adjusts the code and regenerates. You never need to know the technical syntax—just describe what you want differently.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="content-nav">
+                    <button class="btn btn-secondary" onclick="navigateTo('lesson-2')">← Back</button>
+                    <button class="btn btn-primary" onclick="navigateTo('lesson-4')">Continue →</button>
+                </div>
+            </section>
+
+            <!-- Lesson 4: Verification Protocol -->
+            <section class="screen" id="lesson-4">
+                <div class="lesson-content">
+                    <h1>The Verification Protocol</h1>
+
+                    <p>Here's the Squadron Leader protocol for trustworthy data analysis:</p>
+
+                    <div class="protocol-cards">
+                        <div class="protocol-card">
+                            <div class="protocol-number">1</div>
+                            <div class="protocol-content">
+                                <h4>No Numbers Without Code</h4>
+                                <p>If Claude gives you a calculation, look for the code block. No code visible = number is a guess. Ask: "Show me the code you used."</p>
+                            </div>
+                        </div>
+                        <div class="protocol-card">
+                            <div class="protocol-number">2</div>
+                            <div class="protocol-content">
+                                <h4>Spot-Check Critical Figures</h4>
+                                <p>Pick 1-2 important numbers and verify them manually. Cross-reference with calculator or Excel. Takes 30 seconds, catches major errors.</p>
+                            </div>
+                        </div>
+                        <div class="protocol-card">
+                            <div class="protocol-number">3</div>
+                            <div class="protocol-content">
+                                <h4>Document Methodology</h4>
+                                <p>When sharing AI-generated analysis, note how it was produced. "Calculated using Python pandas" builds credibility and enables verification.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h3>Common Pitfalls to Avoid</h3>
+                    <table class="comparison-table">
+                        <thead>
+                            <tr>
+                                <th>Pitfall</th>
+                                <th>Why It Happens</th>
+                                <th>Prevention</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Confident wrong numbers</td>
+                                <td>AI doesn't express uncertainty</td>
+                                <td>Always verify code was used</td>
+                            </tr>
+                            <tr>
+                                <td>Aggregation errors</td>
+                                <td>Sums/averages hide issues</td>
+                                <td>Check intermediate calculations</td>
+                            </tr>
+                            <tr>
+                                <td>Missing data handling</td>
+                                <td>AI might ignore nulls</td>
+                                <td>Ask about data quality explicitly</td>
+                            </tr>
+                            <tr>
+                                <td>Rounding confusion</td>
+                                <td>Display vs. calculation precision</td>
+                                <td>Specify precision requirements</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="callout callout-code">
+                        <span class="callout-icon">📊</span>
+                        <div>
+                            <strong>The ActivTrak Connection:</strong> When analyzing client metrics, remember "Insights, Not Oversight." Frame analysis supportively—ask about "patterns and trends" not "underperformers." The AI follows your framing.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="content-nav">
+                    <button class="btn btn-secondary" onclick="navigateTo('lesson-3')">← Back</button>
+                    <button class="btn btn-primary" onclick="navigateTo('flashcards')">Practice with Flashcards →</button>
+                </div>
+            </section>
+
+            <!-- Flashcards Screen -->
+            <section class="screen" id="flashcards">
+                <h1 style="margin-bottom: 0.5rem;">Flashcards</h1>
+                <p style="color: #6B7280; margin-bottom: 2rem;">Review key concepts from this module. Click the card to flip it.</p>
+
+                <div class="flashcard-container">
+                    <div class="flashcard" id="flashcard" onclick="flipCard()">
+                        <div class="flashcard-face flashcard-front">
+                            <h3 id="cardFront">What is "The Calculator Problem" in AI?</h3>
+                        </div>
+                        <div class="flashcard-face flashcard-back">
+                            <p id="cardBack">AI predicts numbers rather than calculating them. When asked "847 × 293," it generates digits that look probable based on patterns—not actual computation. This can result in confident but wrong answers.</p>
+                        </div>
+                    </div>
+                    <p class="flip-hint">Click card to flip</p>
+                </div>
+
+                <div class="flashcard-nav">
+                    <button class="flashcard-btn" onclick="prevCard()">←</button>
+                    <span class="flashcard-counter"><span id="cardNum">1</span> / <span id="cardTotal">8</span></span>
+                    <button class="flashcard-btn" onclick="nextCard()">→</button>
+                </div>
+
+                <div class="content-nav">
+                    <button class="btn btn-secondary" onclick="navigateTo('lesson-4')">← Back to Lesson</button>
+                    <button class="btn btn-primary" onclick="navigateTo('lab')">Continue to Lab →</button>
+                </div>
+            </section>
+
+            <!-- Lab Exercise Screen -->
+            <section class="screen" id="lab">
+                <div class="lab-header">
+                    <h1>🧪 Lab Exercise: The Precision Analysis Challenge</h1>
+                    <p>Experience the Calculator Problem firsthand and master code-verified data analysis.</p>
+                    <div class="lab-meta">
+                        <span>⏱ 25-30 minutes</span>
+                        <span>🛠 Tools: Claude (claude.ai)</span>
+                    </div>
+                </div>
+
+                <div class="lab-steps">
+                    <div class="lab-step active" id="labStep1">
+                        <div class="step-header">
+                            <div class="step-number">1</div>
+                            <div class="step-title">The Hallucination Test</div>
+                        </div>
+                        <div class="step-content">
+                            <p>Open a <strong>new Claude conversation</strong> and test probabilistic vs. deterministic output:</p>
+
+                            <div class="copy-block">
+                                <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+                                <pre>Quick question: What is 98,765 multiplied by 12,345?</pre>
+                            </div>
+
+                            <p>Record Claude's answer, then ask:</p>
+
+                            <div class="copy-block">
+                                <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+                                <pre>Now use Python to calculate 98,765 × 12,345. Show me the code you're running.</pre>
+                            </div>
+
+                            <p><strong>Compare results.</strong> The correct answer is 1,219,253,925. Did the first answer match? Did the code-executed answer?</p>
+                        </div>
+                    </div>
+
+                    <div class="lab-step" id="labStep2">
+                        <div class="step-header">
+                            <div class="step-number">2</div>
+                            <div class="step-title">CSV Analysis with Verification</div>
+                        </div>
+                        <div class="step-content">
+                            <p>Create sample data and analyze it with code verification:</p>
+
+                            <div class="copy-block">
+                                <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+                                <pre>Create a sample CSV dataset representing quarterly productivity metrics for a healthcare company. Include:
+
+- 5 departments: Nursing, Administrative, IT, Pharmacy, Facilities
+- Q2 and Q3 Productive Hours for each
+- Q2 and Q3 Focus Time averages
+- Make the data realistic but include a noticeable decline in Nursing (they implemented a new EHR system)
+
+Format as a proper CSV that I could copy into a file. Then load it as a dataframe for analysis.</pre>
+                            </div>
+
+                            <p>After Claude creates the data, request verified analysis:</p>
+
+                            <div class="copy-block">
+                                <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+                                <pre>Now analyze this data using Python. I need:
+
+1. Calculate the exact percentage change in Productive Hours from Q2 to Q3 for EACH department
+2. Calculate the company-wide average change
+3. Identify which departments improved vs. declined
+
+Requirements:
+- Use Python/pandas for all calculations
+- Show me the code you're using
+- Format results as a clean table
+
+This is for a client QBR, so accuracy is critical.</pre>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="lab-step" id="labStep3">
+                        <div class="step-header">
+                            <div class="step-number">3</div>
+                            <div class="step-title">Vibe Coding Visualization</div>
+                        </div>
+                        <div class="step-content">
+                            <p>Use natural language to create a professional chart:</p>
+
+                            <div class="copy-block">
+                                <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+                                <pre>Create a bar chart showing the percentage change by department. Make it look professional and clean—something I could put in a presentation.</pre>
+                            </div>
+
+                            <p>Now iterate with refinements:</p>
+
+                            <div class="copy-block">
+                                <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+                                <pre>Good start. Now:
+1. Sort the bars from largest decline to largest improvement
+2. Color-code: red shades for declines, green shades for improvements
+3. Add the exact percentage value as a label on each bar
+4. Add title: "Q3 Productivity Change by Department"</pre>
+                            </div>
+
+                            <p><strong>Reflection:</strong> How many iterations did it take to get a chart you'd actually use?</p>
+                        </div>
+                    </div>
+
+                    <div class="lab-step" id="labStep4">
+                        <div class="step-header">
+                            <div class="step-number">4</div>
+                            <div class="step-title">Complete QBR Workflow</div>
+                        </div>
+                        <div class="step-content">
+                            <p>Combine everything into a QBR-ready output:</p>
+
+                            <div class="copy-block">
+                                <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+                                <pre>Generate QBR materials based on this data:
+
+1. EXECUTIVE SUMMARY - One paragraph, frame supportively (Insights, Not Oversight)
+2. KEY METRICS TABLE - All departments with Q2, Q3, and % change
+3. VISUALIZATION - Professional bar chart
+4. TALKING POINTS - 3 discussion items, frame Nursing decline as "EHR transition investment"
+
+CONSTRAINTS:
+- All numbers must be calculated using Python
+- Use "insights" and "analytics," never "tracking" or "monitoring"
+- Show the code for all calculations</pre>
+                            </div>
+
+                            <p><strong>Success check:</strong> Would you feel confident presenting this to a client?</p>
+                        </div>
+                    </div>
+
+                    <div class="lab-navigation">
+                        <button class="btn btn-secondary" id="labPrevBtn" onclick="prevLabStep()" style="visibility: hidden;">← Previous Step</button>
+                        <button class="btn btn-primary" id="labNextBtn" onclick="nextLabStep()">Next Step →</button>
+                    </div>
+                </div>
+
+                <div class="content-nav">
+                    <button class="btn btn-secondary" onclick="navigateTo('flashcards')">← Back</button>
+                    <button class="btn btn-primary" onclick="navigateTo('quiz')">Take the Quiz →</button>
+                </div>
+            </section>
+
+            <!-- Quiz Screen -->
+            <section class="screen" id="quiz">
+                <div class="quiz-container">
+                    <div class="quiz-header">
+                        <h2>Knowledge Check</h2>
+                        <div class="quiz-progress">
+                            <div class="quiz-dot current" data-q="0"></div>
+                            <div class="quiz-dot" data-q="1"></div>
+                            <div class="quiz-dot" data-q="2"></div>
+                            <div class="quiz-dot" data-q="3"></div>
+                            <div class="quiz-dot" data-q="4"></div>
+                            <div class="quiz-dot" data-q="5"></div>
+                            <div class="quiz-dot" data-q="6"></div>
+                        </div>
+                    </div>
+
+                    <!-- Question 1 -->
+                    <div class="quiz-question active" data-question="0">
+                        <div class="question-number">Question 1 of 7</div>
+                        <div class="question-text">What is "The Calculator Problem" in AI?</div>
+                        <div class="answer-options">
+                            <div class="answer-option" data-answer="a" onclick="selectAnswer(this, 0)">
+                                <span class="option-letter">A</span>
+                                <span>AI models run out of memory when processing large numbers</span>
+                            </div>
+                            <div class="answer-option" data-answer="b" onclick="selectAnswer(this, 0)">
+                                <span class="option-letter">B</span>
+                                <span>AI predicts numbers rather than calculating them, leading to confident but potentially wrong answers</span>
+                            </div>
+                            <div class="answer-option" data-answer="c" onclick="selectAnswer(this, 0)">
+                                <span class="option-letter">C</span>
+                                <span>AI can only do basic arithmetic, not complex calculations</span>
+                            </div>
+                            <div class="answer-option" data-answer="d" onclick="selectAnswer(this, 0)">
+                                <span class="option-letter">D</span>
+                                <span>AI calculators are slower than traditional calculators</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Question 2 -->
+                    <div class="quiz-question" data-question="1">
+                        <div class="question-number">Question 2 of 7</div>
+                        <div class="question-text">What is the difference between probabilistic and deterministic output?</div>
+                        <div class="answer-options">
+                            <div class="answer-option" data-answer="a" onclick="selectAnswer(this, 1)">
+                                <span class="option-letter">A</span>
+                                <span>Probabilistic outputs are always wrong; deterministic outputs are always right</span>
+                            </div>
+                            <div class="answer-option" data-answer="b" onclick="selectAnswer(this, 1)">
+                                <span class="option-letter">B</span>
+                                <span>Probabilistic outputs are faster; deterministic outputs are slower</span>
+                            </div>
+                            <div class="answer-option" data-answer="c" onclick="selectAnswer(this, 1)">
+                                <span class="option-letter">C</span>
+                                <span>Probabilistic outputs are AI predictions; deterministic outputs are code-calculated results</span>
+                            </div>
+                            <div class="answer-option" data-answer="d" onclick="selectAnswer(this, 1)">
+                                <span class="option-letter">D</span>
+                                <span>There is no practical difference for data analysis</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Question 3 -->
+                    <div class="quiz-question" data-question="2">
+                        <div class="question-number">Question 3 of 7</div>
+                        <div class="question-text">How can you ensure Claude uses Code Execution for data analysis?</div>
+                        <div class="answer-options">
+                            <div class="answer-option" data-answer="a" onclick="selectAnswer(this, 2)">
+                                <span class="option-letter">A</span>
+                                <span>Use Claude Opus instead of Sonnet</span>
+                            </div>
+                            <div class="answer-option" data-answer="b" onclick="selectAnswer(this, 2)">
+                                <span class="option-letter">B</span>
+                                <span>Upload data files and explicitly request "use Python" or "show me the code"</span>
+                            </div>
+                            <div class="answer-option" data-answer="c" onclick="selectAnswer(this, 2)">
+                                <span class="option-letter">C</span>
+                                <span>Ask Claude to think step by step</span>
+                            </div>
+                            <div class="answer-option" data-answer="d" onclick="selectAnswer(this, 2)">
+                                <span class="option-letter">D</span>
+                                <span>Use longer, more detailed prompts</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Question 4 -->
+                    <div class="quiz-question" data-question="3">
+                        <div class="question-number">Question 4 of 7</div>
+                        <div class="question-text">What is "Vibe Coding"?</div>
+                        <div class="answer-options">
+                            <div class="answer-option" data-answer="a" onclick="selectAnswer(this, 3)">
+                                <span class="option-letter">A</span>
+                                <span>Writing code while listening to music</span>
+                            </div>
+                            <div class="answer-option" data-answer="b" onclick="selectAnswer(this, 3)">
+                                <span class="option-letter">B</span>
+                                <span>Describing desired outcomes in natural language and letting AI handle technical implementation</span>
+                            </div>
+                            <div class="answer-option" data-answer="c" onclick="selectAnswer(this, 3)">
+                                <span class="option-letter">C</span>
+                                <span>A specific Python library for visualizations</span>
+                            </div>
+                            <div class="answer-option" data-answer="d" onclick="selectAnswer(this, 3)">
+                                <span class="option-letter">D</span>
+                                <span>Coding that focuses on emotional user experiences</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Question 5 -->
+                    <div class="quiz-question" data-question="4">
+                        <div class="question-number">Question 5 of 7</div>
+                        <div class="question-text">A CSM receives numbers from Claude with no code shown. What should they do?</div>
+                        <div class="answer-options">
+                            <div class="answer-option" data-answer="a" onclick="selectAnswer(this, 4)">
+                                <span class="option-letter">A</span>
+                                <span>Use these numbers in the QBR presentation—Claude is reliable</span>
+                            </div>
+                            <div class="answer-option" data-answer="b" onclick="selectAnswer(this, 4)">
+                                <span class="option-letter">B</span>
+                                <span>Ask Claude to recalculate using Python and show the code</span>
+                            </div>
+                            <div class="answer-option" data-answer="c" onclick="selectAnswer(this, 4)">
+                                <span class="option-letter">C</span>
+                                <span>Manually calculate all the numbers from scratch</span>
+                            </div>
+                            <div class="answer-option" data-answer="d" onclick="selectAnswer(this, 4)">
+                                <span class="option-letter">D</span>
+                                <span>Assume the numbers are close enough for client discussions</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Question 6 -->
+                    <div class="quiz-question" data-question="5">
+                        <div class="question-number">Question 6 of 7</div>
+                        <div class="question-text">What are the three rules of the Verification Protocol?</div>
+                        <div class="answer-options">
+                            <div class="answer-option" data-answer="a" onclick="selectAnswer(this, 5)">
+                                <span class="option-letter">A</span>
+                                <span>Check spelling, verify format, confirm length</span>
+                            </div>
+                            <div class="answer-option" data-answer="b" onclick="selectAnswer(this, 5)">
+                                <span class="option-letter">B</span>
+                                <span>No numbers without code, spot-check critical figures, document methodology</span>
+                            </div>
+                            <div class="answer-option" data-answer="c" onclick="selectAnswer(this, 5)">
+                                <span class="option-letter">C</span>
+                                <span>Run three times, average results, use the median</span>
+                            </div>
+                            <div class="answer-option" data-answer="d" onclick="selectAnswer(this, 5)">
+                                <span class="option-letter">D</span>
+                                <span>Compare to Google, compare to Excel, compare to calculator</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Question 7 -->
+                    <div class="quiz-question" data-question="6">
+                        <div class="question-number">Question 7 of 7</div>
+                        <div class="question-text">Which prompt approach is best for QBR visualizations?</div>
+                        <div class="answer-options">
+                            <div class="answer-option" data-answer="a" onclick="selectAnswer(this, 6)">
+                                <span class="option-letter">A</span>
+                                <span>"Make a chart of the data"</span>
+                            </div>
+                            <div class="answer-option" data-answer="b" onclick="selectAnswer(this, 6)">
+                                <span class="option-letter">B</span>
+                                <span>"Create a professional bar chart showing changes by department, sorted by amount, color-coded. Show the code."</span>
+                            </div>
+                            <div class="answer-option" data-answer="c" onclick="selectAnswer(this, 6)">
+                                <span class="option-letter">C</span>
+                                <span>"Write Python code using matplotlib with figure size 10,8, bar width 0.8..."</span>
+                            </div>
+                            <div class="answer-option" data-answer="d" onclick="selectAnswer(this, 6)">
+                                <span class="option-letter">D</span>
+                                <span>"Chart this like you would for a Fortune 500 presentation"</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Results -->
+                    <div class="quiz-question" data-question="results" style="display: none;">
+                        <div class="quiz-results">
+                            <div class="results-score" id="quizScore">0/7</div>
+                            <div class="results-label">Questions Correct</div>
+                            <div class="results-breakdown">
+                                <div class="breakdown-item">
+                                    <div class="breakdown-value correct" id="correctCount">0</div>
+                                    <div class="breakdown-label">Correct</div>
+                                </div>
+                                <div class="breakdown-item">
+                                    <div class="breakdown-value incorrect" id="incorrectCount">0</div>
+                                    <div class="breakdown-label">Incorrect</div>
+                                </div>
+                            </div>
+                            <p id="resultMessage" style="margin-bottom: 2rem; color: #6B7280;"></p>
+                            <button class="btn btn-primary" onclick="navigateTo('study-guide')">Review Study Guide →</button>
+                        </div>
+                    </div>
+
+                    <div class="feedback-panel" id="feedbackPanel">
+                        <div class="feedback-header" id="feedbackHeader"></div>
+                        <p id="feedbackText"></p>
+                    </div>
+
+                    <div class="quiz-footer">
+                        <button class="btn btn-primary" id="quizNextBtn" onclick="nextQuestion()" disabled>Next Question →</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Study Guide Screen -->
+            <section class="screen" id="study-guide">
+                <h1 style="margin-bottom: 2rem;">📋 Study Guide</h1>
+
+                <div class="study-guide-card">
+                    <h2>🎯 Core Concept</h2>
+                    <p style="font-size: 1.1rem; line-height: 1.7;"><strong>AI predicts text; code calculates math.</strong> When you need numbers you can trust, ensure Claude uses Code Execution. No numbers without code—ever.</p>
+                </div>
+
+                <div class="study-guide-card">
+                    <h2>📖 Key Terms</h2>
+                    <div class="term-grid">
+                        <div class="term-item">
+                            <span class="term-name">The Calculator Problem</span>
+                            <span class="term-def">AI predicts numbers rather than calculating them—can be confidently wrong</span>
+                        </div>
+                        <div class="term-item">
+                            <span class="term-name">Probabilistic Output</span>
+                            <span class="term-def">AI-generated text/numbers based on pattern prediction</span>
+                        </div>
+                        <div class="term-item">
+                            <span class="term-name">Deterministic Output</span>
+                            <span class="term-def">Code-calculated results—mathematically precise</span>
+                        </div>
+                        <div class="term-item">
+                            <span class="term-name">Code Execution</span>
+                            <span class="term-def">Claude's Analysis Tool that runs Python for precise calculations</span>
+                        </div>
+                        <div class="term-item">
+                            <span class="term-name">Vibe Coding</span>
+                            <span class="term-def">Describing outcomes in natural language; AI handles implementation</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="study-guide-card">
+                    <h2>✅ Verification Protocol</h2>
+                    <div class="protocol-cards" style="margin: 0;">
+                        <div class="protocol-card">
+                            <div class="protocol-number">1</div>
+                            <div class="protocol-content">
+                                <h4>No Numbers Without Code</h4>
+                                <p>If there's no code block, the number is a guess</p>
+                            </div>
+                        </div>
+                        <div class="protocol-card">
+                            <div class="protocol-number">2</div>
+                            <div class="protocol-content">
+                                <h4>Spot-Check Critical Figures</h4>
+                                <p>Verify 1-2 key numbers manually—takes 30 seconds</p>
+                            </div>
+                        </div>
+                        <div class="protocol-card">
+                            <div class="protocol-number">3</div>
+                            <div class="protocol-content">
+                                <h4>Document Methodology</h4>
+                                <p>"Calculated using Python pandas" builds credibility</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="study-guide-card">
+                    <h2>✓ Do's and Don'ts</h2>
+                    <div class="do-dont-grid">
+                        <div class="do-column">
+                            <h3>✓ Do</h3>
+                            <div class="do-dont-item">
+                                <span style="color: var(--success);">✓</span>
+                                <span>Request "show me the code" for calculations</span>
+                            </div>
+                            <div class="do-dont-item">
+                                <span style="color: var(--success);">✓</span>
+                                <span>Upload data files for automatic code mode</span>
+                            </div>
+                            <div class="do-dont-item">
+                                <span style="color: var(--success);">✓</span>
+                                <span>Use Vibe Coding for visualizations</span>
+                            </div>
+                            <div class="do-dont-item">
+                                <span style="color: var(--success);">✓</span>
+                                <span>Spot-check critical figures manually</span>
+                            </div>
+                            <div class="do-dont-item">
+                                <span style="color: var(--success);">✓</span>
+                                <span>Iterate on visualizations through conversation</span>
+                            </div>
+                        </div>
+                        <div class="dont-column">
+                            <h3>✗ Don't</h3>
+                            <div class="do-dont-item">
+                                <span style="color: var(--error);">✗</span>
+                                <span>Trust numbers without visible code</span>
+                            </div>
+                            <div class="do-dont-item">
+                                <span style="color: var(--error);">✗</span>
+                                <span>Accept "confident" answers at face value</span>
+                            </div>
+                            <div class="do-dont-item">
+                                <span style="color: var(--error);">✗</span>
+                                <span>Skip verification for client deliverables</span>
+                            </div>
+                            <div class="do-dont-item">
+                                <span style="color: var(--error);">✗</span>
+                                <span>Use surveillance framing in analysis</span>
+                            </div>
+                            <div class="do-dont-item">
+                                <span style="color: var(--error);">✗</span>
+                                <span>Assume aggregations are automatically correct</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="study-guide-card" style="background: linear-gradient(135deg, var(--module-accent) 0%, #6D28D9 100%); color: white;">
+                    <h2 style="color: white;">➡️ Next Module Preview</h2>
+                    <p><strong>Module 5: The Sensory System (Gemini & Granola)</strong></p>
+                    <p style="opacity: 0.9;">Learn how Gemini provides real-time, grounded research and how Granola captures meeting intelligence. Combine these "sensors" with Claude's analytical power for workflows that are both accurate and current.</p>
+                </div>
+
+                <div class="content-nav">
+                    <button class="btn btn-secondary" onclick="navigateTo('quiz')">← Back to Quiz</button>
+                    <button class="btn btn-success">Module Complete ✓</button>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // Navigation State
+        const screens = ['welcome', 'video', 'lesson-1', 'lesson-2', 'lesson-3', 'lesson-4', 'flashcards', 'lab', 'quiz', 'study-guide'];
+        let currentScreen = 'welcome';
+        let completedScreens = new Set();
+
+        // Flashcard State
+        const flashcards = [
+            {
+                front: "What is 'The Calculator Problem' in AI?",
+                back: "AI predicts numbers rather than calculating them. When asked '847 × 293,' it generates digits that look probable based on patterns—not actual computation. This can result in confident but wrong answers."
+            },
+            {
+                front: "What is the difference between probabilistic and deterministic output?",
+                back: "Probabilistic: AI predicts likely text based on patterns—unreliable for math.\n\nDeterministic: Code executes actual calculations—mathematically precise.\n\nSame AI, completely different reliability."
+            },
+            {
+                front: "How do you trigger Code Execution in Claude?",
+                back: "1. Explicit requests: 'Use Python to calculate...' or 'Show me the code'\n\n2. Upload data files: CSV/Excel triggers code mode\n\n3. Request precision: 'Calculate the exact percentage...'\n\nKey phrase: 'Show me the code'"
+            },
+            {
+                front: "What is 'Vibe Coding'?",
+                back: "Describing desired outcomes in natural language while AI handles technical implementation.\n\nExample: 'Create a professional chart with dark background and soft colors' → Claude writes the matplotlib code.\n\nYou direct; AI implements. No coding knowledge required."
+            },
+            {
+                front: "What are the three rules of the Verification Protocol?",
+                back: "1. No numbers without code - If no code block visible, it's a guess\n\n2. Spot-check critical figures - Verify 1-2 key numbers manually\n\n3. Document methodology - Note 'Calculated using Python pandas' for credibility"
+            },
+            {
+                front: "What common pitfalls should you watch for?",
+                back: "• Confident wrong numbers: AI doesn't express uncertainty\n• Aggregation errors: Sums/averages hide issues\n• Missing data handling: Ask about nulls explicitly\n• Rounding confusion: Display vs. calculation precision"
+            },
+            {
+                front: "How does data analysis fit in the Squadron framework?",
+                back: "• Gemini (Recon): Gather market data, verify facts\n• Claude (Mission Control): Process with code execution, synthesize insights\n• Output: Both accurate (code-calculated) and insightful (AI-reasoned)"
+            },
+            {
+                front: "What's the key mantra for Module 4?",
+                back: "Never trust AI to do math—but always trust it to write code that does math.\n\nAI predicts text. Code calculates math. When you need numbers you can trust, make sure there's code behind them."
+            }
+        ];
+        let currentCard = 0;
+
+        // Lab State
+        let currentLabStep = 1;
+        const totalLabSteps = 4;
+
+        // Quiz State
+        const quizAnswers = ['b', 'c', 'b', 'b', 'b', 'b', 'b'];
+        const quizFeedback = [
+            {
+                correct: "Correct! AI predicts numbers based on patterns rather than calculating them. This can result in confident but mathematically incorrect answers.",
+                incorrect: "Not quite. The Calculator Problem is that AI predicts numbers (like predicting text) rather than actually calculating them, leading to potential errors."
+            },
+            {
+                correct: "Correct! Probabilistic output is AI prediction (unreliable for math). Deterministic output is code-calculated (precise). Same AI, different reliability.",
+                incorrect: "The key difference is that probabilistic outputs are AI predictions, while deterministic outputs come from actually executing code. This matters for math accuracy."
+            },
+            {
+                correct: "Correct! Upload files and explicitly request code: 'Use Python' or 'Show me the code' ensures calculations are executed, not predicted.",
+                incorrect: "The best way is to upload data files and explicitly request code execution: 'Use Python to calculate...' or 'Show me the code you're using.'"
+            },
+            {
+                correct: "Correct! Vibe Coding means describing what you want in natural language ('make it professional') while AI handles the technical implementation.",
+                incorrect: "Vibe Coding is describing desired outcomes in natural language and letting AI write the technical code. You direct; AI implements."
+            },
+            {
+                correct: "Correct! Without visible code, numbers are predictions. Ask Claude to recalculate using Python and show the code before using in client work.",
+                incorrect: "Without visible code, numbers might be predictions. The CSM should ask Claude to recalculate with Python and show the code."
+            },
+            {
+                correct: "Correct! The three rules: (1) No numbers without code, (2) Spot-check critical figures, (3) Document methodology.",
+                incorrect: "The Verification Protocol has three rules: No numbers without code, spot-check critical figures, and document methodology."
+            },
+            {
+                correct: "Correct! This uses Vibe Coding effectively—natural language for outcomes, specific enough for consistency, and requests code verification.",
+                incorrect: "The best approach uses natural language for outcomes (Vibe Coding) while being specific enough for consistent results and requesting code verification."
+            }
+        ];
+        let currentQuestion = 0;
+        let userAnswers = [];
+        let quizComplete = false;
+
+        // Navigation Functions
+        function navigateTo(screenId) {
+            completedScreens.add(currentScreen);
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            document.getElementById(screenId).classList.add('active');
+            document.querySelector(`[data-screen="${screenId}"]`)?.classList.add('active');
+            completedScreens.forEach(id => {
+                const navItem = document.querySelector(`[data-screen="${id}"]`);
+                if (navItem && id !== screenId) navItem.classList.add('completed');
+            });
+            currentScreen = screenId;
+            updateProgress();
+            window.scrollTo(0, 0);
+        }
+
+        function updateProgress() {
+            const progress = Math.round((completedScreens.size / screens.length) * 100);
+            document.getElementById('progressFill').style.width = `${progress}%`;
+            document.getElementById('progressText').textContent = `${progress}% Complete`;
+        }
+
+        // Flashcard Functions
+        function flipCard() {
+            document.getElementById('flashcard').classList.toggle('flipped');
+        }
+
+        function nextCard() {
+            currentCard = (currentCard + 1) % flashcards.length;
+            updateCard();
+        }
+
+        function prevCard() {
+            currentCard = (currentCard - 1 + flashcards.length) % flashcards.length;
+            updateCard();
+        }
+
+        function updateCard() {
+            document.getElementById('flashcard').classList.remove('flipped');
+            setTimeout(() => {
+                document.getElementById('cardFront').textContent = flashcards[currentCard].front;
+                document.getElementById('cardBack').textContent = flashcards[currentCard].back;
+                document.getElementById('cardNum').textContent = currentCard + 1;
+            }, 150);
+        }
+
+        // Lab Functions
+        function nextLabStep() {
+            if (currentLabStep < totalLabSteps) {
+                document.getElementById(`labStep${currentLabStep}`).classList.remove('active');
+                currentLabStep++;
+                document.getElementById(`labStep${currentLabStep}`).classList.add('active');
+                updateLabNav();
+            }
+        }
+
+        function prevLabStep() {
+            if (currentLabStep > 1) {
+                document.getElementById(`labStep${currentLabStep}`).classList.remove('active');
+                currentLabStep--;
+                document.getElementById(`labStep${currentLabStep}`).classList.add('active');
+                updateLabNav();
+            }
+        }
+
+        function updateLabNav() {
+            document.getElementById('labPrevBtn').style.visibility = currentLabStep > 1 ? 'visible' : 'hidden';
+            document.getElementById('labNextBtn').textContent = currentLabStep < totalLabSteps ? 'Next Step →' : 'Complete Lab ✓';
+            if (currentLabStep === totalLabSteps) {
+                document.getElementById('labNextBtn').onclick = () => navigateTo('quiz');
+            } else {
+                document.getElementById('labNextBtn').onclick = nextLabStep;
+            }
+        }
+
+        // Quiz Functions
+        function selectAnswer(element, questionIndex) {
+            if (quizComplete || userAnswers[questionIndex] !== undefined) return;
+            const question = document.querySelector(`[data-question="${questionIndex}"]`);
+            const options = question.querySelectorAll('.answer-option');
+            const selectedAnswer = element.dataset.answer;
+            const isCorrect = selectedAnswer === quizAnswers[questionIndex];
+            userAnswers[questionIndex] = selectedAnswer;
+            options.forEach(opt => {
+                opt.classList.add('disabled');
+                if (opt.dataset.answer === quizAnswers[questionIndex]) opt.classList.add('correct');
+            });
+            if (!isCorrect) element.classList.add('incorrect');
+            const dot = document.querySelector(`.quiz-dot[data-q="${questionIndex}"]`);
+            dot.classList.remove('current');
+            dot.classList.add(isCorrect ? 'correct' : 'incorrect');
+            const feedbackPanel = document.getElementById('feedbackPanel');
+            const feedbackHeader = document.getElementById('feedbackHeader');
+            const feedbackText = document.getElementById('feedbackText');
+            feedbackHeader.className = `feedback-header ${isCorrect ? 'feedback-correct' : 'feedback-incorrect'}`;
+            feedbackHeader.innerHTML = isCorrect ? '✓ Correct!' : '✗ Incorrect';
+            feedbackText.textContent = isCorrect ? quizFeedback[questionIndex].correct : quizFeedback[questionIndex].incorrect;
+            feedbackPanel.classList.add('show');
+            document.getElementById('quizNextBtn').disabled = false;
+        }
+
+        function nextQuestion() {
+            if (currentQuestion < quizAnswers.length - 1) {
+                document.querySelector(`[data-question="${currentQuestion}"]`).classList.remove('active');
+                currentQuestion++;
+                document.querySelector(`[data-question="${currentQuestion}"]`).classList.add('active');
+                document.querySelector(`.quiz-dot[data-q="${currentQuestion}"]`).classList.add('current');
+                document.getElementById('feedbackPanel').classList.remove('show');
+                document.getElementById('quizNextBtn').disabled = true;
+                if (currentQuestion === quizAnswers.length - 1) {
+                    document.getElementById('quizNextBtn').textContent = 'See Results →';
+                }
+            } else {
+                showResults();
+            }
+        }
+
+        function showResults() {
+            quizComplete = true;
+            const correct = userAnswers.filter((a, i) => a === quizAnswers[i]).length;
+            const incorrect = quizAnswers.length - correct;
+            document.querySelector(`[data-question="${currentQuestion}"]`).classList.remove('active');
+            document.querySelector('[data-question="results"]').style.display = 'block';
+            document.querySelector('[data-question="results"]').classList.add('active');
+            document.getElementById('quizScore').textContent = `${correct}/${quizAnswers.length}`;
+            document.getElementById('correctCount').textContent = correct;
+            document.getElementById('incorrectCount').textContent = incorrect;
+            let message = '';
+            if (correct === quizAnswers.length) {
+                message = "Excellent! You've mastered agentic data analysis. Ready for Module 5!";
+            } else if (correct >= 5) {
+                message = "Good foundation! Review the concepts you missed before continuing.";
+            } else if (correct >= 3) {
+                message = "Review the video and flashcards, then retake the quiz.";
+            } else {
+                message = "Schedule time to review the module content before proceeding.";
+            }
+            document.getElementById('resultMessage').textContent = message;
+            document.getElementById('feedbackPanel').classList.remove('show');
+            document.querySelector('.quiz-footer').style.display = 'none';
+        }
+
+        // Copy to clipboard
+        function copyToClipboard(button) {
+            const codeBlock = button.parentElement.querySelector('pre');
+            navigator.clipboard.writeText(codeBlock.textContent).then(() => {
+                button.textContent = 'Copied!';
+                setTimeout(() => button.textContent = 'Copy', 2000);
+            });
+        }
+
+        // Initialize nav click handlers
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', () => {
+                const screen = item.dataset.screen;
+                if (screen) navigateTo(screen);
+            });
+        });
+
+        // Initialize
+        document.getElementById('cardTotal').textContent = flashcards.length;
+    </script>
+</body>
+</html>
