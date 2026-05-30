@@ -16,12 +16,11 @@ declare -a MODULES=(
     "1:The Cognitive Shift:Understanding the Reasoning Engine"
     "2:Model Selection:The Thinking Protocol"
     "3:Prompt Architecture:Advanced Prompt Architecture (XML)"
-    "4:Personal Projects & Folders:Claude Projects and ChatGPT Folders"
+    "4:Personal Projects & Folders:Claude Projects and AI-Powered Folders"
     "5:The Sensory System:Gemini & Granola"
     "6:Decision Hygiene:Beating Sycophancy"
     "7:The Hybrid Agent:Mac, Mobile & Docs"
-    "8:Introduction to Skills:Building Reusable Prompt Templates"
-    "9:Systemizing Intelligence:Team Collaboration and Shared Projects"
+    "8:The Squadron Playbook:Building, Sharing, and Mastering Claude Skills"
     "10:Agentic Data Analysis:The No Math Rule"
     "11:Code Execution:File Creation (Excel, PPT, PDF)"
     "12:Future Frontiers:Agents & MCP"
@@ -35,6 +34,10 @@ create_manifest() {
     local subtitle=$3
     local output_file=$4
     local video_file=$5
+
+    # Escape ampersands for XML
+    title="${title//&/&amp;}"
+    subtitle="${subtitle//&/&amp;}"
 
     cat > "$output_file" << EOF
 <?xml version="1.0" encoding="UTF-8"?>

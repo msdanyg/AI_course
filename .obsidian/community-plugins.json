@@ -4,5 +4,9 @@
   "make-md",
   "quickadd",
   "obsidian-style-settings",
-  "templater-obsidian"
+  "templater-obsidian",
+  "canvas-explorer",
+  "smart-connections",
+  "omnisearch",
+  "obsidian-local-rest-api"
 ]

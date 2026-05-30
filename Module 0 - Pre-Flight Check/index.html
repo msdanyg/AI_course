@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Module 0: Pre-Flight Check | Solo Pilot to Squadron Leader</title>
-    <script src="scorm_api.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -943,6 +942,165 @@
             max-width: 100%;
             height: auto;
         }
+    
+        /* Lab Certification */
+        .lab-certification {
+            margin: 2rem 0;
+            padding: 1.25rem 1.5rem;
+            background: rgba(46, 212, 181, 0.08);
+            border-radius: 12px;
+            border: 1px solid rgba(46, 212, 181, 0.25);
+        }
+        .lab-certification label {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            font-size: 1rem;
+            line-height: 1.5;
+        }
+        .lab-certification input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            flex-shrink: 0;
+            accent-color: var(--teal, #2ED4B5);
+            cursor: pointer;
+        }
+
+        /* Lab Gate Modal */
+        .lab-modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.55);
+            z-index: 10000;
+            align-items: center;
+            justify-content: center;
+        }
+        .lab-modal-overlay.visible {
+            display: flex;
+        }
+        .lab-modal {
+            background: #fff;
+            border-radius: 16px;
+            padding: 2.5rem;
+            max-width: 460px;
+            margin: 1rem;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        .lab-modal h3 {
+            margin: 0 0 0.75rem;
+            color: #14203F;
+            font-size: 1.25rem;
+        }
+        .lab-modal p {
+            color: #4B5563;
+            line-height: 1.6;
+            margin: 0 0 1.5rem;
+        }
+        .lab-modal-buttons {
+            display: flex;
+            gap: 0.75rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .lab-modal-buttons button {
+            padding: 0.7rem 1.5rem;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: transform 0.15s, box-shadow 0.15s;
+        }
+        .lab-modal-buttons button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        .lab-modal-btn-primary {
+            background: #2ED4B5;
+            color: #14203F;
+        }
+        .lab-modal-btn-secondary {
+            background: #E5E7EB;
+            color: #374151;
+        }
+
+        /* Completion Celebration Screen */
+        .completion-hero {
+            text-align: center;
+            padding: 3rem 2rem;
+        }
+        .completion-icon {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--teal, #2ED4B5) 0%, var(--blue, #1657A0) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 2rem;
+            font-size: 3rem;
+            color: #fff;
+        }
+        .completion-hero h1 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+        .completion-hero > p {
+            max-width: 540px;
+            margin: 0 auto 1.5rem;
+            line-height: 1.6;
+            opacity: 0.9;
+        }
+        .completion-stats {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            margin: 2.5rem 0;
+            flex-wrap: wrap;
+        }
+        .completion-stat {
+            text-align: center;
+        }
+        .completion-stat-value {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #2ED4B5;
+        }
+        .completion-stat-label {
+            font-size: 0.85rem;
+            color: #6B7280;
+            margin-top: 0.25rem;
+        }
+        .completion-footer {
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            opacity: 0.7;
+            font-size: 0.9rem;
+        }
+        .completion-study-link {
+            display: inline-block;
+            margin-top: 1.5rem;
+            padding: 0.6rem 1.5rem;
+            border-radius: 8px;
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.15);
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background 0.2s;
+        }
+        .completion-study-link:hover {
+            background: rgba(255,255,255,0.15);
+        }
+
+    
+        .checklist-item, .lab-checkbox {
+            transition: background-color 0.2s ease, border-color 0.2s ease;
+        }
+
     </style>
 </head>
 <body>
@@ -995,6 +1153,11 @@
                     <span class="nav-label">Cockpit Setup</span>
                     <span class="nav-duration">5 min</span>
                 </div>
+            
+                <div class="nav-item" data-screen="study-guide" onclick="navigateTo('study-guide')">
+                    <div class="nav-icon">&#128203;</div>
+                    <span class="nav-label">Study Guide</span>
+                </div>
             </div>
 
             <div class="nav-section">
@@ -1014,10 +1177,13 @@
                     <span class="nav-label">Quiz</span>
                     <span class="nav-duration">10 min</span>
                 </div>
-                <div class="nav-item" data-screen="study-guide" onclick="navigateTo('study-guide')">
-                    <div class="nav-icon">9</div>
-                    <span class="nav-label">Study Guide</span>
-                    <span class="nav-duration">5 min</span>
+            </div>
+        
+            <div class="nav-section">
+                <div class="nav-section-title">Finish</div>
+                <div class="nav-item" data-screen="complete">
+                    <div class="nav-icon">&#127942;</div>
+                    <span class="nav-label">Complete</span>
                 </div>
             </div>
         </nav>
@@ -1117,7 +1283,7 @@
                 <!-- Video 2: Setting Up Your Tools -->
                 <div id="video2" class="video-content" style="display: none;">
                     <p style="color: #6B7280; margin-bottom: 1.5rem;">
-                        Step-by-step guide to configuring Claude, ChatGPT, and Gemini for optimal performance.
+                        Step-by-step guide to configuring Claude, Gemini and your team-specific AI tools for optimal performance.
                     </p>
 
                     <div style="background: #000; border-radius: 12px; overflow: hidden; margin-bottom: 2rem;">
@@ -1131,8 +1297,9 @@
                         <h4>Setup Checklist</h4>
                         <ul>
                             <li><strong>Claude:</strong> Personal preferences, connectors (Google Drive, Slack, Jira), memory management</li>
-                            <li><strong>ChatGPT:</strong> Custom instructions, apps/plugins, tone settings</li>
                             <li><strong>Gemini:</strong> Connected apps (Google Workspace), minimal configuration needed</li>
+                            <li><strong>Slackbot AI:</strong> Available in Slack channels, no additional setup required</li>
+                            <li><strong>Agentforce:</strong> Salesforce AI assistant, configured through your Salesforce instance</li>
                             <li><strong>Key tips:</strong> Turn off unused connectors, start with approval mode for actions</li>
                             <li><strong>Brand compliance:</strong> Add "no Oxford comma" and other style rules to preferences</li>
                         </ul>
@@ -1157,7 +1324,7 @@
                             <div class="tool-icon">🧠</div>
                             <h4>Mission Control</h4>
                             <div class="role">Reasoning & Synthesis</div>
-                            <p>Claude, ChatGPT, Claude Code, Cursor</p>
+                            <p>Claude, Claude Code, Cursor, Agentforce</p>
                         </div>
                         <div class="tool-card gemini">
                             <div class="tool-icon">🔍</div>
@@ -1175,7 +1342,7 @@
                             <div class="tool-icon" style="background: linear-gradient(135deg, #7C3AED 0%, #A78BFA 100%);">⚡</div>
                             <h4>Specialized Units</h4>
                             <div class="role">Domain-Specific</div>
-                            <p>Figma AI, Zendesk AI, ChurnZero</p>
+                            <p>Slackbot AI, ActivTrak, Figma AI</p>
                         </div>
                     </div>
 
@@ -1194,7 +1361,7 @@
                             <tr>
                                 <td>Draft a competitive positioning email</td>
                                 <td><strong>Mission Control</strong></td>
-                                <td>Claude, ChatGPT</td>
+                                <td>Claude, Agentforce</td>
                             </tr>
                             <tr>
                                 <td>Check competitor's current pricing</td>
@@ -1209,7 +1376,7 @@
                             <tr>
                                 <td>Analyze a spreadsheet of account data</td>
                                 <td><strong>Mission Control</strong></td>
-                                <td>Claude, ChatGPT</td>
+                                <td>Claude, Agentforce</td>
                             </tr>
                             <tr>
                                 <td>Find a document in Google Drive</td>
@@ -1324,7 +1491,7 @@
                         <tbody>
                             <tr>
                                 <td><strong>Mission Control</strong> (Reasoning)</td>
-                                <td>Claude? ChatGPT? Claude Code? Cursor?</td>
+                                <td>Claude? Claude Code? Cursor? Agentforce?</td>
                             </tr>
                             <tr>
                                 <td><strong>Recon & Radar</strong> (Research)</td>
@@ -1336,7 +1503,7 @@
                             </tr>
                             <tr>
                                 <td><strong>Specialized Units</strong></td>
-                                <td>Figma AI? Zendesk AI? Others?</td>
+                                <td>Slackbot AI? ActivTrak? Figma AI? Monday.com AI?</td>
                             </tr>
                         </tbody>
                     </table>
@@ -1353,6 +1520,8 @@
                     <div class="concept-card">
                         <h4>Common Setup</h4>
                         <p><strong>Gemini</strong> is available company-wide at <a href="https://gemini.google.com" target="_blank">gemini.google.com</a>. Sign in with your ActivTrak Google Workspace account.</p>
+                        <p style="margin-top: 0.5rem;"><strong>Slackbot AI</strong> is available in all Slack channels — just mention @Claude or use the AI features built into Slack.</p>
+                        <p style="margin-top: 0.5rem;"><strong>Agentforce</strong> is available within Salesforce for sales and CS teams.</p>
                         <p style="margin-top: 0.5rem;"><strong>Zoom AI summaries</strong> are available for all meetings automatically.</p>
                     </div>
 
@@ -1417,7 +1586,7 @@
                 <p style="color: #6B7280; margin-bottom: 2rem;">Click the card to flip it. Review all 7 cards.</p>
 
                 <div class="flashcard-container">
-                    <div class="flashcard" id="flashcard" onclick="flipCard()">
+                    <div class="flashcard" id="flashcard" onclick="flipCard()" tabindex="0" role="button" aria-label="Flashcard - click or press Enter to flip" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();flipCard();}">
                         <div class="flashcard-face flashcard-front">
                             <h3 id="cardFront">What are the three AI tools in your Squadron and their purposes?</h3>
                             <p class="flashcard-hint">Click to reveal answer</p>
@@ -1473,7 +1642,7 @@ Each tool has distinct strengths. Squadron Leaders orchestrate all three.</div>
                     </div>
                     <div class="checklist-item" onclick="toggleCheck(this)">
                         <div class="checklist-checkbox">✓</div>
-                        <span>ChatGPT</span>
+                        <span>Agentforce (Salesforce AI)</span>
                     </div>
                     <div class="checklist-item" onclick="toggleCheck(this)">
                         <div class="checklist-checkbox">✓</div>
@@ -1506,6 +1675,32 @@ Each tool has distinct strengths. Squadron Leaders orchestrate all three.</div>
                     <div class="checklist-item" onclick="toggleCheck(this)">
                         <div class="checklist-checkbox">✓</div>
                         <span>Zoom AI summaries (all meetings)</span>
+                    </div>
+
+                    <h4 style="margin-top: 1rem;">Specialized Units (Team-Specific)</h4>
+                    <div class="checklist-item" onclick="toggleCheck(this)">
+                        <div class="checklist-checkbox">✓</div>
+                        <span>Slackbot AI (available in all channels)</span>
+                    </div>
+                    <div class="checklist-item" onclick="toggleCheck(this)">
+                        <div class="checklist-checkbox">✓</div>
+                        <span>ActivTrak AI features</span>
+                    </div>
+                    <div class="checklist-item" onclick="toggleCheck(this)">
+                        <div class="checklist-checkbox">✓</div>
+                        <span>Figma AI (Design team)</span>
+                    </div>
+                    <div class="checklist-item" onclick="toggleCheck(this)">
+                        <div class="checklist-checkbox">✓</div>
+                        <span>Monday.com AI assistant (Project teams)</span>
+                    </div>
+                    <div class="checklist-item" onclick="toggleCheck(this)">
+                        <div class="checklist-checkbox">✓</div>
+                        <span>ElevenLabs (Content team)</span>
+                    </div>
+                    <div class="checklist-item" onclick="toggleCheck(this)">
+                        <div class="checklist-checkbox">✓</div>
+                        <span>TransZero AI (if applicable to your team)</span>
                     </div>
 
                     <button class="btn btn-primary" style="margin-top: 1rem;" onclick="nextLabStep()">Mark Complete & Continue →</button>
@@ -1572,7 +1767,7 @@ Each tool has distinct strengths. Squadron Leaders orchestrate all three.</div>
                     <button class="btn btn-secondary" onclick="navigateTo('flashcards')">← Back to Flashcards</button>
                     <button class="btn btn-primary" onclick="navigateTo('quiz')">Continue to Quiz →</button>
                 </div>
-            </section>
+</section>
 
             <!-- Quiz -->
             <section id="quiz" class="screen">
@@ -1723,7 +1918,7 @@ Each tool has distinct strengths. Squadron Leaders orchestrate all three.</div>
                     </div>
                     <h2 id="scoreMessage">Quiz Complete!</h2>
                     <p id="scoreDescription" style="color: #6B7280; margin-bottom: 1.5rem;"></p>
-                    <button class="btn btn-primary" onclick="navigateTo('study-guide')">Continue to Study Guide →</button>
+                    <button id="staticCompleteBtn" style="display:none" class="btn btn-primary" onclick="navigateTo('complete')">Module Complete →</button>
                 </div>
 
                 <div class="content-nav" id="quizNav">
@@ -1751,7 +1946,7 @@ Each tool has distinct strengths. Squadron Leaders orchestrate all three.</div>
                             <tr>
                                 <td><strong>Mission Control</strong></td>
                                 <td>Reasoning, writing, coding</td>
-                                <td>Claude, ChatGPT, Claude Code, Cursor</td>
+                                <td>Claude, Claude Code, Cursor, Agentforce</td>
                             </tr>
                             <tr>
                                 <td><strong>Recon & Radar</strong></td>
@@ -1766,7 +1961,7 @@ Each tool has distinct strengths. Squadron Leaders orchestrate all three.</div>
                             <tr>
                                 <td><strong>Specialized Units</strong></td>
                                 <td>Domain-specific</td>
-                                <td>Figma AI, Zendesk AI, ChurnZero</td>
+                                <td>Slackbot AI, ActivTrak, Figma AI, Monday.com AI</td>
                             </tr>
                         </tbody>
                     </table>
@@ -1854,15 +2049,73 @@ Each tool has distinct strengths. Squadron Leaders orchestrate all three.</div>
 
                 <div class="content-nav">
                     <button class="btn btn-secondary" onclick="navigateTo('quiz')">← Back to Quiz</button>
-                    <button class="btn btn-primary" onclick="alert('Module 0 Complete! Proceed to Module 1.')">Complete Module →</button>
                 </div>
             </section>
-        </main>
+        
+    <!-- Lab Certification Gate Modal -->
+    <div class="lab-modal-overlay" id="labModal">
+        <div class="lab-modal">
+            <div style="font-size: 2.5rem; margin-bottom: 1rem;">&#128640;</div>
+            <h3>Lab Exercise Recommended</h3>
+            <p>The lab contains important hands-on practice and reinforcements that will help you succeed on the quiz. It's optional but highly recommended.</p>
+            <div class="lab-modal-buttons">
+                <button class="lab-modal-btn-primary" onclick="closeLabModal(); doNavigate('lab')">Take Me to the Lab</button>
+                <button class="lab-modal-btn-secondary" onclick="closeLabModal(); quizAccessConfirmed = true; doNavigate('quiz')">I've completed the lab, take me to the Quiz</button>
+            </div>
+        </div>
+    </div>
+
+    
+            <!-- Completion Celebration Screen -->
+            <section class="screen" id="complete">
+                <div class="completion-hero">
+                    <div class="completion-icon">&#10003;</div>
+                    <h1>Module 0 Complete!</h1>
+                    <p>Your AI tools are configured and you understand the boundaries of responsible use. You're cleared for takeoff.</p>
+
+                    <div class="completion-stats">
+                        <div class="completion-stat">
+                            <div class="completion-stat-value">Configured</div>
+                            <div class="completion-stat-label">Tools</div>
+                        </div>
+                        <div class="completion-stat">
+                            <div class="completion-stat-value">Understood</div>
+                            <div class="completion-stat-label">Policies</div>
+                        </div>
+                        <div class="completion-stat">
+                            <div class="completion-stat-value">Ready for Takeoff</div>
+                            <div class="completion-stat-label">Status</div>
+                        </div>
+                    </div>
+
+                    <button class="completion-study-link" onclick="doNavigate('study-guide')">
+                        &#128203; View Study Guide (Reference)
+                    </button>
+
+                    <p class="completion-footer">You've completed all required sections. Close this window or revisit any section from the sidebar.</p>
+
+                    <button onclick="if(typeof finishSCORM==='function')finishSCORM(); if(window.opener||window!==window.top){try{window.close();}catch(e){}}this.textContent='Course Complete \u2713';this.disabled=true;this.style.background='#14203F';" style="display:inline-block; margin-top:1.5rem; padding:0.8rem 2rem; border-radius:10px; border:none; background:linear-gradient(135deg,#2ED4B5,#1657A0); color:#fff; font-size:1rem; font-weight:600; cursor:pointer; transition:transform 0.15s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">Close Course</button>
+                </div>
+            </section>
+
+    </main>
     </div>
 
     <script>
+
+        // Lab certification gate
+        var labCertified = false;
+        var quizAccessConfirmed = false;
+
+        function showLabModal() {
+            document.getElementById('labModal').classList.add('visible');
+        }
+        function closeLabModal() {
+            document.getElementById('labModal').classList.remove('visible');
+        }
+
         // Navigation State
-        const screens = ['welcome', 'video', 'lesson-1', 'lesson-2', 'lesson-3', 'flashcards', 'lab', 'quiz', 'study-guide'];
+        const screens = ['welcome', 'video', 'lesson-1', 'lesson-2', 'lesson-3', 'flashcards', 'lab', 'quiz', 'complete'];
         let currentScreen = 'welcome';
         let completedScreens = new Set();
 
@@ -1870,7 +2123,7 @@ Each tool has distinct strengths. Squadron Leaders orchestrate all three.</div>
         const flashcards = [
             {
                 front: "What are the four Squadron roles, and what tools might fill each?",
-                back: "1. Mission Control (Reasoning): Claude, ChatGPT, Claude Code, Cursor\n2. Recon & Radar (Research): Gemini, Perplexity, Google NotebookLM\n3. Flight Recorder (Capture): Granola, Chorus.ai, Zoom AI\n4. Specialized Units: Figma AI, Zendesk AI, ChurnZero, etc.\n\nYour Squadron depends on what tools you have access to. Think in roles, not specific tools."
+                back: "1. Mission Control (Reasoning): Claude, Claude Code, Cursor, Agentforce\n2. Recon & Radar (Research): Gemini, Perplexity, Google NotebookLM\n3. Flight Recorder (Capture): Granola, Chorus.ai, Zoom AI\n4. Specialized Units: Slackbot AI, ActivTrak, Figma AI, Monday.com AI, ElevenLabs\n\nYour Squadron depends on what tools you have access to. Think in roles, not specific tools."
             },
             {
                 front: "What are the three zones in the Traffic Light Protocol?",
@@ -1886,7 +2139,7 @@ Each tool has distinct strengths. Squadron Leaders orchestrate all three.</div>
             },
             {
                 front: "When should you use Mission Control tools vs. Recon & Radar tools?",
-                back: "Use Mission Control (Claude, ChatGPT, etc.) for:\n• Strategic analysis and reasoning\n• Writing and editing content\n• Code execution and data analysis\n• Synthesizing information you provide\n\nUse Recon & Radar (Gemini, Perplexity, etc.) for:\n• Real-time web research\n• Current competitor information\n• Fact verification and grounding\n• Searching documents and workspaces"
+                back: "Use Mission Control (Claude, Agentforce, etc.) for:\n• Strategic analysis and reasoning\n• Writing and editing content\n• Code execution and data analysis\n• Synthesizing information you provide\n\nUse Recon & Radar (Gemini, Perplexity, etc.) for:\n• Real-time web research\n• Current competitor information\n• Fact verification and grounding\n• Searching documents and workspaces"
             },
             {
                 front: "What four questions should you ask before pasting data into an AI tool?",
@@ -1907,8 +2160,8 @@ Each tool has distinct strengths. Squadron Leaders orchestrate all three.</div>
         const quizAnswers = ['c', 'c', 'b', 'c', 'b', 'b'];
         const quizFeedback = [
             {
-                correct: "Exactly right. Mission Control is your reasoning engine—tools like Claude, ChatGPT, or Claude Code that excel at strategic thinking, writing, coding, and synthesizing information. Different employees may have different Mission Control tools, but they all serve this same role.",
-                incorrect: "Mission Control is the reasoning role (Claude, ChatGPT, etc.). Recon & Radar handles web search (Gemini, Perplexity). Flight Recorder handles transcription (Granola, Chorus, Zoom AI)."
+                correct: "Exactly right. Mission Control is your reasoning engine—tools like Claude, Agentforce or Claude Code that excel at strategic thinking, writing, coding and synthesizing information. Different employees may have different Mission Control tools, but they all serve this same role.",
+                incorrect: "Mission Control is the reasoning role (Claude, Agentforce, etc.). Recon & Radar handles web search (Gemini, Perplexity). Flight Recorder handles transcription (Granola, Chorus, Zoom AI)."
             },
             {
                 correct: "Exactly. API keys and credentials are Red zone—never share them with any AI tool. They create genuine security risks.",
@@ -1966,7 +2219,7 @@ Each tool has distinct strengths. Squadron Leaders orchestrate all three.</div>
         }
 
         // Navigation Functions
-        function navigateTo(screenId) {
+        function doNavigate(screenId) {
             completedScreens.add(currentScreen);
 
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
@@ -1984,7 +2237,17 @@ Each tool has distinct strengths. Squadron Leaders orchestrate all three.</div>
 
             currentScreen = screenId;
             updateProgress();
+                    window.scrollTo(0, 0);
         }
+
+        function navigateTo(target) {
+            if (target === 'quiz' && !labCertified && !quizAccessConfirmed) {
+                showLabModal();
+                return;
+            }
+            doNavigate(target);
+        }
+
 
         function updateProgress() {
             const progress = (completedScreens.size / screens.length) * 100;
@@ -2026,6 +2289,9 @@ Each tool has distinct strengths. Squadron Leaders orchestrate all three.</div>
                 document.getElementById(`labStep${currentLabStep}`).classList.remove('active');
                 currentLabStep++;
                 document.getElementById(`labStep${currentLabStep}`).classList.add('active');
+            } else {
+                labCertified = true;
+                navigateTo('quiz');
             }
         }
 
@@ -2104,6 +2370,8 @@ Each tool has distinct strengths. Squadron Leaders orchestrate all three.</div>
             }
             if (typeof setSCORMStatus === 'function') {
                 setSCORMStatus(scorePercent >= 70 ? 'passed' : 'failed');
+            }
+
             // Celebration confetti for passing
             const passed = scorePercent >= 70;
             if (passed && typeof confetti === 'function') {
@@ -2138,14 +2406,21 @@ Each tool has distinct strengths. Squadron Leaders orchestrate all three.</div>
             }
 
             // Close popup window after completion
-            if (window.opener !== null) {
-                setTimeout(() => {
-                    const shouldClose = confirm('Module completed! Close this window?');
-                    if (shouldClose) {
-                        window.close();
-                    }
-                }, 3000);
-            }
+            
+            // Show completion button on pass
+            if (passed) {
+                var completeBtn = document.createElement('button');
+                completeBtn.style.cssText = 'display:block; margin:1.5rem auto 0; padding:1rem 2.5rem; font-size:1.1rem; font-weight:700; border:none; border-radius:12px; cursor:pointer; background:linear-gradient(135deg,#2ED4B5,#1657A0); color:#fff; transition:transform 0.15s;';
+                completeBtn.textContent = 'Module Complete \u2192';
+                completeBtn.onmouseover = function() { this.style.transform = 'translateY(-2px)'; };
+                completeBtn.onmouseout = function() { this.style.transform = 'translateY(0)'; };
+                completeBtn.onclick = function() { navigateTo('complete'); };
+                var resultsEl = document.getElementById('quizScore');
+                if (resultsEl) resultsEl.appendChild(completeBtn);
+
+                // Also show the static complete button in section nav
+                var staticBtn = document.getElementById('staticCompleteBtn');
+                if (staticBtn) { staticBtn.style.display = ''; }
             }
         }
 

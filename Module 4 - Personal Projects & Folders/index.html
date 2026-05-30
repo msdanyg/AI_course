@@ -595,6 +595,11 @@
                     <div class="nav-icon">🎴</div>
                     <span class="nav-label">Flashcards</span>
                 </div>
+            
+                <div class="nav-item" data-section="study-guide" onclick="navigateTo('study-guide')">
+                    <div class="nav-icon">&#128203;</div>
+                    <span class="nav-label">Study Guide</span>
+                </div>
             </div>
 
             <div class="nav-section">
@@ -608,12 +613,12 @@
                     <span class="nav-label">Knowledge Check</span>
                 </div>
             </div>
-
+        
             <div class="nav-section">
-                <div class="nav-section-title">Reference</div>
-                <div class="nav-item" data-section="study-guide">
-                    <div class="nav-icon">📋</div>
-                    <span class="nav-label">Study Guide</span>
+                <div class="nav-section-title">Finish</div>
+                <div class="nav-item" data-section="complete">
+                    <div class="nav-icon">&#127942;</div>
+                    <span class="nav-label">Complete</span>
                 </div>
             </div>
         </nav>
@@ -1082,7 +1087,161 @@
                             transform: translateY(-4px);
                             box-shadow: 0 6px 20px rgba(0,0,0,0.2);
                         }
-                    </style>
+                    
+        /* Lab Certification */
+        .lab-certification {
+            margin: 2rem 0;
+            padding: 1.25rem 1.5rem;
+            background: rgba(46, 212, 181, 0.08);
+            border-radius: 12px;
+            border: 1px solid rgba(46, 212, 181, 0.25);
+        }
+        .lab-certification label {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            font-size: 1rem;
+            line-height: 1.5;
+        }
+        .lab-certification input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            flex-shrink: 0;
+            accent-color: var(--teal, #2ED4B5);
+            cursor: pointer;
+        }
+
+        /* Lab Gate Modal */
+        .lab-modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.55);
+            z-index: 10000;
+            align-items: center;
+            justify-content: center;
+        }
+        .lab-modal-overlay.visible {
+            display: flex;
+        }
+        .lab-modal {
+            background: #fff;
+            border-radius: 16px;
+            padding: 2.5rem;
+            max-width: 460px;
+            margin: 1rem;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        .lab-modal h3 {
+            margin: 0 0 0.75rem;
+            color: #14203F;
+            font-size: 1.25rem;
+        }
+        .lab-modal p {
+            color: #4B5563;
+            line-height: 1.6;
+            margin: 0 0 1.5rem;
+        }
+        .lab-modal-buttons {
+            display: flex;
+            gap: 0.75rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .lab-modal-buttons button {
+            padding: 0.7rem 1.5rem;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: transform 0.15s, box-shadow 0.15s;
+        }
+        .lab-modal-buttons button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        .lab-modal-btn-primary {
+            background: #2ED4B5;
+            color: #14203F;
+        }
+        .lab-modal-btn-secondary {
+            background: #E5E7EB;
+            color: #374151;
+        }
+
+        /* Completion Celebration Screen */
+        .completion-hero {
+            text-align: center;
+            padding: 3rem 2rem;
+        }
+        .completion-icon {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--teal, #2ED4B5) 0%, var(--blue, #1657A0) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 2rem;
+            font-size: 3rem;
+            color: #fff;
+        }
+        .completion-hero h1 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+        .completion-hero > p {
+            max-width: 540px;
+            margin: 0 auto 1.5rem;
+            line-height: 1.6;
+            opacity: 0.9;
+        }
+        .completion-stats {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            margin: 2.5rem 0;
+            flex-wrap: wrap;
+        }
+        .completion-stat {
+            text-align: center;
+        }
+        .completion-stat-value {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #2ED4B5;
+        }
+        .completion-stat-label {
+            font-size: 0.85rem;
+            color: #6B7280;
+            margin-top: 0.25rem;
+        }
+        .completion-footer {
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            opacity: 0.7;
+            font-size: 0.9rem;
+        }
+        .completion-study-link {
+            display: inline-block;
+            margin-top: 1.5rem;
+            padding: 0.6rem 1.5rem;
+            border-radius: 8px;
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.15);
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background 0.2s;
+        }
+        .completion-study-link:hover {
+            background: rgba(255,255,255,0.15);
+        }
+
+    </style>
 
                     <div style="background-color: #F0F7FA; padding: 1.5rem; border-left: 4px solid var(--blue); border-radius: 4px; margin: 2rem 0;">
                         <h4 style="margin-top: 0; color: var(--dark-navy);">Key Takeaways:</h4>
@@ -1505,7 +1664,7 @@ Do not include commentary, process explanation, or meta-discussion of the post i
                         <p>Before proceeding to the quiz, confirm your lab status:</p>
 
                         <label style="display: block; margin: 1rem 0; cursor: pointer;">
-                            <input type="checkbox" id="lab-completed" style="margin-right: 0.5rem; transform: scale(1.2);">
+                            <input type="checkbox" id="lab-completed" style="margin-right: 0.5rem; transform: scale(1.2);" onchange="labCertified = this.checked">
                             <strong>I have completed this lab to my satisfaction</strong> OR I have equivalent experience and am confident I can perform these tasks in the future.
                         </label>
 
@@ -1522,7 +1681,7 @@ Do not include commentary, process explanation, or meta-discussion of the post i
                         <li><strong>Where will you use this?</strong> Name 2-3 recurring tasks at ActivTrak where a Project would save you time every week.</li>
                     </ol>
                 </div>
-            </section>
+</section>
 
             <!-- Quiz Section -->
             <section id="quiz" class="content-section">
@@ -1635,7 +1794,19 @@ Do not include commentary, process explanation, or meta-discussion of the post i
                     <div class="quiz-feedback"></div>
                 </div>
 
-                <button class="submit-quiz-btn" onclick="submitQuiz()">Submit Quiz</button>
+                <button class="submit-quiz-btn" id="submit-quiz-btn" onclick="submitQuiz()">Submit Quiz</button>
+
+                <div id="quiz-results" style="display: none; background: #1E293B; border-radius: 12px; padding: 2rem; margin: 2rem 0; border: 2px solid #334155; text-align: center; color: #fff;">
+                    <h2 style="margin-bottom: 1rem; color: #fff;">Quiz Results</h2>
+                    <div id="quiz-score" style="font-size: 2rem; font-weight: bold; margin-bottom: 0.5rem;"></div>
+                    <div id="quiz-status" style="margin-bottom: 1.5rem;"></div>
+                    <button class="submit-quiz-btn" onclick="resetQuiz()" style="background: #334155;">Retake Quiz</button>
+                </div>
+
+                <div class="section-nav" style="margin-top: 2rem;">
+                    <button class="nav-button secondary" onclick="navigateTo('lab')">← Back to Lab</button>
+                    <button id="staticCompleteBtn" style="display:none" class="nav-button primary" onclick="navigateTo('complete')">Module Complete →</button>
+                </div>
             </section>
 
             <!-- Study Guide Section -->
@@ -1837,10 +2008,69 @@ Do not include commentary, process explanation, or meta-discussion of the post i
                     </div>
                 </div>
             </section>
-        </main>
+        
+    <!-- Lab Certification Gate Modal -->
+    <div class="lab-modal-overlay" id="labModal">
+        <div class="lab-modal">
+            <div style="font-size: 2.5rem; margin-bottom: 1rem;">&#128640;</div>
+            <h3>Lab Exercise Recommended</h3>
+            <p>The lab contains important hands-on practice and reinforcements that will help you succeed on the quiz. It's optional but highly recommended.</p>
+            <div class="lab-modal-buttons">
+                <button class="lab-modal-btn-primary" onclick="closeLabModal(); doNavigate('lab')">Take Me to the Lab</button>
+                <button class="lab-modal-btn-secondary" onclick="closeLabModal(); quizAccessConfirmed = true; doNavigate('quiz')">I've completed the lab, take me to the Quiz</button>
+            </div>
+        </div>
+    </div>
+
+    
+            <!-- Completion Celebration Screen -->
+            <section class="content-section" id="complete">
+                <div class="completion-hero">
+                    <div class="completion-icon">&#10003;</div>
+                    <h1>Module 4 Complete!</h1>
+                    <p>Your AI tools are now organized for mission efficiency. Projects and folders give your Squadron persistent memory.</p>
+
+                    <div class="completion-stats">
+                        <div class="completion-stat">
+                            <div class="completion-stat-value">Organized</div>
+                            <div class="completion-stat-label">Projects</div>
+                        </div>
+                        <div class="completion-stat">
+                            <div class="completion-stat-value">Persistent</div>
+                            <div class="completion-stat-label">Context</div>
+                        </div>
+                        <div class="completion-stat">
+                            <div class="completion-stat-value">Elevated</div>
+                            <div class="completion-stat-label">Efficiency</div>
+                        </div>
+                    </div>
+
+                    <button class="completion-study-link" onclick="doNavigate('study-guide')">
+                        &#128203; View Study Guide (Reference)
+                    </button>
+
+                    <p class="completion-footer">You've completed all required sections. Close this window or revisit any section from the sidebar.</p>
+
+                    <button onclick="if(typeof finishSCORM==='function')finishSCORM(); if(window.opener||window!==window.top){try{window.close();}catch(e){}}this.textContent='Course Complete \u2713';this.disabled=true;this.style.background='#14203F';" style="display:inline-block; margin-top:1.5rem; padding:0.8rem 2rem; border-radius:10px; border:none; background:linear-gradient(135deg,#2ED4B5,#1657A0); color:#fff; font-size:1rem; font-weight:600; cursor:pointer; transition:transform 0.15s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">Close Course</button>
+                </div>
+            </section>
+
+    </main>
     </div>
 
     <script>
+
+        // Lab certification gate
+        var labCertified = false;
+        var quizAccessConfirmed = false;
+
+        function showLabModal() {
+            document.getElementById('labModal').classList.add('visible');
+        }
+        function closeLabModal() {
+            document.getElementById('labModal').classList.remove('visible');
+        }
+
         // Toggle example sections
         function toggleExample(id) {
             const element = document.getElementById(id);
@@ -1852,7 +2082,7 @@ Do not include commentary, process explanation, or meta-discussion of the post i
         }
 
         // Navigation
-        function navigateTo(section) {
+        function doNavigate(section) {
             document.querySelectorAll('.content-section').forEach(sec => sec.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
 
@@ -1860,7 +2090,17 @@ Do not include commentary, process explanation, or meta-discussion of the post i
             document.querySelector(`[data-section="${section}"]`).classList.add('active');
 
             updateProgress();
+                    window.scrollTo(0, 0);
         }
+
+        function navigateTo(target) {
+            if (target === 'quiz' && !labCertified && !quizAccessConfirmed) {
+                showLabModal();
+                return;
+            }
+            doNavigate(target);
+        }
+
 
         document.querySelectorAll('.nav-item').forEach(item => {
             item.addEventListener('click', () => {
@@ -1869,10 +2109,11 @@ Do not include commentary, process explanation, or meta-discussion of the post i
         });
 
         function updateProgress() {
-            const sections = ['lesson', 'flashcards', 'lab', 'quiz', 'study-guide'];
+            const sections = ['lesson', 'flashcards', 'lab', 'quiz', 'complete'];
             const activeIndex = sections.findIndex(s =>
                 document.getElementById(s).classList.contains('active')
             );
+            if (activeIndex === -1) return;
             const progress = Math.round(((activeIndex + 1) / sections.length) * 100);
             document.querySelector('.progress-fill').style.width = progress + '%';
             document.querySelector('.progress-text').textContent = progress + '% Complete';
@@ -2030,23 +2271,44 @@ Do not include commentary, process explanation, or meta-discussion of the post i
             const score = Math.round((correct / total) * 100);
             const passed = score >= 70;
 
+            // Display inline results
+            const resultsDiv = document.getElementById('quiz-results');
+            const scoreDiv = document.getElementById('quiz-score');
+            const statusDiv = document.getElementById('quiz-status');
+
+            scoreDiv.textContent = correct + ' / ' + total + ' (' + score + '%)';
+            scoreDiv.style.color = passed ? '#2ED4B5' : '#F87171';
+
+            if (score === 100) {
+                statusDiv.innerHTML = '<span style="color: #2ED4B5;">Perfect Score! You\'ve mastered Projects and Folders.</span>';
+            } else if (passed) {
+                statusDiv.innerHTML = '<span style="color: #2ED4B5;">Passed! Strong understanding of the material.</span>';
+            } else if (score >= 50) {
+                statusDiv.innerHTML = '<span style="color: #F59E0B;">So close! Review the sections you missed and try again.</span>';
+            } else {
+                statusDiv.innerHTML = '<span style="color: #F87171;">Not yet passing (70% required). Review the lesson and try again.</span>';
+            }
+
+            resultsDiv.style.display = 'block';
+            document.getElementById('submit-quiz-btn').style.display = 'none';
+            resultsDiv.scrollIntoView({ behavior: 'smooth' });
+
+            // SCORM reporting
             if (typeof setSCORMScore === 'function') {
                 setSCORMScore(score);
             }
             if (typeof setSCORMStatus === 'function') {
                 setSCORMStatus(passed ? 'passed' : 'failed');
+            }
+
             // Celebration confetti for passing
-            const passed = scorePercent >= 70;
             if (passed && typeof confetti === 'function') {
-                // Initial burst
                 confetti({
                     particleCount: 100,
                     spread: 70,
                     origin: { y: 0.6 },
                     colors: ['#2ED4B5', '#1657A0', '#FFC83B', '#19316A']
                 });
-
-                // Follow-up bursts
                 setTimeout(() => {
                     confetti({
                         particleCount: 50,
@@ -2056,7 +2318,6 @@ Do not include commentary, process explanation, or meta-discussion of the post i
                         colors: ['#2ED4B5', '#1657A0', '#FFC83B']
                     });
                 }, 250);
-
                 setTimeout(() => {
                     confetti({
                         particleCount: 50,
@@ -2068,18 +2329,28 @@ Do not include commentary, process explanation, or meta-discussion of the post i
                 }, 400);
             }
 
-            // Close popup window after completion
-            if (window.opener !== null) {
-                setTimeout(() => {
-                    const shouldClose = confirm('Module completed! Close this window?');
-                    if (shouldClose) {
-                        window.close();
-                    }
-                }, 3000);
+            // Show completion button on pass
+            if (passed) {
+                const staticBtn = document.getElementById('staticCompleteBtn');
+                if (staticBtn) staticBtn.style.display = '';
             }
-            }
+        }
 
-            alert(`Quiz Complete!\n\nScore: ${score}%\nCorrect: ${correct}/${total}\nStatus: ${passed ? 'PASSED ✓' : 'Please review and retry'}\n\n${passed ? 'Congratulations! You can now move to the next module.' : 'Review the incorrect answers and the lesson material, then retake the quiz.'}`);
+        function resetQuiz() {
+            document.querySelectorAll('.quiz-option').forEach(o => {
+                o.classList.remove('selected', 'correct', 'incorrect');
+            });
+            document.querySelectorAll('.quiz-feedback').forEach(f => {
+                f.className = 'quiz-feedback';
+                f.innerHTML = '';
+            });
+            document.querySelectorAll('.check-answer-btn').forEach(b => {
+                b.disabled = false;
+                b.textContent = 'Check Answer';
+            });
+            document.getElementById('quiz-results').style.display = 'none';
+            document.getElementById('submit-quiz-btn').style.display = 'inline-block';
+            window.scrollTo(0, document.getElementById('quiz').offsetTop);
         }
 
         // Initialize

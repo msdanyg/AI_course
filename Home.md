@@ -29,8 +29,8 @@ Welcome to the course development vault for ActivTrak's internal GenAI training 
 | 5 | The Sensory System | ✅ | [[Module 5 - The Sensory System/Lesson\|Module 5]] |
 | 6 | Decision Hygiene | ✅ | [[Module 6 - Decision Hygiene/Lesson\|Module 6]] |
 | 7 | The Hybrid Agent | ✅ | [[Module 7 - The Hybrid Agent/Lesson\|Module 7]] |
-| 8 | Introduction to Skills | 🔲 | — |
-| 9 | Systemizing Intelligence | 🔲 | — |
+| 8 | The Squadron Playbook (Skills) | ✅ | [[Module 8 - Introduction to Skills/Lesson\|Module 8]] |
+| 9 | [RETIRED] Merged into Module 8 | — | Archived in `_unused_modules/` |
 | 10 | Agentic Data Analysis | ✅ | [[Module 10 - Agentic Data Analysis/Lesson\|Module 10]] |
 | 11 | Code Execution | 🔲 | — |
 | 12 | Future Frontiers | 🔲 | — |

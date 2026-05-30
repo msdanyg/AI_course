@@ -379,6 +379,7 @@
             font-size: 0.85rem;
             line-height: 1.6;
             color: #E2E8F0;
+            white-space: pre-wrap;
         }
 
         .code-block .tag { color: var(--xml-color); }
@@ -821,6 +822,183 @@
                 margin-left: 0;
             }
         }
+    
+        /* Lab Certification */
+        .lab-certification {
+            margin: 2rem 0;
+            padding: 1.25rem 1.5rem;
+            background: rgba(46, 212, 181, 0.08);
+            border-radius: 12px;
+            border: 1px solid rgba(46, 212, 181, 0.25);
+        }
+        .lab-certification label {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            font-size: 1rem;
+            line-height: 1.5;
+        }
+        .lab-certification input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            flex-shrink: 0;
+            accent-color: var(--teal, #2ED4B5);
+            cursor: pointer;
+        }
+
+        /* Lab Gate Modal */
+        .lab-modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.55);
+            z-index: 10000;
+            align-items: center;
+            justify-content: center;
+        }
+        .lab-modal-overlay.visible {
+            display: flex;
+        }
+        .lab-modal {
+            background: #fff;
+            border-radius: 16px;
+            padding: 2.5rem;
+            max-width: 460px;
+            margin: 1rem;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        .lab-modal h3 {
+            margin: 0 0 0.75rem;
+            color: #14203F;
+            font-size: 1.25rem;
+        }
+        .lab-modal p {
+            color: #4B5563;
+            line-height: 1.6;
+            margin: 0 0 1.5rem;
+        }
+        .lab-modal-buttons {
+            display: flex;
+            gap: 0.75rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .lab-modal-buttons button {
+            padding: 0.7rem 1.5rem;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: transform 0.15s, box-shadow 0.15s;
+        }
+        .lab-modal-buttons button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        .lab-modal-btn-primary {
+            background: #2ED4B5;
+            color: #14203F;
+        }
+        .lab-modal-btn-secondary {
+            background: #E5E7EB;
+            color: #374151;
+        }
+
+        /* Completion Celebration Screen */
+        .completion-hero {
+            text-align: center;
+            padding: 3rem 2rem;
+        }
+        .completion-icon {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--teal, #2ED4B5) 0%, var(--blue, #1657A0) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 2rem;
+            font-size: 3rem;
+            color: #fff;
+        }
+        .completion-hero h1 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+        .completion-hero > p {
+            max-width: 540px;
+            margin: 0 auto 1.5rem;
+            line-height: 1.6;
+            opacity: 0.9;
+        }
+        .completion-stats {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            margin: 2.5rem 0;
+            flex-wrap: wrap;
+        }
+        .completion-stat {
+            text-align: center;
+        }
+        .completion-stat-value {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #2ED4B5;
+        }
+        .completion-stat-label {
+            font-size: 0.85rem;
+            color: #6B7280;
+            margin-top: 0.25rem;
+        }
+        .completion-footer {
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            opacity: 0.7;
+            font-size: 0.9rem;
+        }
+        .completion-study-link {
+            display: inline-block;
+            margin-top: 1.5rem;
+            padding: 0.6rem 1.5rem;
+            border-radius: 8px;
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.15);
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background 0.2s;
+        }
+        .completion-study-link:hover {
+            background: rgba(255,255,255,0.15);
+        }
+
+    
+        /* Toast notification */
+        .toast-notification {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: #14203F;
+            color: #fff;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            z-index: 20000;
+            opacity: 0;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+            pointer-events: none;
+        }
+        .toast-notification.visible {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
     </style>
 </head>
 <body>
@@ -860,6 +1038,11 @@
                     <div class="nav-icon">🎴</div>
                     <span class="nav-label">Flashcards</span>
                 </div>
+            
+                <div class="nav-item" data-section="study-guide" onclick="navigateTo('study-guide')">
+                    <div class="nav-icon">&#128203;</div>
+                    <span class="nav-label">Study Guide</span>
+                </div>
             </div>
 
             <div class="nav-section">
@@ -873,12 +1056,12 @@
                     <span class="nav-label">Knowledge Check</span>
                 </div>
             </div>
-
+        
             <div class="nav-section">
-                <div class="nav-section-title">Reference</div>
-                <div class="nav-item" data-section="study-guide">
-                    <div class="nav-icon">📋</div>
-                    <span class="nav-label">Study Guide</span>
+                <div class="nav-section-title">Finish</div>
+                <div class="nav-item" data-section="complete">
+                    <div class="nav-icon">&#127942;</div>
+                    <span class="nav-label">Complete</span>
                 </div>
             </div>
         </nav>
@@ -963,20 +1146,22 @@
                             </div>
                             <div class="code-block">
 <span class="tag">&lt;system_role&gt;</span>
-<span class="content">You are a CSM at ActivTrak focused on "Insights, Not Oversight."</span>
+  <span class="content">You are a CSM at ActivTrak focused on</span>
+  <span class="content">"Insights, Not Oversight."</span>
 <span class="tag">&lt;/system_role&gt;</span>
 
 <span class="tag">&lt;task_context&gt;</span>
-<span class="content">Client productivity dropped 15% during EHR implementation.</span>
+  <span class="content">Client productivity dropped 15% during</span>
+  <span class="content">EHR implementation.</span>
 <span class="tag">&lt;/task_context&gt;</span>
 
 <span class="tag">&lt;constraints&gt;</span>
-<span class="content">- Avoid: tracking, monitoring, surveillance
-- Use supportive framing</span>
+  <span class="content">- Avoid: tracking, monitoring, surveillance</span>
+  <span class="content">- Use supportive framing</span>
 <span class="tag">&lt;/constraints&gt;</span>
 
 <span class="tag">&lt;output_format&gt;</span>
-<span class="content">Three hypotheses with supporting data.</span>
+  <span class="content">Three hypotheses with supporting data.</span>
 <span class="tag">&lt;/output_format&gt;</span>
                             </div>
                         </div>
@@ -1490,30 +1675,34 @@ Attendees: Ben (IT Lead), Efstratios (CIO), Sarah Mitchell (ActivTrak CSM)
                             <div style="margin-top: 1rem;">
                                 <p>Most precise, best for nested data:</p>
                                 <div class="code-block" style="margin-top: 0.5rem;">&lt;system_role&gt;
-You are a Customer Success Manager at ActivTrak preparing an executive summary for a retail company's C-suite following a successful POC.
+  You are a Customer Success Manager at ActivTrak
+  preparing an executive summary for a retail
+  company's C-suite following a successful POC.
 &lt;/system_role&gt;
 
 &lt;task_context&gt;
-The CIO needs a concise executive summary for the board meeting that synthesizes POC results into business impact and next steps.
+  The CIO needs a concise executive summary for
+  the board meeting that synthesizes POC results
+  into business impact and next steps.
 &lt;/task_context&gt;
 
 &lt;data_source_1&gt;
-&lt;source_type&gt;POC Closeout Email&lt;/source_type&gt;
-&lt;content&gt;[Paste email here]&lt;/content&gt;
+  &lt;source_type&gt;POC Closeout Email&lt;/source_type&gt;
+  &lt;content&gt;[Paste email here]&lt;/content&gt;
 &lt;/data_source_1&gt;
 
 &lt;constraints&gt;
-- Use "users" or "accounts" (never "customers")
-- Use "analytics" and "insights" (never "monitoring")
-- Keep to 400 words maximum
+  - Use "users" or "accounts" (never "customers")
+  - Use "analytics" and "insights" (never "monitoring")
+  - Keep to 400 words maximum
 &lt;/constraints&gt;
 
 &lt;output_format&gt;
-1. POC Overview (2 sentences)
-2. Key Findings (3-4 bullet points)
-3. Strategic Recommendations (3 priorities)
-4. Expected ROI (conservative and target)
-5. Proposed Next Steps
+  1. POC Overview (2 sentences)
+  2. Key Findings (3-4 bullet points)
+  3. Strategic Recommendations (3 priorities)
+  4. Expected ROI (conservative and target)
+  5. Proposed Next Steps
 &lt;/output_format&gt;</div>
                             </div>
                         </details>
@@ -1605,20 +1794,37 @@ OUTPUT STRUCTURE:
                             <div style="margin-top: 1rem;">
                                 <p>Here's one way to structure a combined prompt using nested XML:</p>
                                 <div class="code-block" style="margin-top: 0.5rem;">&lt;task_overview&gt;
-You are a Customer Success Manager at ActivTrak. You need to create TWO deliverables from POC closeout materials.
+  You are a Customer Success Manager at ActivTrak.
+  You need to create TWO deliverables from POC
+  closeout materials.
 &lt;/task_overview&gt;
 
 &lt;deliverable_1&gt;
-&lt;type&gt;Reusable Template&lt;/type&gt;
-&lt;goal&gt;Convert the POC email into a markdown template for future use&lt;/goal&gt;
-&lt;instructions&gt;Replace specific details with [PLACEHOLDERS], organize with ## headers&lt;/instructions&gt;
+  &lt;type&gt;Reusable Template&lt;/type&gt;
+  &lt;goal&gt;
+    Convert the POC email into a markdown
+    template for future use
+  &lt;/goal&gt;
+  &lt;instructions&gt;
+    Replace specific details with [PLACEHOLDERS],
+    organize with ## headers
+  &lt;/instructions&gt;
 &lt;/deliverable_1&gt;
 
 &lt;deliverable_2&gt;
-&lt;type&gt;Executive Summary&lt;/type&gt;
-&lt;goal&gt;Create board-ready summary synthesizing all three data sources&lt;/goal&gt;
-&lt;constraints&gt;ActivTrak terminology, 400 words, no surveillance language&lt;/constraints&gt;
-&lt;output_format&gt;5 required sections (POC Overview, Findings, etc.)&lt;/output_format&gt;
+  &lt;type&gt;Executive Summary&lt;/type&gt;
+  &lt;goal&gt;
+    Create board-ready summary synthesizing
+    all three data sources
+  &lt;/goal&gt;
+  &lt;constraints&gt;
+    ActivTrak terminology, 400 words,
+    no surveillance language
+  &lt;/constraints&gt;
+  &lt;output_format&gt;
+    5 required sections (POC Overview,
+    Findings, Recommendations, ROI, Next Steps)
+  &lt;/output_format&gt;
 &lt;/deliverable_2&gt;</div>
                                 <p style="margin-top: 1rem;"><strong>Key insight:</strong> Nested tags prevent context bleeding between the two tasks.</p>
                             </div>
@@ -1635,7 +1841,6 @@ You are a Customer Success Manager at ActivTrak. You need to create TWO delivera
                         <p style="margin-top: 1rem; margin-bottom: 0;"><strong>All data sources are embedded above in collapsible sections. Expand each to view and copy the content you need.</strong></p>
                     </div>
                 </div>
-
                 <div class="section-nav">
                     <button class="nav-button secondary" onclick="navigateTo('flashcards')">← Back to Flashcards</button>
                     <button class="nav-button primary" onclick="navigateTo('quiz')">Continue to Quiz →</button>
@@ -1878,7 +2083,7 @@ You are a Customer Success Manager at ActivTrak. You need to create TWO delivera
 
                 <div class="section-nav">
                     <button class="nav-button secondary" onclick="navigateTo('lab')">← Back to Lab</button>
-                    <button class="nav-button primary" onclick="navigateTo('study-guide')">View Study Guide →</button>
+                    <button id="staticCompleteBtn" style="display:none" class="nav-button primary" onclick="navigateTo('complete')">Module Complete →</button>
                 </div>
             </section>
 
@@ -1936,12 +2141,71 @@ You are a Customer Success Manager at ActivTrak. You need to create TWO delivera
                     <button class="nav-button primary" onclick="navigateTo('video')">Back to Start →</button>
                 </div>
             </section>
-        </main>
+        
+    <!-- Lab Certification Gate Modal -->
+    <div class="lab-modal-overlay" id="labModal">
+        <div class="lab-modal">
+            <div style="font-size: 2.5rem; margin-bottom: 1rem;">&#128640;</div>
+            <h3>Lab Exercise Recommended</h3>
+            <p>The lab contains important hands-on practice and reinforcements that will help you succeed on the quiz. It's optional but highly recommended.</p>
+            <div class="lab-modal-buttons">
+                <button class="lab-modal-btn-primary" onclick="closeLabModal(); doNavigate('lab')">Take Me to the Lab</button>
+                <button class="lab-modal-btn-secondary" onclick="closeLabModal(); quizAccessConfirmed = true; doNavigate('quiz')">I've completed the lab, take me to the Quiz</button>
+            </div>
+        </div>
+    </div>
+
+    
+            <!-- Completion Celebration Screen -->
+            <section class="content-section" id="complete">
+                <div class="completion-hero">
+                    <div class="completion-icon">&#10003;</div>
+                    <h1>Module 3 Complete!</h1>
+                    <p>You can structure complex prompts that prevent context bleeding and produce consistent results. Architecture before improvisation.</p>
+
+                    <div class="completion-stats">
+                        <div class="completion-stat">
+                            <div class="completion-stat-value">3 Mastered</div>
+                            <div class="completion-stat-label">Formats</div>
+                        </div>
+                        <div class="completion-stat">
+                            <div class="completion-stat-value">6 Standard</div>
+                            <div class="completion-stat-label">Components</div>
+                        </div>
+                        <div class="completion-stat">
+                            <div class="completion-stat-value">Eliminated</div>
+                            <div class="completion-stat-label">Context Bleeding</div>
+                        </div>
+                    </div>
+
+                    <button class="completion-study-link" onclick="doNavigate('study-guide')">
+                        &#128203; View Study Guide (Reference)
+                    </button>
+
+                    <p class="completion-footer">You've completed all required sections. Close this window or revisit any section from the sidebar.</p>
+
+                    <button onclick="if(typeof finishSCORM==='function')finishSCORM(); if(window.opener||window!==window.top){try{window.close();}catch(e){}}this.textContent='Course Complete \u2713';this.disabled=true;this.style.background='#14203F';" style="display:inline-block; margin-top:1.5rem; padding:0.8rem 2rem; border-radius:10px; border:none; background:linear-gradient(135deg,#2ED4B5,#1657A0); color:#fff; font-size:1rem; font-weight:600; cursor:pointer; transition:transform 0.15s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">Close Course</button>
+                </div>
+            </section>
+
+    </main>
     </div>
 
     <script>
+
+        // Lab certification gate
+        var labCertified = false;
+        var quizAccessConfirmed = false;
+
+        function showLabModal() {
+            document.getElementById('labModal').classList.add('visible');
+        }
+        function closeLabModal() {
+            document.getElementById('labModal').classList.remove('visible');
+        }
+
         // Navigation
-        function navigateTo(sectionId) {
+        function doNavigate(sectionId) {
             document.querySelectorAll('.nav-item').forEach(item => {
                 item.classList.remove('active');
                 if (item.dataset.section === sectionId) {
@@ -1958,6 +2222,15 @@ You are a Customer Success Manager at ActivTrak. You need to create TWO delivera
             updateProgress();
         }
 
+        function navigateTo(target) {
+            if (target === 'quiz' && !labCertified && !quizAccessConfirmed) {
+                showLabModal();
+                return;
+            }
+            doNavigate(target);
+        }
+
+
         document.querySelectorAll('.nav-item').forEach(item => {
             item.addEventListener('click', () => {
                 navigateTo(item.dataset.section);
@@ -1965,10 +2238,11 @@ You are a Customer Success Manager at ActivTrak. You need to create TWO delivera
         });
 
         function updateProgress() {
-            const sections = ['video', 'lesson', 'flashcards', 'lab', 'quiz', 'study-guide'];
+            const sections = ['video', 'lesson', 'flashcards', 'lab', 'quiz', 'complete'];
             const activeIndex = sections.findIndex(s =>
                 document.getElementById(s).classList.contains('active')
             );
+            if (activeIndex === -1) return;
             const progress = Math.round(((activeIndex + 1) / sections.length) * 100);
             document.querySelector('.progress-fill').style.width = progress + '%';
             document.querySelector('.progress-text').textContent = progress + '% Complete';
@@ -2184,7 +2458,25 @@ You are a Customer Success Manager at ActivTrak. You need to create TWO delivera
             }
 
             // Close popup window after completion (if opened in popup)
-            if (window.opener !== null) {
+            
+            // Show completion button on pass
+            if (passed) {
+                var completeBtn = document.createElement('button');
+                completeBtn.style.cssText = 'display:block; margin:1.5rem auto 0; padding:1rem 2.5rem; font-size:1.1rem; font-weight:700; border:none; border-radius:12px; cursor:pointer; background:linear-gradient(135deg,#2ED4B5,#1657A0); color:#fff; transition:transform 0.15s;';
+                completeBtn.textContent = 'Module Complete \u2192';
+                completeBtn.onmouseover = function() { this.style.transform = 'translateY(-2px)'; };
+                completeBtn.onmouseout = function() { this.style.transform = 'translateY(0)'; };
+                completeBtn.onclick = function() { navigateTo('complete'); };
+                var resultsEl = document.getElementById('quiz-results');
+                if (resultsEl) resultsEl.appendChild(completeBtn);
+
+            // Also show the static complete button in section nav
+            var staticBtn = document.getElementById('staticCompleteBtn');
+            if (staticBtn) { staticBtn.style.display = ''; }
+
+            }
+
+if (window.opener !== null) {
                 setTimeout(() => {
                     const shouldClose = confirm('Module completed! Close this window?');
                     if (shouldClose) {
@@ -2214,9 +2506,27 @@ You are a Customer Success Manager at ActivTrak. You need to create TWO delivera
         }
 
         // Copy to clipboard
-        function copyToClipboard(text) {
+        
+        function showToast(message) {
+            var existing = document.getElementById('toastNotification');
+            if (existing) existing.remove();
+            var toast = document.createElement('div');
+            toast.id = 'toastNotification';
+            toast.className = 'toast-notification';
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            requestAnimationFrame(function() {
+                toast.classList.add('visible');
+            });
+            setTimeout(function() {
+                toast.classList.remove('visible');
+                setTimeout(function() { toast.remove(); }, 300);
+            }, 2000);
+        }
+
+function copyToClipboard(text) {
             navigator.clipboard.writeText(text).then(() => {
-                alert('Copied to clipboard!');
+                showToast('Copied to clipboard!');
             });
         }
 

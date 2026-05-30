@@ -38,7 +38,14 @@
   "vaultSelector": true,
   "deleteFileOption": "trash",
   "expandedSpaces": [
-    "/"
+    "//Tags",
+    "/",
+    "//SCORM_Packages/SCORM_Packages/full_course/SCORM_Packages/full_course/module_1",
+    "//SCORM_Packages/SCORM_Packages/articulate_package",
+    "//SCORM_Packages/SCORM_Packages/combined_course/SCORM_Packages/combined_course/module_1",
+    "//Clippings",
+    "//General assets",
+    "//Module 2 - Model Selection"
   ],
   "expandFolderOnClick": true,
   "spacesFolder": "Tags",

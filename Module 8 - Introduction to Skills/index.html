@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Module 9: Code Execution & File Creation | Solo Pilot to Squadron Leader</title>
+    <title>Module 8: The Squadron Playbook | Solo Pilot to Squadron Leader</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Sofia+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -422,7 +422,22 @@
             background: var(--bg-light);
         }
 
-        /* Code/Prompt Blocks */
+        /* Interactive Elements */
+        .interactive-demo {
+            background: var(--bg-light);
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .demo-title {
+            font-weight: 600;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
         .prompt-box {
             background: var(--white);
             border: 2px solid var(--light-gray);
@@ -432,6 +447,11 @@
             font-size: 0.9rem;
             margin: 1rem 0;
             position: relative;
+        }
+
+        .prompt-box.bad {
+            border-color: var(--violet-red);
+            background: rgba(238, 44, 130, 0.03);
         }
 
         .prompt-box.good {
@@ -449,43 +469,10 @@
             font-size: 0.75rem;
             font-weight: 600;
             text-transform: uppercase;
-            color: var(--teal);
         }
 
-        .copy-block {
-            background: #1E1E1E;
-            border-radius: 8px;
-            padding: 1rem;
-            margin: 1rem 0;
-            position: relative;
-            overflow-x: auto;
-        }
-
-        .copy-block pre {
-            color: #D4D4D4;
-            font-family: 'Courier New', monospace;
-            font-size: 0.85rem;
-            white-space: pre-wrap;
-            word-break: break-word;
-        }
-
-        .copy-btn {
-            position: absolute;
-            top: 0.5rem;
-            right: 0.5rem;
-            background: #3C3C3C;
-            border: none;
-            color: white;
-            padding: 0.5rem 0.75rem;
-            border-radius: 4px;
-            font-size: 0.75rem;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .copy-btn:hover {
-            background: var(--primary-blue);
-        }
+        .prompt-box.bad .prompt-label { color: var(--violet-red); }
+        .prompt-box.good .prompt-label { color: var(--teal); }
 
         /* Video Player */
         .video-container {
@@ -690,6 +677,41 @@
 
         .step-content {
             padding-left: 52px;
+        }
+
+        .copy-block {
+            background: #1E1E1E;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+            position: relative;
+            overflow-x: auto;
+        }
+
+        .copy-block pre {
+            color: #D4D4D4;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background: #3C3C3C;
+            border: none;
+            color: white;
+            padding: 0.5rem 0.75rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .copy-btn:hover {
+            background: var(--primary-blue);
         }
 
         .lab-navigation {
@@ -927,43 +949,6 @@
             font-size: 0.95rem;
         }
 
-        /* File Type Cards */
-        .file-type-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 1rem;
-            margin: 1.5rem 0;
-        }
-
-        .file-type-card {
-            background: var(--bg-light);
-            border-radius: 12px;
-            padding: 1.5rem;
-            text-align: center;
-            border: 2px solid transparent;
-            transition: all 0.2s;
-        }
-
-        .file-type-card:hover {
-            border-color: var(--primary-blue);
-            transform: translateY(-2px);
-        }
-
-        .file-icon {
-            font-size: 2.5rem;
-            margin-bottom: 0.75rem;
-        }
-
-        .file-type-card h4 {
-            font-size: 1rem;
-            margin-bottom: 0.25rem;
-        }
-
-        .file-type-card p {
-            font-size: 0.85rem;
-            color: #6B7280;
-        }
-
         /* Navigation Buttons */
         .btn {
             padding: 0.75rem 1.5rem;
@@ -1052,28 +1037,43 @@
             color: #6B7280;
         }
 
-        /* Workflow Diagram */
-        .workflow-diagram {
+        /* Tool Card Grid */
+        .tool-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .tool-card {
+            background: var(--bg-light);
+            border-radius: 12px;
+            padding: 1.5rem;
+            border-left: 4px solid var(--primary-blue);
+        }
+
+        .tool-card.claude { border-left-color: var(--primary-blue); }
+        .tool-card.gemini { border-left-color: var(--pelorous); }
+        .tool-card.gpt { border-left-color: var(--teal); }
+
+        .tool-card h4 {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
             display: flex;
             align-items: center;
-            justify-content: center;
             gap: 0.5rem;
-            margin: 2rem 0;
-            flex-wrap: wrap;
         }
 
-        .workflow-step {
-            background: var(--primary-blue);
-            color: white;
-            padding: 0.75rem 1.25rem;
-            border-radius: 8px;
+        .tool-card p {
+            font-size: 0.9rem;
+            color: #4B5563;
+            margin-bottom: 0.75rem;
+        }
+
+        .tool-card .best-for {
+            font-size: 0.8rem;
+            color: var(--primary-blue);
             font-weight: 600;
-            text-align: center;
-        }
-
-        .workflow-arrow {
-            color: var(--light-gray);
-            font-size: 1.5rem;
         }
 
         /* Responsive */
@@ -1101,7 +1101,7 @@
             .term-item {
                 grid-template-columns: 1fr;
             }
-            .file-type-grid {
+            .tool-grid {
                 grid-template-columns: 1fr;
             }
         }
@@ -1266,7 +1266,7 @@
     <header class="course-header">
         <div>
             <div class="course-title">Solo Pilot → Squadron Leader</div>
-            <div class="course-subtitle">Module 9: Code Execution & File Creation</div>
+            <div class="course-subtitle">Module 8: The Squadron Playbook</div>
         </div>
         <div class="progress-container">
             <div class="progress-bar">
@@ -1293,23 +1293,18 @@
                 </div>
                 <div class="nav-item" data-screen="lesson-1">
                     <div class="nav-icon">1</div>
-                    <span class="nav-label">How It Works</span>
-                    <span class="nav-duration">5 min</span>
+                    <span class="nav-label">Skills 101</span>
+                    <span class="nav-duration">6 min</span>
                 </div>
                 <div class="nav-item" data-screen="lesson-2">
                     <div class="nav-icon">2</div>
-                    <span class="nav-label">PowerPoint & Slides</span>
-                    <span class="nav-duration">6 min</span>
+                    <span class="nav-label">The 5 Skill Killers</span>
+                    <span class="nav-duration">7 min</span>
                 </div>
                 <div class="nav-item" data-screen="lesson-3">
                     <div class="nav-icon">3</div>
-                    <span class="nav-label">CSV & Data Exports</span>
-                    <span class="nav-duration">5 min</span>
-                </div>
-                <div class="nav-item" data-screen="lesson-4">
-                    <div class="nav-icon">4</div>
-                    <span class="nav-label">Vibe Coding</span>
-                    <span class="nav-duration">4 min</span>
+                    <span class="nav-label">Building Your Playbook</span>
+                    <span class="nav-duration">6 min</span>
                 </div>
             
                 <div class="nav-item" data-screen="study-guide" onclick="navigateTo('study-guide')">
@@ -1328,7 +1323,7 @@
                 <div class="nav-item" data-screen="lab">
                     <div class="nav-icon">🧪</div>
                     <span class="nav-label">Lab Exercise</span>
-                    <span class="nav-duration">30 min</span>
+                    <span class="nav-duration">35 min</span>
                 </div>
                 <div class="nav-item" data-screen="quiz">
                     <div class="nav-icon">✓</div>
@@ -1351,34 +1346,34 @@
             <!-- Welcome Screen -->
             <section class="screen active" id="welcome">
                 <div class="welcome-hero">
-                    <span class="module-tag">Module 9 of 11</span>
-                    <h1>Code Execution & File Creation</h1>
-                    <p>Transform your Squadron from a reasoning engine into a file factory. Create PowerPoint presentations, CSV exports, and formatted deliverables on demand.</p>
+                    <span class="module-tag">Module 8 of 12</span>
+                    <h1>The Squadron Playbook</h1>
+                    <p>Stop paying the repetition tax. Learn to build, share, and master Claude Skills — the Mission Cards your squadron deploys on demand. Building, Sharing, and Mastering Claude Skills.</p>
                 </div>
 
                 <div class="objectives-card">
                     <h2>🎯 Learning Objectives</h2>
                     <div class="objective-item">
                         <span class="objective-level level-retrieval">Retrieval</span>
-                        <span>Explain how Claude uses code execution to create downloadable files</span>
+                        <span>Identify the YAML frontmatter components of a SKILL.md file and list the 5 Skill Killers</span>
                     </div>
                     <div class="objective-item">
                         <span class="objective-level level-comprehension">Comprehension</span>
-                        <span>Describe when to use Claude vs. Gemini for presentation creation</span>
+                        <span>Explain the difference between Projects (persistent context) and Skills (portable methodology) and when to use each</span>
                     </div>
                     <div class="objective-item">
                         <span class="objective-level level-analysis">Analysis</span>
-                        <span>Apply vibe coding techniques combined with structural precision</span>
+                        <span>Diagnose a failing skill using the 5 Killers framework and apply the appropriate fix</span>
                     </div>
                     <div class="objective-item">
                         <span class="objective-level level-utilization">Utilization</span>
-                        <span>Create presentation decks and data exports using the structural draft workflow</span>
+                        <span>Build a working Gmail Action Item Skill using Skill Builder and refine it using the Litmus Test</span>
                     </div>
 
                     <div class="time-estimate">
                         <div class="time-item">
                             <span>⏱</span>
-                            <span><strong>Total Time:</strong> ~65 minutes</span>
+                            <span><strong>Total Time:</strong> ~75 minutes</span>
                         </div>
                         <div class="time-item">
                             <span>🧪</span>
@@ -1404,25 +1399,26 @@
                         <button class="play-btn" aria-label="Play video">
                             <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
                         </button>
-                        <p>Video: Code Execution & File Creation (10:00)</p>
+                        <p>Video: The Squadron Playbook (10:00)</p>
                     </div>
                 </div>
 
                 <div class="lesson-content">
                     <h2>Video Summary</h2>
-                    <p>This video introduces how Claude creates downloadable files through code execution:</p>
+                    <p>This video introduces Claude Skills—the operational system that turns you from a Solo Pilot who types every prompt by hand into a Squadron Architect who builds Mission Cards once and runs them forever:</p>
                     <ul>
-                        <li><strong>The Architecture</strong> — Claude writes Python code, executes it in a sandbox, captures the output file</li>
-                        <li><strong>PowerPoint Generation</strong> — Using python-pptx to create structural drafts</li>
-                        <li><strong>Claude vs. Gemini</strong> — When to use each for presentations</li>
-                        <li><strong>CSV Exports</strong> — Data transformation and clean exports</li>
-                        <li><strong>Vibe Coding</strong> — Describing aesthetics naturally while maintaining precision</li>
+                        <li><strong>What Skills Are</strong> — A SKILL.md file with frontmatter (name, description) plus structured instructions, optionally bundled with companion files</li>
+                        <li><strong>Auto-Invocation</strong> — Claude reads the description and decides on its own whether to fire the skill</li>
+                        <li><strong>Skills vs. Projects</strong> — Portable methodology that travels everywhere vs. persistent context bound to one workspace</li>
+                        <li><strong>Capability vs. Preference</strong> — Capability skills depreciate; preference skills appreciate. Invest 80% in preference</li>
+                        <li><strong>The 5 Skill Killers</strong> — Vague descriptions, over-defined processes, stating the obvious, missing gotchas, monolithic structure</li>
+                        <li><strong>The Litmus Test</strong> — If you clean up output AFTER the skill runs, the skill needs improvement</li>
                     </ul>
 
                     <div class="callout callout-tip">
                         <span class="callout-icon">💡</span>
                         <div>
-                            <strong>Key Concept:</strong> Claude doesn't "generate" files—it programs them. Understanding this architecture helps you prompt more effectively.
+                            <strong>Key Concept:</strong> AI drafts. Humans send. The Playbook makes the drafts predictable. Install once. Use everywhere.
                         </div>
                     </div>
                 </div>
@@ -1433,290 +1429,305 @@
                 </div>
             </section>
 
-            <!-- Lesson 1: How It Works -->
+            <!-- Lesson 1: Skills 101 -->
             <section class="screen" id="lesson-1">
                 <div class="lesson-content">
-                    <h1>How File Creation Works</h1>
+                    <h1>Skills 101: What They Are and Why They Matter</h1>
 
-                    <p>When you ask Claude to create a PowerPoint or CSV, something specific happens behind the scenes. Understanding this architecture helps you get better results.</p>
+                    <p>Every conversation you start with Claude begins from zero. You re-explain your role. You re-state how you want output formatted. You re-paste the same context document for the third time this week. Multiply that across a year and you are paying a tax measured in hours: the <strong>repetition tax</strong>.</p>
 
-                    <h2>The Code Execution Process</h2>
+                    <p>Projects fix part of this problem. They give Claude a persistent workspace inside one mission. But Projects have a ceiling — they are bound to one workspace. The methodology you build inside your Competitive Intelligence project does not travel with you when you open a fresh chat to draft a customer email. Each project is an island.</p>
 
-                    <div class="workflow-diagram">
-                        <div class="workflow-step">Your Request</div>
-                        <span class="workflow-arrow">→</span>
-                        <div class="workflow-step">Python Code</div>
-                        <span class="workflow-arrow">→</span>
-                        <div class="workflow-step">Sandbox Execution</div>
-                        <span class="workflow-arrow">→</span>
-                        <div class="workflow-step">Output File</div>
+                    <p>A <strong>Skill</strong> is the bridge between islands. If a Project is a mission archive, a Skill is a <strong>Mission Card</strong>: a standardized procedure, written once, that any pilot in your squadron can pull from the playbook and run on any mission, in any conversation, in any project.</p>
+
+                    <h2>The Defining Characteristic</h2>
+
+                    <p><strong>Claude reads the description and decides on its own whether to fire the skill.</strong> You do not need to remember the skill exists. You do not need to type a special command. The trigger is your natural language, and the description is the gate. This makes the description the most important line in the entire skill.</p>
+
+                    <h2>Skills versus Projects</h2>
+
+                    <table class="comparison-table">
+                        <thead>
+                            <tr>
+                                <th>Project</th>
+                                <th>Skill</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Stores documents, history, custom instructions</td>
+                                <td>Stores methodology, steps, output templates, gotchas</td>
+                            </tr>
+                            <tr>
+                                <td>Bound to one workspace</td>
+                                <td>Available in EVERY conversation, EVERY project</td>
+                            </tr>
+                            <tr>
+                                <td>You enter the project to use it</td>
+                                <td>Auto-fires when your message matches the description</td>
+                            </tr>
+                            <tr>
+                                <td>Persistent CONTEXT</td>
+                                <td>Portable METHODOLOGY</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h2>Anatomy of a SKILL.md</h2>
+
+                    <div class="prompt-box good">
+                        <span class="prompt-label">✓ SKILL.md Structure</span>
+<pre style="color: var(--dark-base); font-size: 0.9rem;">
+---
+name: extracting-gmail-action-items
+description: Use when the user asks to summarize their inbox,
+  find action items in recent emails, identify what they owe people,
+  or pull the to-do list from this week's messages. Searches Gmail
+  via the connector and returns a prioritized list.
+---
+
+# Extracting Gmail Action Items
+
+## Steps
+1. Determine the time range (default: last 7 days)
+2. Search Gmail using the connector
+3. Filter for messages from internal teammates and ActivTrak senders
+4. Extract action items, deadlines, and priority signals
+5. Return a structured to-do list
+
+## Output format
+| Sender | Subject | Action | Due | Priority |
+
+## Gotchas
+- Marketing emails contain false action verbs; ignore them
+- Calendar invites are not action items
+- Automated notifications are usually not actionable
+</pre>
                     </div>
 
-                    <p>Claude doesn't "generate" binary files from memory. Instead, it:</p>
-                    <ol>
-                        <li><strong>Writes Python code</strong> using specialized libraries</li>
-                        <li><strong>Executes that code</strong> in a secure, sandboxed environment</li>
-                        <li><strong>Captures the output</strong> and presents it for download</li>
-                    </ol>
+                    <h3>Two Types of Skills</h3>
 
-                    <h2>The Library Stack</h2>
-
-                    <div class="file-type-grid">
-                        <div class="file-type-card">
-                            <div class="file-icon">📊</div>
-                            <h4>PowerPoint</h4>
-                            <p>python-pptx library</p>
+                    <div class="tool-grid">
+                        <div class="tool-card claude">
+                            <h4>📈 Encoded Preference</h4>
+                            <p>Captures YOUR way of working. Compounds in value as models improve. Your competitive advantage.</p>
+                            <span class="best-for">Invest 80% here</span>
                         </div>
-                        <div class="file-type-card">
-                            <div class="file-icon">📑</div>
-                            <h4>Excel</h4>
-                            <p>openpyxl library</p>
-                        </div>
-                        <div class="file-type-card">
-                            <div class="file-icon">📋</div>
-                            <h4>CSV</h4>
-                            <p>pandas / csv library</p>
+                        <div class="tool-card claude">
+                            <h4>📉 Capability Uplift</h4>
+                            <p>Teaches Claude something it does not do well alone. Depreciates with model upgrades.</p>
+                            <span class="best-for">Invest 20% here</span>
                         </div>
                     </div>
 
-                    <div class="callout callout-insight">
-                        <span class="callout-icon">🔧</span>
+                    <div class="callout callout-tip">
+                        <span class="callout-icon">💡</span>
                         <div>
-                            <strong>Why This Matters:</strong> Since Claude is essentially programming your deliverable, specificity produces precision. Vague prompts → generic outputs. Detailed prompts → exactly what you need.
+                            <strong>Squadron Leader Investment Rule:</strong> Spend 80% of your skill-building effort on encoded preference. Your competitive advantage is your methodology. Let Anthropic worry about capability uplift.
                         </div>
                     </div>
                 </div>
 
                 <div class="content-nav">
                     <button class="btn btn-secondary" onclick="navigateTo('video')">← Back</button>
-                    <button class="btn btn-primary" onclick="navigateTo('lesson-2')">Continue →</button>
+                    <button class="btn btn-primary" onclick="navigateTo('lesson-2')">Continue to The 5 Skill Killers →</button>
                 </div>
             </section>
 
-            <!-- Lesson 2: PowerPoint & Slides -->
+            <!-- Lesson 2: The 5 Skill Killers -->
             <section class="screen" id="lesson-2">
                 <div class="lesson-content">
-                    <h1>PowerPoint & Google Slides</h1>
+                    <h1>The 5 Skill Killers</h1>
 
-                    <p>Presentations are time-consuming to create manually. Claude can generate complete .pptx files in seconds—but understanding the constraints helps you get better results.</p>
+                    <p>When skills fail, they fail in five recognizable ways. Memorize this list. It is the most useful diagnostic in the entire module — the next time a skill misbehaves, this list tells you which knob to turn.</p>
 
-                    <h2>The Structural Draft Approach</h2>
-
-                    <p>Claude produces <strong>structural drafts</strong>—content that is well-organized but with basic visual design. The recommended workflow:</p>
-
-                    <ol>
-                        <li><strong>Generate</strong> with Claude — Content structure and organization</li>
-                        <li><strong>Download</strong> the .pptx file</li>
-                        <li><strong>Apply</strong> your corporate template</li>
-                        <li><strong>Polish</strong> visuals — colors, images, layout</li>
-                    </ol>
-
-                    <h2>Prompt Template</h2>
-
-                    <div class="copy-block">
-                        <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
-                        <pre>Create a [X]-slide PowerPoint presentation about [TOPIC].
-
-Slide 1: Title - "[TITLE]"
-Slide 2: Agenda - [ITEMS]
-Slide 3: [CONTENT]
-Slide 4: [CONTENT]
-...
-Final Slide: Next Steps / Summary
-
-Use title-and-content layouts.
-Include speaker notes for each slide.</pre>
+                    <div class="prompt-box good">
+                        <span class="prompt-label">⚠️ Killer 1: Vague Descriptions</span>
+                        <p style="margin-top: 0.5rem;"><strong>Symptom:</strong> the skill never auto-fires. You always end up invoking it manually.</p>
+                        <p><strong>Why it happens:</strong> the description is written as a summary instead of a trigger.</p>
+                        <p><strong>Fix:</strong> write the description in <strong>specific, loud, third person</strong>. List the actual phrases the user says. "Use when the user asks to summarize their inbox, find action items in recent emails..."</p>
                     </div>
 
-                    <h2>Claude vs. Gemini</h2>
+                    <div class="prompt-box good">
+                        <span class="prompt-label">⚠️ Killer 2: Over-Defined Processes</span>
+                        <p style="margin-top: 0.5rem;"><strong>Symptom:</strong> the skill works on simple cases but produces stilted, robotic output on edge cases.</p>
+                        <p><strong>Why it happens:</strong> too many steps, too tightly specified.</p>
+                        <p><strong>Fix:</strong> match degrees of freedom to the task type. <strong>Tight</strong> for fragile operations (filing a Jira ticket with the right project, label, assignee). <strong>Loose</strong> for creative work (drafting an email).</p>
+                    </div>
+
+                    <div class="prompt-box good">
+                        <span class="prompt-label">⚠️ Killer 3: Stating the Obvious</span>
+                        <p style="margin-top: 0.5rem;"><strong>Symptom:</strong> the skill is bloated; behavior does not match the file length.</p>
+                        <p><strong>Why it happens:</strong> the author wrote down everything Claude already does well.</p>
+                        <p><strong>Fix:</strong> challenge every paragraph. Cut anything Claude does natively. The skill should contain only what is unique to YOUR way of working.</p>
+                    </div>
+
+                    <div class="prompt-box good">
+                        <span class="prompt-label">⚠️ Killer 4: Missing Gotcha Section</span>
+                        <p style="margin-top: 0.5rem;"><strong>Symptom:</strong> works on the cases the author tested, fails consistently on edge cases anyone would have anticipated.</p>
+                        <p><strong>Why it happens:</strong> the author shipped the skill without writing down what could go wrong.</p>
+                        <p><strong>Fix:</strong> every skill needs a gotcha section listing failure patterns you have actually seen. This is the highest-signal content in the entire skill.</p>
+                    </div>
+
+                    <div class="prompt-box good">
+                        <span class="prompt-label">⚠️ Killer 5: Monolithic Structure</span>
+                        <p style="margin-top: 0.5rem;"><strong>Symptom:</strong> the SKILL.md is 1,500 lines long, and Claude starts skipping sections.</p>
+                        <p><strong>Why it happens:</strong> the author kept adding to the same file instead of splitting it.</p>
+                        <p><strong>Fix:</strong> hard cap at 500 lines. Move detail into companion files. The main file should be a map; the reference files are the territory.</p>
+                    </div>
+
+                    <h2>The Litmus Test</h2>
+
+                    <div class="callout callout-warning">
+                        <span class="callout-icon">🎯</span>
+                        <div>
+                            <strong>If you find yourself iterating on the output AFTER the skill runs, the skill itself needs improvement.</strong> The fix is not to write a better follow-up prompt. The fix is to upgrade the skill. Move the cleanup logic into the skill itself. The whole point of a skill is that you do NOT have to remember to ask for the cleanup. Encode it once, get it forever.
+                        </div>
+                    </div>
+
+                    <h2>Debugging Decision Tree</h2>
 
                     <table class="comparison-table">
                         <thead>
                             <tr>
-                                <th>Factor</th>
-                                <th>Claude</th>
-                                <th>Gemini</th>
+                                <th>Symptom</th>
+                                <th>Killer</th>
+                                <th>Fix</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <td>Output</td>
-                                <td>Downloadable .pptx file</td>
-                                <td>Direct to Google Slides</td>
+                                <td>Skill never auto-fires</td>
+                                <td>1. Vague description</td>
+                                <td>Add user phrases to the description</td>
                             </tr>
                             <tr>
-                                <td>Control</td>
-                                <td>Precise structural control</td>
-                                <td>Less precise, faster</td>
+                                <td>Robotic on edge cases</td>
+                                <td>2. Over-defined</td>
+                                <td>Loosen steps; match freedom to task</td>
                             </tr>
                             <tr>
-                                <td>Best for</td>
-                                <td>Offline work, specific needs</td>
-                                <td>Google ecosystem, speed</td>
+                                <td>Bloated, generic output</td>
+                                <td>3. Stating the obvious</td>
+                                <td>Cut what Claude does natively</td>
+                            </tr>
+                            <tr>
+                                <td>Predictable failure modes</td>
+                                <td>4. Missing gotcha</td>
+                                <td>Document failure patterns</td>
+                            </tr>
+                            <tr>
+                                <td>Claude skipping sections</td>
+                                <td>5. Monolithic</td>
+                                <td>500-line cap; companion files</td>
                             </tr>
                         </tbody>
                     </table>
-
-                    <div class="callout callout-tip">
-                        <span class="callout-icon">💡</span>
-                        <div>
-                            <strong>Decision Rule:</strong> Use Claude when you need a downloadable file with precise control. Use Gemini when you want direct Drive integration and speed matters more than precision.
-                        </div>
-                    </div>
                 </div>
 
                 <div class="content-nav">
                     <button class="btn btn-secondary" onclick="navigateTo('lesson-1')">← Back</button>
-                    <button class="btn btn-primary" onclick="navigateTo('lesson-3')">Continue →</button>
+                    <button class="btn btn-primary" onclick="navigateTo('lesson-3')">Continue to Building Your Playbook →</button>
                 </div>
             </section>
 
-            <!-- Lesson 3: CSV & Data Exports -->
+            <!-- Lesson 3: Building Your Playbook -->
             <section class="screen" id="lesson-3">
                 <div class="lesson-content">
-                    <h1>CSV & Data Exports</h1>
+                    <h1>Building Your Playbook</h1>
 
-                    <p>CSV files are the universal exchange format for data. Claude can generate, transform, and export data with precision.</p>
+                    <p>You do not have to build every skill from scratch. Anthropic maintains an official skill catalog, and the broader plugin ecosystem includes thousands more. Before building, look. Then build only what does not already exist.</p>
 
-                    <h2>Common Export Scenarios</h2>
+                    <h2>The Activation Flow</h2>
 
-                    <h3>1. Create Sample Data</h3>
-                    <div class="copy-block">
-                        <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
-                        <pre>Create a CSV file with sample customer data:
-- Columns: Customer_ID, Company, Industry, Revenue, Status
-- Include 20 rows of realistic data
-- Sort by Revenue descending</pre>
+                    <div class="tool-grid">
+                        <div class="tool-card claude">
+                            <h4>🔎 Browse</h4>
+                            <p>Open the skill catalog inside Claude. Read the descriptions, not the names. The description controls behavior.</p>
+                            <span class="best-for">Step 1</span>
+                        </div>
+                        <div class="tool-card claude">
+                            <h4>📥 Install</h4>
+                            <p>Click install. The skill becomes available in every conversation and every project from that point forward. No per-project setup.</p>
+                            <span class="best-for">Step 2</span>
+                        </div>
+                        <div class="tool-card claude">
+                            <h4>⚡ Invoke</h4>
+                            <p>Auto-invocation when your message matches the description. Manual invocation as a fallback while you tune.</p>
+                            <span class="best-for">Step 3</span>
+                        </div>
                     </div>
 
-                    <h3>2. Transform Existing Data</h3>
-                    <div class="copy-block">
-                        <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
-                        <pre>[Upload your file]
+                    <h2>Your First Install: Skill Builder</h2>
 
-Clean this data:
-1. Normalize dates to YYYY-MM-DD format
-2. Remove duplicate rows
-3. Fill missing Region values with "Unknown"
-4. Export as a clean CSV</pre>
-                    </div>
+                    <p>The first skill you should install is <strong>Skill Builder</strong> itself. The official name is <code>skill-creator</code>. It is the skill that helps you build skills.</p>
 
-                    <h3>3. Create Aggregated Summaries</h3>
-                    <div class="copy-block">
-                        <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
-                        <pre>From the uploaded data, create a summary CSV with:
-- One row per Region
-- Columns: Region, Total_Revenue, Avg_Order_Value, Count
-- Sort by Total_Revenue descending</pre>
-                    </div>
-
-                    <h2>CSV vs. Excel</h2>
-
-                    <table class="comparison-table">
-                        <thead>
-                            <tr>
-                                <th>Use CSV When...</th>
-                                <th>Use Excel When...</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>Transferring data between systems</td>
-                                <td>Multiple sheets required</td>
-                            </tr>
-                            <tr>
-                                <td>Importing to databases</td>
-                                <td>Formatting needed</td>
-                            </tr>
-                            <tr>
-                                <td>Universal compatibility</td>
-                                <td>Formulas included</td>
-                            </tr>
-                            <tr>
-                                <td>Simple tabular data</td>
-                                <td>Conditional formatting</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-
-                <div class="content-nav">
-                    <button class="btn btn-secondary" onclick="navigateTo('lesson-2')">← Back</button>
-                    <button class="btn btn-primary" onclick="navigateTo('lesson-4')">Continue →</button>
-                </div>
-            </section>
-
-            <!-- Lesson 4: Vibe Coding -->
-            <section class="screen" id="lesson-4">
-                <div class="lesson-content">
-                    <h1>Vibe Coding</h1>
-
-                    <p>One of the most powerful aspects of AI file creation is <strong>vibe coding</strong>—describing what you want in natural, aesthetic terms rather than technical specifications.</p>
-
-                    <h2>What is Vibe Coding?</h2>
-
-                    <p><strong>Instead of:</strong></p>
-                    <div class="prompt-box">
-                        Use hex color #0056D2 for headers, font-size 24pt, border-collapse: collapse on tables...
-                    </div>
-
-                    <p><strong>Try:</strong></p>
-                    <div class="prompt-box good">
-                        <span class="prompt-label">✓ Vibe Coding</span>
-                        Make it feel like a Fortune 500 investor presentation—clean, professional, data-driven. The vibe should say "we know what we're doing."
-                    </div>
-
-                    <p>Claude translates your aesthetic description into the technical parameters.</p>
-
-                    <h2>Why This Matters for Non-Developers</h2>
-
-                    <p><strong>Key insight:</strong> You don't need to know how to code to get code-quality outputs.</p>
-
-                    <p>Even if you've never written HTML, CSS, or Python, you can use vibe coding to generate:</p>
-                    <ul>
-                        <li><strong>Formatted HTML tables</strong> that look polished when pasted into emails</li>
-                        <li><strong>Styled reports</strong> with professional layouts you can screenshot</li>
-                        <li><strong>Structured outputs</strong> formatted exactly how you need for copy/paste workflows</li>
-                    </ul>
+                    <p>Once installed, you can build new skills inside any Claude conversation by saying something like "I want to build a skill that helps me prep for QBRs." Claude will recognize the request, fire <code>skill-creator</code>, and walk you through the design conversation.</p>
 
                     <div class="prompt-box good">
-                        <span class="prompt-label">✓ Example</span>
-                        Create an HTML table showing our top 5 accounts by revenue. Make it look like something from a modern SaaS dashboard—clean lines, alternating row colors, bold headers. I want to screenshot this for my executive summary.
-                    </div>
+                        <span class="prompt-label">✓ The Skill Builder Conversation</span>
+<pre style="color: var(--dark-base); font-size: 0.9rem;">
+You: I want to build a skill that extracts action items from my Gmail.
 
-                    <p>Claude generates the HTML, renders it visually, and you capture exactly what you need. No coding knowledge required.</p>
+Skill Builder:
+- What phrases would you say to invoke this skill?
+- What inputs should the skill accept (time range, sender filter)?
+- What should the output look like?
+- What edge cases or failure modes have you seen?
 
-                    <h2>Best Practice: Combine Both</h2>
+You: [paste your paper design from the lab]
 
-                    <div class="copy-block">
-                        <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
-                        <pre>Create a 6-slide presentation about Q3 results.
-
-[STRUCTURAL - be specific]
-Slide 1: Title - "Q3 Business Review"
-Slide 2: Key Metrics
-Slide 3: Regional Performance
-Slide 4: Challenges
-Slide 5: Q4 Roadmap
-Slide 6: Discussion
-
-[VIBE - describe the feel]
-Make it feel confident and executive-ready.
-Clean design, minimal text per slide.
-The aesthetic should communicate competence.
-Use corporate blue as the accent color.</pre>
+Skill Builder: [drafts a SKILL.md you can refine]
+</pre>
                     </div>
 
                     <div class="callout callout-tip">
                         <span class="callout-icon">💡</span>
                         <div>
-                            <strong>The Formula:</strong> Be specific about <em>what</em> goes on each slide (structure). Be aesthetic about <em>how</em> it should feel (vibe). Combine both for best results.
+                            <strong>Where Skill Builder helps most:</strong> the structure. New authors consistently underweight the description and overweight the steps. Skill Builder catches this by asking, early, "what does the user say to make this fire?"
+                        </div>
+                    </div>
+
+                    <div class="callout callout-warning">
+                        <span class="callout-icon">⚠️</span>
+                        <div>
+                            <strong>Where Skill Builder needs YOUR help:</strong> the gotcha section. Claude has not lived your work. The gotcha section is where YOUR judgment lands. Do not let Skill Builder write it for you.
+                        </div>
+                    </div>
+
+                    <h2>Best Practices Compressed</h2>
+
+                    <ul>
+                        <li><strong>One job per skill.</strong> If you cannot describe the skill's purpose in one sentence, it is probably two skills. Split it.</li>
+                        <li><strong>The description is a trigger, not a summary.</strong> Write for the model asking "should I fire here?"</li>
+                        <li><strong>Show, do not describe, the output.</strong> A literal template is worth ten paragraphs.</li>
+                        <li><strong>Document gotchas explicitly.</strong> Failure patterns are the highest-signal content.</li>
+                        <li><strong>Match degrees of freedom to the task.</strong> Tight for fragile operations. Loose for creative work.</li>
+                        <li><strong>Context binding rule.</strong> Assets ABOUT the skill live with the skill. Assets ABOUT you or your organization live outside and get referenced.</li>
+                        <li><strong>Keep it under 500 lines.</strong> Move depth into companion files.</li>
+                        <li><strong>Ship preference skills.</strong> Your competitive advantage is your methodology.</li>
+                    </ul>
+
+                    <h2>Maintenance Cadence</h2>
+
+                    <p><strong>Quarterly review</strong> (every 90 days):</p>
+                    <ul>
+                        <li>Re-evaluate capability skills — did a model upgrade obsolete any?</li>
+                        <li>Re-read every preference skill — has your workflow shifted?</li>
+                        <li>Audit each skill against the 5 Killers</li>
+                        <li>Apply the Litmus Test to each skill's recent output</li>
+                    </ul>
+
+                    <div class="callout callout-tip">
+                        <span class="callout-icon">🚀</span>
+                        <div>
+                            <strong>You are now ready for the lab.</strong> Build your first preference skill: a Gmail Action Item Extractor that reads your inbox, isolates messages from internal teammates and ActivTrak, extracts action items, and returns a structured to-do list. AI drafts. Humans send. The Playbook makes the drafts predictable.
                         </div>
                     </div>
                 </div>
 
                 <div class="content-nav">
-                    <button class="btn btn-secondary" onclick="navigateTo('lesson-3')">← Back</button>
+                    <button class="btn btn-secondary" onclick="navigateTo('lesson-2')">← Back</button>
                     <button class="btn btn-primary" onclick="navigateTo('flashcards')">Practice with Flashcards →</button>
                 </div>
             </section>
@@ -1729,10 +1740,10 @@ Use corporate blue as the accent color.</pre>
                 <div class="flashcard-container">
                     <div class="flashcard" id="flashcard" onclick="flipCard()" tabindex="0" role="button" aria-label="Flashcard - click or press Enter to flip" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();flipCard();}">
                         <div class="flashcard-face flashcard-front">
-                            <h3 id="cardFront">How does Claude actually create downloadable files?</h3>
+                            <h3 id="cardFront">What is a Skill, mechanically?</h3>
                         </div>
                         <div class="flashcard-face flashcard-back">
-                            <p id="cardBack">Claude writes Python code using specialized libraries, executes it in a sandbox, and captures the output file for download. It doesn't "generate" files—it programs them.</p>
+                            <p id="cardBack">A folder containing a SKILL.md file with YAML frontmatter (name and description) plus a Markdown body of structured instructions. Optionally bundled with companion files. Claude reads the description to decide whether to auto-fire the skill.</p>
                         </div>
                     </div>
                     <p class="flip-hint">Click card to flip</p>
@@ -1740,7 +1751,7 @@ Use corporate blue as the accent color.</pre>
 
                 <div class="flashcard-nav">
                     <button class="flashcard-btn" onclick="prevCard()">←</button>
-                    <span class="flashcard-counter"><span id="cardNum">1</span> / <span id="cardTotal">8</span></span>
+                    <span class="flashcard-counter"><span id="cardNum">1</span> / <span id="cardTotal">10</span></span>
                     <button class="flashcard-btn" onclick="nextCard()">→</button>
                 </div>
 
@@ -1752,162 +1763,274 @@ Use corporate blue as the accent color.</pre>
 
             <!-- Lab Exercise Screen -->
             <section class="screen" id="lab">
-                <div class="lab-header">
-                    <h1>🧪 Lab Exercise: Building Mission-Ready Deliverables</h1>
-                    <p>Practice creating presentations and data exports using Claude and Gemini.</p>
-                    <div class="lab-meta">
-                        <span>⏱ 25-30 minutes</span>
-                        <span>🛠 Tools: Claude, Gemini</span>
-                        <span>⭐ Advanced: +15 min</span>
-                    </div>
-                </div>
+                <div class="lab-content">
+                    <h1>🧪 Lab Exercise: Build the Gmail Action Item Skill</h1>
+                    <p style="color: #6B7280; margin-bottom: 2rem;">Build your first Mission Card. ~30 minutes hands-on.</p>
 
-                <div class="lab-steps">
+                    <div class="lab-progress">
+                        <div class="lab-step-indicator">
+                            <div class="lab-dot active" data-step="1">1</div>
+                            <span>Feel the Loop</span>
+                        </div>
+                        <div class="lab-step-indicator">
+                            <div class="lab-dot" data-step="2">2</div>
+                            <span>Design on Paper</span>
+                        </div>
+                        <div class="lab-step-indicator">
+                            <div class="lab-dot" data-step="3">3</div>
+                            <span>Build with Skill Builder</span>
+                        </div>
+                        <div class="lab-step-indicator">
+                            <div class="lab-dot" data-step="4">4</div>
+                            <span>Test Against Gmail</span>
+                        </div>
+                        <div class="lab-step-indicator">
+                            <div class="lab-dot" data-step="5">5</div>
+                            <span>Apply 5 Killers</span>
+                        </div>
+                    </div>
+
+                    <!-- Step 1 -->
                     <div class="lab-step active" id="labStep1">
-                        <div class="step-header">
-                            <div class="step-number">1</div>
-                            <div class="step-title">PowerPoint with Claude</div>
-                        </div>
-                        <div class="step-content">
-                            <p>Create a customer QBR or internal update presentation.</p>
+                        <h2>Part 1: Feel the Loop (4 minutes)</h2>
+                        <p>Before you build, experience how someone else's skill behaves end-to-end. This grounds everything that follows.</p>
 
-                            <div class="copy-block">
-                                <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
-                                <pre>Create a 6-slide PowerPoint presentation for a customer QBR.
+                        <h3>Task 1A: Browse the catalog</h3>
+                        <p>Open the Skill catalog inside Claude. Scan ten skills. Read their descriptions, not their names. Notice the patterns:</p>
+                        <ul>
+                            <li>Good descriptions list ACTUAL phrases users say</li>
+                            <li>Good descriptions are written in third person ("Use when the user asks to...")</li>
+                            <li>Bad descriptions read like marketing copy</li>
+                        </ul>
 
-Slide 1: Title - "Q3 Business Review"
-Slide 2: Agenda
-Slide 3: Adoption Metrics (include sample numbers)
-Slide 4: Key Wins This Quarter
-Slide 5: Challenges & Solutions
-Slide 6: Next Steps
+                        <h3>Task 1B: Install your first skill</h3>
+                        <p>Pick one skill that maps to your real work. Suggested options:</p>
+                        <ul>
+                            <li><code>skill-creator</code> — the official Skill Builder (you will need this in Part 3)</li>
+                            <li>A research skill if you do competitive intelligence</li>
+                            <li>A writing skill if you draft a lot of customer-facing content</li>
+                        </ul>
 
-Use title-and-content layouts.
-Include speaker notes for each slide.</pre>
+                        <h3>Task 1C: Trigger it twice</h3>
+                        <ul>
+                            <li><strong>Auto-invocation test:</strong> type a natural sentence that matches the description. Do NOT mention the skill by name.</li>
+                            <li><strong>Manual invocation test:</strong> explicitly tell Claude to use the skill by name. Compare.</li>
+                        </ul>
+
+                        <div class="callout callout-tip">
+                            <span class="callout-icon">📝</span>
+                            <div>
+                                <strong>Reflection:</strong> Did the skill auto-fire on your first natural sentence? If not, what did the description NOT match? This is your first encounter with Killer 1 in the wild.
                             </div>
+                        </div>
 
-                            <p><strong>Steps:</strong></p>
-                            <ol>
-                                <li>Open Claude Desktop or claude.ai</li>
-                                <li>Paste the prompt (customize with your own content)</li>
-                                <li>Download the generated .pptx file</li>
-                                <li>Open and review the structure</li>
-                            </ol>
-
-                            <p><strong>Deliverable:</strong> Screenshot of your generated presentation</p>
+                        <div class="lab-nav">
+                            <button class="btn btn-secondary" disabled>← Previous</button>
+                            <button class="btn btn-primary" onclick="nextLabStep()">Continue to Part 2 →</button>
                         </div>
                     </div>
 
+                    <!-- Step 2 -->
                     <div class="lab-step" id="labStep2">
-                        <div class="step-header">
-                            <div class="step-number">2</div>
-                            <div class="step-title">Google Slides with Gemini</div>
+                        <h2>Part 2: Design on Paper (5 minutes)</h2>
+                        <p>Stop. Before you open Skill Builder, design your Gmail skill the old-fashioned way. Skills built without a paper design produce vague descriptions and bloated steps.</p>
+
+                        <h3>Worksheet</h3>
+
+                        <div class="prompt-box good">
+                            <span class="prompt-label">📋 Your Skill Design</span>
+<pre style="color: var(--dark-base); font-size: 0.85rem;">
+SKILL NAME (gerund-form, lowercase, hyphenated):
+extracting-gmail-action-items
+
+DESCRIPTION (third-person, list 3-5 user phrases):
+Use when the user asks to:
+- "summarize my inbox"
+- "find action items from this week's emails"
+- "what do I owe people"
+- "pull my to-do list from email"
+- "what's outstanding in Gmail"
+
+The skill searches Gmail via the connector, filters for messages
+from internal teammates and ActivTrak senders, extracts action items
+with deadlines and priorities, returns a structured to-do list.
+
+INPUTS:
+- Time range (default: last 7 days)
+- Sender filter (default: internal + ActivTrak)
+- Label filter (optional)
+
+OUTPUT TEMPLATE (literal, not described):
+| Sender | Subject | Action | Due | Priority |
+
+GOTCHAS (failure patterns you can predict):
+- Marketing emails contain false action verbs; ignore
+- Calendar invites are NOT action items (unless body asks)
+- Automated notifications (Jira, Monday) are usually noise
+- "FYI" and "no action needed" should be skipped
+- Internal forwards: evaluate by ORIGINAL sender's intent
+
+CONSTRAINTS:
+- Never include emails older than 30 days
+- Never surface personal/private emails
+- If fewer than 3 items found, ask to expand time range
+</pre>
                         </div>
-                        <div class="step-content">
-                            <p>Create a presentation that exports directly to Google Drive.</p>
 
-                            <div class="copy-block">
-                                <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
-                                <pre>Create a 4-slide presentation for a team sync.
-
-Topic: Project Status Update
-
-Slide 1: Title
-Slide 2: What We've Completed
-Slide 3: Current Focus
-Slide 4: Next Steps
-
-Keep it clean and visual. Professional blue theme.</pre>
-                            </div>
-
-                            <p><strong>Steps:</strong></p>
-                            <ol>
-                                <li>Go to gemini.google.com</li>
-                                <li>Enter the prompt</li>
-                                <li>Click "Export to Google Slides"</li>
-                                <li>Open in Google Drive</li>
-                            </ol>
-
-                            <p><strong>Deliverable:</strong> Share link to your Google Slides presentation</p>
+                        <div class="lab-nav">
+                            <button class="btn btn-secondary" onclick="prevLabStep()">← Previous</button>
+                            <button class="btn btn-primary" onclick="nextLabStep()">Continue to Part 3 →</button>
                         </div>
                     </div>
 
+                    <!-- Step 3 -->
                     <div class="lab-step" id="labStep3">
-                        <div class="step-header">
-                            <div class="step-number">3</div>
-                            <div class="step-title">CSV Data Export</div>
+                        <h2>Part 3: Build with Skill Builder (10 minutes)</h2>
+                        <p>Now you bring the paper design into Claude.</p>
+
+                        <h3>Task 3A: Invoke Skill Builder</h3>
+                        <p>In a fresh Claude conversation, type:</p>
+                        <div class="prompt-box good">
+                            <span class="prompt-label">✓ Trigger</span>
+<pre style="color: var(--dark-base); font-size: 0.9rem;">
+I want to build a skill that extracts action items from my Gmail.
+It should filter for messages from internal teammates and ActivTrak
+senders, extract real action items (not marketing or notifications),
+and return a structured to-do list with sender, subject, action,
+due date, and priority.
+</pre>
                         </div>
-                        <div class="step-content">
-                            <p>Create a clean data export for stakeholders.</p>
 
-                            <div class="copy-block">
-                                <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
-                                <pre>Create a CSV file with sample customer engagement data:
+                        <p>Skill Builder should auto-fire. If it does not, type <code>/skill-creator</code> to invoke manually. Note this — manual invocation when auto should have fired is itself a Killer 1 symptom on Skill Builder's description.</p>
 
-Columns:
-- Customer_ID
-- Company_Name
-- Industry
-- Active_Users
-- Engagement_Score (0-100)
-- Subscription_Tier (Basic, Professional, Enterprise)
+                        <h3>Task 3B: Walk the conversation</h3>
+                        <p>Use your paper worksheet to answer Skill Builder's questions fast and consistently. Paste the description phrases, the steps, the literal output template, and your gotchas.</p>
 
-Include 15 rows of realistic sample data.
-Sort by Engagement_Score descending.</pre>
+                        <div class="callout callout-warning">
+                            <span class="callout-icon">⚠️</span>
+                            <div>
+                                <strong>Critical:</strong> Do NOT let Skill Builder write the gotcha section for you. Skill Builder has not lived your work. The gotcha section is where YOUR judgment lands.
                             </div>
+                        </div>
 
-                            <p><strong>Steps:</strong></p>
-                            <ol>
-                                <li>Enter the prompt in Claude</li>
-                                <li>Download the CSV</li>
-                                <li>Open in Excel or Google Sheets</li>
-                                <li>Verify the data structure</li>
-                            </ol>
+                        <h3>Task 3C: Review the generated SKILL.md</h3>
+                        <p>Run this checklist on the draft Skill Builder produces:</p>
+                        <ul>
+                            <li>☐ Description in third person</li>
+                            <li>☐ Description lists actual user phrases</li>
+                            <li>☐ Steps are numbered (not prose)</li>
+                            <li>☐ Output format is a literal template</li>
+                            <li>☐ Gotcha section is present and specific</li>
+                            <li>☐ File is under 500 lines</li>
+                        </ul>
 
-                            <p><strong>Deliverable:</strong> Screenshot of your CSV open in a spreadsheet</p>
+                        <div class="lab-nav">
+                            <button class="btn btn-secondary" onclick="prevLabStep()">← Previous</button>
+                            <button class="btn btn-primary" onclick="nextLabStep()">Continue to Part 4 →</button>
                         </div>
                     </div>
 
+                    <!-- Step 4 -->
                     <div class="lab-step" id="labStep4">
-                        <div class="step-header">
-                            <div class="step-number">4</div>
-                            <div class="step-title">Vibe Coding Comparison</div>
+                        <h2>Part 4: Test Against Real Gmail (5 minutes)</h2>
+                        <p>Now you fly the skill. In a fresh Claude conversation (no project, no special setup), run all three tests as natural sentences:</p>
+
+                        <div class="prompt-box good">
+                            <span class="prompt-label">Test 1 — Auto-trigger test</span>
+<pre style="color: var(--dark-base); font-size: 0.9rem;">What do I owe people from this week?</pre>
                         </div>
-                        <div class="step-content">
-                            <p>Compare technical prompts vs. vibe coding.</p>
 
-                            <p><strong>Prompt A (Technical):</strong></p>
-                            <div class="copy-block">
-                                <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
-                                <pre>Create a 3-slide presentation with 32pt title font,
-18pt body font, color #0056D2 for headers.</pre>
-                            </div>
+                        <div class="prompt-box good">
+                            <span class="prompt-label">Test 2 — Specific time range</span>
+<pre style="color: var(--dark-base); font-size: 0.9rem;">Pull my action items from the last 3 days.</pre>
+                        </div>
 
-                            <p><strong>Prompt B (Vibe):</strong></p>
-                            <div class="copy-block">
-                                <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
-                                <pre>Create a 3-slide presentation about team goals.
-Make it feel modern and confident—like something
-a tech startup would present to investors.</pre>
-                            </div>
+                        <div class="prompt-box good">
+                            <span class="prompt-label">Test 3 — Edge case</span>
+<pre style="color: var(--dark-base); font-size: 0.9rem;">What's outstanding in my inbox right now?</pre>
+                        </div>
 
-                            <p>Generate both. Which output better matches what you'd use?</p>
+                        <p>For each test, record:</p>
+                        <ul>
+                            <li>Did it auto-fire?</li>
+                            <li>Was the output structured correctly?</li>
+                            <li>Did it filter out marketing and automated notifications?</li>
+                            <li>What were the misses or false positives?</li>
+                        </ul>
 
-                            <p><strong>Deliverable:</strong> One sentence on your preferred approach</p>
+                        <div class="lab-nav">
+                            <button class="btn btn-secondary" onclick="prevLabStep()">← Previous</button>
+                            <button class="btn btn-primary" onclick="nextLabStep()">Continue to Part 5 →</button>
                         </div>
                     </div>
 
-                    <div class="lab-navigation">
-                        <button class="btn btn-secondary" id="labPrevBtn" onclick="prevLabStep()" style="visibility: hidden;">← Previous Step</button>
-                        <button class="btn btn-primary" id="labNextBtn" onclick="nextLabStep()">Next Step →</button>
+                    <!-- Step 5 -->
+                    <div class="lab-step" id="labStep5">
+                        <h2>Part 5: Apply the Five Killers (5 minutes)</h2>
+                        <p>Failures are not failures. They are diagnostic signals. For each failure you noted in Part 4, identify which Killer applies and apply the fix.</p>
+
+                        <h3>The Diagnostic Table</h3>
+                        <table class="comparison-table">
+                            <thead>
+                                <tr>
+                                    <th>Symptom</th>
+                                    <th>Killer</th>
+                                    <th>Fix</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Did not auto-fire on natural sentence</td>
+                                    <td>1. Vague description</td>
+                                    <td>Add the exact phrase to the description's trigger list</td>
+                                </tr>
+                                <tr>
+                                    <td>Robotic / off-format on edge cases</td>
+                                    <td>2. Over-defined process</td>
+                                    <td>Loosen the relevant step</td>
+                                </tr>
+                                <tr>
+                                    <td>Output included generic email summary</td>
+                                    <td>3. Stating the obvious</td>
+                                    <td>Cut the step. Claude does that natively</td>
+                                </tr>
+                                <tr>
+                                    <td>Returned marketing or calendar invites</td>
+                                    <td>4. Missing gotcha</td>
+                                    <td>Add specific failure pattern to gotcha section</td>
+                                </tr>
+                                <tr>
+                                    <td>Skill bloated, Claude skipping sections</td>
+                                    <td>5. Monolithic</td>
+                                    <td>Split into companion files</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <h3>The Litmus Test</h3>
+                        <div class="callout callout-warning">
+                            <span class="callout-icon">🎯</span>
+                            <div>
+                                Did you, at any point in testing, find yourself manually cleaning up Claude's output AFTER the skill ran? If yes, the skill is not done. The cleanup belongs INSIDE the skill. Make a note of what to add next.
+                            </div>
+                        </div>
+
+                        <p><strong>Apply ONE fix.</strong> Pick the most impactful failure. Apply the fix to your <code>SKILL.md</code>. Re-run the failed test. Did the fix work?</p>
+
+                        <div class="callout callout-tip">
+                            <span class="callout-icon">🏆</span>
+                            <div>
+                                <strong>Lab complete.</strong> You have your first Mission Card. Once you have one, you will see opportunities for the next one everywhere. Walk through your work week mentally — which task do you do 3+ times where you find yourself rebuilding context? That is your next skill.
+                            </div>
+                        </div>
+
+                        <div class="lab-nav">
+                            <button class="btn btn-secondary" onclick="prevLabStep()">← Previous</button>
+                            <button class="btn btn-primary" onclick="completeLab()">Mark Lab Complete →</button>
+                        </div>
                     </div>
                 </div>
-
-                <div class="content-nav">
-                    <button class="btn btn-secondary" onclick="navigateTo('flashcards')">← Back</button>
-                    <button class="btn btn-primary" onclick="navigateTo('quiz')">Take the Quiz →</button>
-                </div>
-</section>
+            </section>
 
             <!-- Quiz Screen -->
             <section class="screen" id="quiz">
@@ -1928,23 +2051,23 @@ a tech startup would present to investors.</pre>
                     <!-- Question 1 -->
                     <div class="quiz-question active" data-question="0">
                         <div class="question-number">Question 1 of 7</div>
-                        <div class="question-text">How does Claude create downloadable files like PowerPoint presentations?</div>
+                        <div class="question-text">Which of the following correctly identifies the YAML frontmatter fields that every SKILL.md file should contain?</div>
                         <div class="answer-options">
                             <div class="answer-option" data-answer="a" onclick="selectAnswer(this, 0)">
                                 <span class="option-letter">A</span>
-                                <span>It generates binary file data directly from its training</span>
+                                <span><code>title</code> and <code>body</code></span>
                             </div>
                             <div class="answer-option" data-answer="b" onclick="selectAnswer(this, 0)">
                                 <span class="option-letter">B</span>
-                                <span>It writes Python code, executes it in a sandbox, and captures the output</span>
+                                <span><code>name</code> and <code>description</code></span>
                             </div>
                             <div class="answer-option" data-answer="c" onclick="selectAnswer(this, 0)">
                                 <span class="option-letter">C</span>
-                                <span>It connects to Microsoft Office servers to create files remotely</span>
+                                <span><code>prompt</code> and <code>output</code></span>
                             </div>
                             <div class="answer-option" data-answer="d" onclick="selectAnswer(this, 0)">
                                 <span class="option-letter">D</span>
-                                <span>It converts Markdown to the requested file format</span>
+                                <span><code>trigger</code> and <code>instructions</code></span>
                             </div>
                         </div>
                     </div>
@@ -1952,15 +2075,23 @@ a tech startup would present to investors.</pre>
                     <!-- Question 2 -->
                     <div class="quiz-question" data-question="1">
                         <div class="question-number">Question 2 of 7</div>
-                        <div class="question-text">True or False: Claude produces visually stunning presentations that are ready to share with clients without any modifications.</div>
+                        <div class="question-text">What is the key difference between a Claude Project and a Claude Skill?</div>
                         <div class="answer-options">
                             <div class="answer-option" data-answer="a" onclick="selectAnswer(this, 1)">
                                 <span class="option-letter">A</span>
-                                <span>True</span>
+                                <span>Skills cost money; Projects are free</span>
                             </div>
                             <div class="answer-option" data-answer="b" onclick="selectAnswer(this, 1)">
                                 <span class="option-letter">B</span>
-                                <span>False</span>
+                                <span>Projects provide persistent context bound to one workspace; Skills provide portable methodology available across all conversations</span>
+                            </div>
+                            <div class="answer-option" data-answer="c" onclick="selectAnswer(this, 1)">
+                                <span class="option-letter">C</span>
+                                <span>Skills can access the internet; Projects cannot</span>
+                            </div>
+                            <div class="answer-option" data-answer="d" onclick="selectAnswer(this, 1)">
+                                <span class="option-letter">D</span>
+                                <span>Projects are for teams; Skills are for individuals</span>
                             </div>
                         </div>
                     </div>
@@ -1968,23 +2099,23 @@ a tech startup would present to investors.</pre>
                     <!-- Question 3 -->
                     <div class="quiz-question" data-question="2">
                         <div class="question-number">Question 3 of 7</div>
-                        <div class="question-text">When should you use Gemini instead of Claude for creating a presentation?</div>
+                        <div class="question-text">You built a skill called <code>competitive-quick-look</code>. Description: "This powerful skill helps with competitive analysis tasks." When you say "give me a quick comp on Teramind," it never auto-fires. Which Skill Killer is at work?</div>
                         <div class="answer-options">
                             <div class="answer-option" data-answer="a" onclick="selectAnswer(this, 2)">
                                 <span class="option-letter">A</span>
-                                <span>When you need precise control over slide structure and speaker notes</span>
+                                <span>Killer 1: Vague description</span>
                             </div>
                             <div class="answer-option" data-answer="b" onclick="selectAnswer(this, 2)">
                                 <span class="option-letter">B</span>
-                                <span>When you want a native Google Slides file built directly in the Slides format</span>
+                                <span>Killer 2: Over-defined process</span>
                             </div>
                             <div class="answer-option" data-answer="c" onclick="selectAnswer(this, 2)">
                                 <span class="option-letter">C</span>
-                                <span>When you need to work offline</span>
+                                <span>Killer 4: Missing gotcha section</span>
                             </div>
                             <div class="answer-option" data-answer="d" onclick="selectAnswer(this, 2)">
                                 <span class="option-letter">D</span>
-                                <span>When you need to include complex data tables</span>
+                                <span>Killer 5: Monolithic structure</span>
                             </div>
                         </div>
                     </div>
@@ -1992,23 +2123,23 @@ a tech startup would present to investors.</pre>
                     <!-- Question 4 -->
                     <div class="quiz-question" data-question="3">
                         <div class="question-number">Question 4 of 7</div>
-                        <div class="question-text">What is "vibe coding"?</div>
+                        <div class="question-text">You have 10 hours to invest in skill-building this quarter. According to the Squadron Leader investment rule, how should you allocate that time?</div>
                         <div class="answer-options">
                             <div class="answer-option" data-answer="a" onclick="selectAnswer(this, 3)">
                                 <span class="option-letter">A</span>
-                                <span>Writing code that follows best practices</span>
+                                <span>50/50 — both are equally valuable</span>
                             </div>
                             <div class="answer-option" data-answer="b" onclick="selectAnswer(this, 3)">
                                 <span class="option-letter">B</span>
-                                <span>Describing desired outcomes aesthetically rather than technically</span>
+                                <span>80% on capability uplift, 20% on encoded preference</span>
                             </div>
                             <div class="answer-option" data-answer="c" onclick="selectAnswer(this, 3)">
                                 <span class="option-letter">C</span>
-                                <span>Using emojis and casual language in prompts</span>
+                                <span>80% on encoded preference, 20% on capability uplift</span>
                             </div>
                             <div class="answer-option" data-answer="d" onclick="selectAnswer(this, 3)">
                                 <span class="option-letter">D</span>
-                                <span>Generating code that looks visually pleasing</span>
+                                <span>100% on capability uplift</span>
                             </div>
                         </div>
                     </div>
@@ -2016,23 +2147,23 @@ a tech startup would present to investors.</pre>
                     <!-- Question 5 -->
                     <div class="quiz-question" data-question="4">
                         <div class="question-number">Question 5 of 7</div>
-                        <div class="question-text">You need to clean a messy customer spreadsheet and share the results. What's the most efficient approach?</div>
+                        <div class="question-text">You want to build a skill that summarizes Granola meeting transcripts into action items. Which is the BEST description for auto-triggering?</div>
                         <div class="answer-options">
                             <div class="answer-option" data-answer="a" onclick="selectAnswer(this, 4)">
                                 <span class="option-letter">A</span>
-                                <span>Manually clean the data in Excel</span>
+                                <span>"This skill summarizes Granola meeting transcripts."</span>
                             </div>
                             <div class="answer-option" data-answer="b" onclick="selectAnswer(this, 4)">
                                 <span class="option-letter">B</span>
-                                <span>Upload to Claude, describe transformations, download the cleaned CSV</span>
+                                <span>"A skill for processing Granola transcripts and extracting structured action items."</span>
                             </div>
                             <div class="answer-option" data-answer="c" onclick="selectAnswer(this, 4)">
                                 <span class="option-letter">C</span>
-                                <span>Use Google Sheets formulas to clean it</span>
+                                <span>"Use when the user says 'summarize that meeting,' 'pull the action items from [meeting name],' 'who owns what from the [day] sync,' or asks for follow-ups from a Granola transcript. Returns a structured table."</span>
                             </div>
                             <div class="answer-option" data-answer="d" onclick="selectAnswer(this, 4)">
                                 <span class="option-letter">D</span>
-                                <span>Ask Claude to describe how to clean it, then do it manually</span>
+                                <span>"Use this skill to be more productive with your Granola meetings."</span>
                             </div>
                         </div>
                     </div>
@@ -2040,7 +2171,7 @@ a tech startup would present to investors.</pre>
                     <!-- Question 6 -->
                     <div class="quiz-question" data-question="5">
                         <div class="question-number">Question 6 of 7</div>
-                        <div class="question-text">True or False: You should always use Excel (.xlsx) format instead of CSV because it's more capable.</div>
+                        <div class="question-text">True or False: Once a Skill is installed, it works in every conversation and every project — you do not need to install it separately for each project.</div>
                         <div class="answer-options">
                             <div class="answer-option" data-answer="a" onclick="selectAnswer(this, 5)">
                                 <span class="option-letter">A</span>
@@ -2056,23 +2187,23 @@ a tech startup would present to investors.</pre>
                     <!-- Question 7 -->
                     <div class="quiz-question" data-question="6">
                         <div class="question-number">Question 7 of 7</div>
-                        <div class="question-text">You need a presentation deck and a data summary for a customer meeting. What's the optimal workflow?</div>
+                        <div class="question-text">Your Gmail action-item skill auto-fires correctly and the output is well-formatted. But every time it runs, you manually delete calendar invites from the list and add the priority labels the skill did not include. What does this tell you?</div>
                         <div class="answer-options">
                             <div class="answer-option" data-answer="a" onclick="selectAnswer(this, 6)">
                                 <span class="option-letter">A</span>
-                                <span>Use Gemini for everything since it integrates with Google</span>
+                                <span>The skill is working correctly — manual cleanup is normal</span>
                             </div>
                             <div class="answer-option" data-answer="b" onclick="selectAnswer(this, 6)">
                                 <span class="option-letter">B</span>
-                                <span>Use Claude to generate both as downloadable files</span>
+                                <span>The skill needs improvement — the cleanup logic should be encoded into the skill itself</span>
                             </div>
                             <div class="answer-option" data-answer="c" onclick="selectAnswer(this, 6)">
                                 <span class="option-letter">C</span>
-                                <span>Create the presentation manually and use Claude only for data</span>
+                                <span>The skill is over-engineered — you should remove the gotcha section</span>
                             </div>
                             <div class="answer-option" data-answer="d" onclick="selectAnswer(this, 6)">
                                 <span class="option-letter">D</span>
-                                <span>Use Claude for data work, then choose Claude or Gemini for presentation based on preference</span>
+                                <span>Claude is the wrong tool for this task</span>
                             </div>
                         </div>
                     </div>
@@ -2112,123 +2243,141 @@ a tech startup would present to investors.</pre>
             <section class="screen" id="study-guide">
                 <h1 style="margin-bottom: 2rem;">📋 Study Guide</h1>
 
-                <div class="study-guide-card">
-                    <h2>🎯 Core Concept</h2>
-                    <p style="font-size: 1.1rem; line-height: 1.7;"><strong>Mission Output Commander:</strong> Your Squadron now produces tangible deliverables using Claude's code execution. Claude writes Python code, executes it in a sandbox, and captures output files for download.</p>
-                </div>
+                <div class="lesson-content">
+                    <h2>Core Mental Model</h2>
+                    <p><strong>Project = persistent CONTEXT (one workspace).</strong><br>
+                    <strong>Skill = portable METHODOLOGY (everywhere).</strong></p>
+                    <p>A Project remembers facts about a domain. A Skill encodes a way of working that travels across every domain. You use them together — the Project holds the briefing material; the Skill defines how you process briefings.</p>
 
-                <div class="study-guide-card">
-                    <h2>📖 The Library Stack</h2>
-                    <div class="term-grid">
-                        <div class="term-item">
-                            <span class="term-name">python-pptx</span>
-                            <span class="term-def">Creates PowerPoint presentations (.pptx)</span>
-                        </div>
-                        <div class="term-item">
-                            <span class="term-name">openpyxl</span>
-                            <span class="term-def">Creates Excel files with formatting (.xlsx)</span>
-                        </div>
-                        <div class="term-item">
-                            <span class="term-name">pandas</span>
-                            <span class="term-def">Data manipulation and CSV exports</span>
-                        </div>
-                        <div class="term-item">
-                            <span class="term-name">Vibe Coding</span>
-                            <span class="term-def">Describing outcomes aesthetically rather than technically</span>
-                        </div>
+                    <h2>Anatomy of a SKILL.md</h2>
+                    <div class="prompt-box good">
+                        <span class="prompt-label">Required structure</span>
+<pre style="color: var(--dark-base); font-size: 0.9rem;">
+---
+name: gerund-form-lowercase-hyphenated
+description: Use when the user says "[trigger 1]", "[trigger 2]"...
+  Returns [what the skill produces].
+---
+</pre>
                     </div>
-                </div>
+                    <ol>
+                        <li><strong>When to use</strong> (trigger phrases)</li>
+                        <li><strong>Steps</strong> (numbered, not prose)</li>
+                        <li><strong>Output format</strong> (literal template)</li>
+                        <li><strong>Gotchas</strong> (failure patterns you have seen)</li>
+                        <li><strong>Constraints</strong> (skill-specific rules)</li>
+                    </ol>
+                    <p>Hard cap: <strong>500 lines</strong>. Move depth to companion files.</p>
 
-                <div class="study-guide-card">
-                    <h2>✈️ Tool Decision Matrix</h2>
+                    <h2>The Description Recipe</h2>
+                    <p>Three rules:</p>
+                    <ol>
+                        <li><strong>Specific</strong> — list actual phrases users type</li>
+                        <li><strong>Loud</strong> — concrete words, not abstract concepts</li>
+                        <li><strong>Third person</strong> — "Use when the user asks to..."</li>
+                    </ol>
+
+                    <h2>The Investment Rule</h2>
                     <table class="comparison-table">
                         <thead>
                             <tr>
-                                <th>Need</th>
-                                <th>Use Claude</th>
-                                <th>Use Gemini</th>
+                                <th>Type</th>
+                                <th>Behavior over time</th>
+                                <th>Invest</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <td>Downloadable file</td>
-                                <td>✓</td>
-                                <td></td>
+                                <td>Capability uplift</td>
+                                <td>DEPRECIATES (model upgrades obsolete it)</td>
+                                <td>20%</td>
                             </tr>
                             <tr>
-                                <td>Precise structural control</td>
-                                <td>✓</td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <td>Native Google Slides format</td>
-                                <td></td>
-                                <td>✓</td>
-                            </tr>
-                            <tr>
-                                <td>Speed over precision</td>
-                                <td></td>
-                                <td>✓</td>
+                                <td>Encoded preference</td>
+                                <td>APPRECIATES (executes more cleanly over time)</td>
+                                <td>80%</td>
                             </tr>
                         </tbody>
                     </table>
-                </div>
 
-                <div class="study-guide-card">
-                    <h2>✓ Do's and Don'ts</h2>
-                    <div class="do-dont-grid">
-                        <div class="do-column">
-                            <h3>✓ Do</h3>
-                            <div class="do-dont-item">
-                                <span style="color: var(--success);">✓</span>
-                                <span>Specify slide-by-slide content</span>
-                            </div>
-                            <div class="do-dont-item">
-                                <span style="color: var(--success);">✓</span>
-                                <span>Use structural draft workflow</span>
-                            </div>
-                            <div class="do-dont-item">
-                                <span style="color: var(--success);">✓</span>
-                                <span>Combine vibe + structure</span>
-                            </div>
-                            <div class="do-dont-item">
-                                <span style="color: var(--success);">✓</span>
-                                <span>Verify data before sharing</span>
-                            </div>
-                        </div>
-                        <div class="dont-column">
-                            <h3>✗ Don't</h3>
-                            <div class="do-dont-item">
-                                <span style="color: var(--error);">✗</span>
-                                <span>Expect design-ready output</span>
-                            </div>
-                            <div class="do-dont-item">
-                                <span style="color: var(--error);">✗</span>
-                                <span>Use vague file requests</span>
-                            </div>
-                            <div class="do-dont-item">
-                                <span style="color: var(--error);">✗</span>
-                                <span>Skip data verification</span>
-                            </div>
-                            <div class="do-dont-item">
-                                <span style="color: var(--error);">✗</span>
-                                <span>Use wrong tool for workflow</span>
-                            </div>
+                    <h2>The 5 Skill Killers (Diagnostic Cheatsheet)</h2>
+                    <table class="comparison-table">
+                        <thead>
+                            <tr>
+                                <th>Symptom</th>
+                                <th>Killer</th>
+                                <th>Fix</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Skill never auto-fires</td>
+                                <td>1. Vague description</td>
+                                <td>Specific, loud, third-person triggers</td>
+                            </tr>
+                            <tr>
+                                <td>Robotic on edge cases</td>
+                                <td>2. Over-defined process</td>
+                                <td>Match degrees of freedom to task</td>
+                            </tr>
+                            <tr>
+                                <td>Bloated, generic output</td>
+                                <td>3. Stating the obvious</td>
+                                <td>Cut what Claude does natively</td>
+                            </tr>
+                            <tr>
+                                <td>Predictable failures</td>
+                                <td>4. Missing gotcha</td>
+                                <td>Document failure patterns</td>
+                            </tr>
+                            <tr>
+                                <td>Claude skipping sections</td>
+                                <td>5. Monolithic</td>
+                                <td>500-line cap; companion files</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h2>The Litmus Test</h2>
+                    <div class="callout callout-warning">
+                        <span class="callout-icon">🎯</span>
+                        <div>
+                            <strong>If you find yourself iterating on the output AFTER the skill runs, the skill itself needs improvement.</strong> Manual cleanup is a diagnostic signal. The fix is to upgrade the skill, not write a better follow-up prompt. Encode the cleanup logic INSIDE the skill.
                         </div>
                     </div>
-                </div>
 
-                <div class="study-guide-card" style="background: linear-gradient(135deg, var(--dark-navy) 0%, var(--medium-navy) 100%); color: white;">
-                    <h2 style="color: white;">➡️ Next Module Preview</h2>
-                    <p><strong>Module 10: Future Frontiers (Agents & MCP)</strong></p>
-                    <p style="opacity: 0.9;">Learn about AI Agents and Model Context Protocol—systems that execute multi-step workflows autonomously, access external tools, and operate with minimal intervention. From file factory to autonomous operations.</p>
-                </div>
+                    <h2>Self-Assessment Checklist</h2>
+                    <p>Before the quiz, you should be able to answer YES to all of these:</p>
+                    <ul>
+                        <li>☐ I can name the two YAML frontmatter fields in a SKILL.md (name, description)</li>
+                        <li>☐ I can explain the difference between a Project and a Skill in one sentence</li>
+                        <li>☐ I can list all 5 Skill Killers and their fixes</li>
+                        <li>☐ I can identify which Killer applies to a given symptom</li>
+                        <li>☐ I can explain the capability vs. preference distinction and the 80/20 rule</li>
+                        <li>☐ I know what the Litmus Test is and what it tells me</li>
+                        <li>☐ I understand that skills install at the user level and work across all projects</li>
+                        <li>☐ I can write a description that auto-fires</li>
+                    </ul>
 
-                <div class="content-nav">
-                    <button class="btn btn-secondary" onclick="navigateTo('quiz')">← Back to Quiz</button>
+                    <h2>Connection to Your Work</h2>
+                    <p>Walk through your week. Find:</p>
+                    <ul>
+                        <li><strong>One task you do 3+ times per week</strong> — that is your next preference skill</li>
+                        <li><strong>One context you re-paste regularly</strong> — that is your next Project</li>
+                        <li><strong>One workflow where you clean up Claude's output afterward</strong> — that cleanup belongs INSIDE a skill</li>
+                    </ul>
+
+                    <div class="callout callout-tip">
+                        <span class="callout-icon">🚀</span>
+                        <div>
+                            <strong>AI drafts. Humans send. The Playbook makes the drafts predictable.</strong>
+                        </div>
+                    </div>
+
+                    <p style="margin-top: 2rem;"><strong>Next:</strong> Module 9 (TBD — see updated curriculum)</p>
                 </div>
             </section>
-        
+
     <!-- Lab Certification Gate Modal -->
     <div class="lab-modal-overlay" id="labModal">
         <div class="lab-modal">
@@ -2247,21 +2396,21 @@ a tech startup would present to investors.</pre>
             <section class="screen" id="complete">
                 <div class="completion-hero">
                     <div class="completion-icon">&#10003;</div>
-                    <h1>Module 11 Complete!</h1>
-                    <p>Excel, PowerPoint and PDF creation are now on autopilot. You've unlocked AI-powered file generation without writing a single line of code.</p>
+                    <h1>Module 8 Complete!</h1>
+                    <p>Your Squadron can now operate as a coordinated unit. Shared projects and team collaboration multiply your AI impact.</p>
 
                     <div class="completion-stats">
                         <div class="completion-stat">
-                            <div class="completion-stat-value">Mastered</div>
-                            <div class="completion-stat-label">File Types</div>
+                            <div class="completion-stat-value">Enabled</div>
+                            <div class="completion-stat-label">Collaboration</div>
                         </div>
                         <div class="completion-stat">
-                            <div class="completion-stat-value">Zero Required</div>
-                            <div class="completion-stat-label">Code</div>
+                            <div class="completion-stat-value">Shared</div>
+                            <div class="completion-stat-label">Knowledge</div>
                         </div>
                         <div class="completion-stat">
-                            <div class="completion-stat-value">Professional</div>
-                            <div class="completion-stat-label">Output</div>
+                            <div class="completion-stat-value">Multiplied</div>
+                            <div class="completion-stat-label">Impact</div>
                         </div>
                     </div>
 
@@ -2299,74 +2448,74 @@ a tech startup would present to investors.</pre>
         // Flashcard State
         const flashcards = [
             {
-                front: "How does Claude actually create downloadable files?",
-                back: "Claude writes Python code using specialized libraries, executes it in a sandbox, and captures the output file for download. It doesn't 'generate' files—it programs them."
+                front: "What is a Skill, mechanically?",
+                back: "A folder containing a SKILL.md file with YAML frontmatter (name and description) plus a Markdown body of structured instructions. Optionally bundled with companion files. Claude reads the description to decide whether to auto-fire the skill."
             },
             {
-                front: "What Python libraries does Claude use for file creation?",
-                back: "• python-pptx → PowerPoint (.pptx)\n• openpyxl → Excel (.xlsx)\n• pandas → CSV, data manipulation\n• csv → Simple CSV operations"
+                front: "What is the key difference between a Project and a Skill?",
+                back: "Project = persistent CONTEXT (documents, history, custom instructions) bound to ONE workspace.\n\nSkill = portable METHODOLOGY (steps, output templates, gotchas) available across EVERY conversation and EVERY project."
             },
             {
-                front: "What is 'vibe coding'?",
-                back: "Describing desired outcomes aesthetically rather than technically.\n\nInstead of: 'Use hex #0056D2'\nTry: 'Make it feel like a Fortune 500 presentation'\n\nBest practice: Combine vibe descriptions with structural precision."
+                front: "What are the four near-mandatory body components of a SKILL.md?",
+                back: "1. Steps — numbered, not prose\n2. Output format — literal template, not described\n3. Gotchas — failure patterns you have seen\n4. Constraints — skill-specific rules\n\nHard rule: keep file under 500 lines."
             },
             {
-                front: "When should you use Claude vs. Gemini for presentations?",
-                back: "Use Claude when:\n• Need downloadable file\n• Want precise structural control\n• Working offline\n\nUse Gemini when:\n• Want direct Google Drive export\n• Speed matters more than precision"
+                front: "What's the difference between Capability Uplift and Encoded Preference skills, and where should you invest?",
+                back: "Capability Uplift: teaches Claude something it doesn't do well alone. DEPRECIATES with model upgrades.\n\nEncoded Preference: captures YOUR way of working. APPRECIATES over time.\n\nInvestment rule: 80% on Encoded Preference."
             },
             {
-                front: "What is the 'structural draft' workflow?",
-                back: "1. Generate with Claude (content structure)\n2. Download the .pptx file\n3. Apply corporate template\n4. Polish visuals\n\nClaude handles content; design tools handle visual polish."
+                front: "Name the 5 Skill Killers.",
+                back: "1. Vague descriptions\n2. Over-defined processes\n3. Stating the obvious\n4. Missing gotcha section\n5. Monolithic structure (500-line cap)"
             },
             {
-                front: "When should you use CSV vs. Excel format?",
-                back: "Use CSV: Data transfer, database import, universal compatibility, simple data\n\nUse Excel: Multiple sheets, formatting needed, formulas included, conditional formatting"
+                front: "What does it mean to write a description that auto-fires?",
+                back: "The description must be:\n• Third person ('Use when the user asks to...')\n• Specific — lists actual phrases users say\n• Loud — concrete words, not abstract\n• Briefly states what the skill returns\n\nNOT a summary. A trigger."
             },
             {
-                front: "What prompt elements produce the best PowerPoint outputs?",
-                back: "1. Number of slides specified\n2. Content for each slide described\n3. Layout preferences stated\n4. Speaker notes requested\n5. Aesthetic direction via vibe coding"
+                front: "What is the Litmus Test for whether a skill is done?",
+                back: "If you find yourself iterating on the output AFTER the skill runs, the skill itself needs improvement.\n\nThe fix is NOT a better follow-up prompt. The fix is to upgrade the skill — move cleanup logic INSIDE the skill. Encode it once, get it forever."
             },
             {
-                front: "What is the Mission Output Framework?",
-                back: "Intel Gathering → Analysis → Synthesis → Delivery\n\nFile creation is the final phase—turning intelligence into tangible deliverables (slides, spreadsheets, reports)."
+                front: "Where do skills install, and what does that mean?",
+                back: "Skills install at the USER level. Once installed:\n• Available in EVERY conversation\n• Works in EVERY project\n• Works in fresh chats\n• You do NOT install per project\n\nThis is the cross-project superpower — install once, available everywhere."
             }
         ];
         let currentCard = 0;
 
         // Lab State
         let currentLabStep = 1;
-        const totalLabSteps = 4;
+        const totalLabSteps = 5;
 
         // Quiz State
-        const quizAnswers = ['b', 'b', 'b', 'b', 'b', 'b', 'd'];
+        const quizAnswers = ['b', 'b', 'a', 'c', 'c', 'a', 'b'];
         const quizFeedback = [
             {
-                correct: "Correct! Claude uses code execution: it writes Python code using libraries like python-pptx, executes it in a secure sandbox, and captures the resulting file for download.",
-                incorrect: "Claude uses code execution: it writes Python code, executes it in a sandbox, and captures the output file. It doesn't generate files from memory or connect to external servers."
+                correct: "Mission Control confirms. Every SKILL.md has YAML frontmatter with `name` (gerund-form, lowercase, hyphenated identifier) and `description` (third-person trigger phrase). The Markdown body holds steps, output format, gotchas, and constraints.",
+                incorrect: "The two essential frontmatter fields are `name` and `description`. The name is a hyphenated gerund-form identifier; the description is the third-person trigger phrase Claude reads to decide whether to fire the skill."
             },
             {
-                correct: "Correct! Claude produces structural drafts—content that is well-organized but with basic visual design. The workflow: generate structure with Claude, then apply visual polish with design tools.",
-                incorrect: "Claude produces structural drafts with basic styling. The recommended workflow: generate with Claude, download, apply your template, then polish visuals. Each tool does what it does best."
+                correct: "Recon confirms. Project = persistent CONTEXT (documents, history, instructions) bound to one workspace. Skill = portable METHODOLOGY (steps, templates, gotchas) available across every conversation and every project. Best practice: combine them.",
+                incorrect: "The cleanest distinction: Projects provide persistent context bound to one workspace. Skills provide portable methodology that travels across every conversation and every project. Cost, internet access, and team scope are not the differentiators."
             },
             {
-                correct: "Correct! Gemini creates native Google Slides directly in the Slides format with AI-selected imagery. While Claude can also integrate with Drive, it generates .pptx files via python-pptx. Use Claude for precise structural control; use Gemini for native Slides format.",
-                incorrect: "Gemini creates native Google Slides format; Claude creates .pptx files via code execution. Both can work with Google Drive, but the key difference is the output format and approach."
+                correct: "Recon flags it correctly. This is Killer 1: Vague description. The description is written as a SUMMARY, not a TRIGGER. Fix: rewrite in specific, loud, third-person language listing the actual phrases users say. 'Use when the user says quick comp on [company], give me a comp brief on [company]...'",
+                incorrect: "This is Killer 1: Vague description. The description 'helps with competitive analysis tasks' is a summary, not a trigger. Claude scans descriptions for matches to the user's actual phrasing — 'quick comp on Teramind' won't match 'helps with competitive analysis tasks' closely enough to auto-fire."
             },
             {
-                correct: "Exactly! Vibe coding means describing outcomes aesthetically rather than technically. 'Make it feel like a Fortune 500 presentation' instead of specifying hex codes. Key for non-developers: generate HTML tables, styled reports, and formatted outputs without knowing code—just describe the aesthetic.",
-                incorrect: "Vibe coding describes outcomes aesthetically: 'Make it feel professional' instead of 'Use hex #0056D2'. Claude translates aesthetic descriptions into technical parameters. Non-developers can generate HTML, styled reports, and formatted outputs without coding knowledge."
+                correct: "Mission Control confirms. The Squadron Leader investment rule: ~80% on encoded preference, 20% on capability uplift. Capability skills depreciate as models improve. Preference skills compound in value over time. Your competitive advantage is your methodology.",
+                incorrect: "The rule is 80% on encoded preference, 20% on capability uplift. Capability skills (teaching Claude new functions) depreciate as models upgrade. Preference skills (encoding YOUR way of working) appreciate over time. Your competitive advantage is methodology, not capability."
             },
             {
-                correct: "Perfect! Upload to Claude, describe transformations, download clean CSV. Claude writes transformation code, executes it, and outputs the cleaned file. What takes 30 minutes manually takes 2 minutes with AI.",
-                incorrect: "The most efficient approach: upload to Claude, describe the transformations needed, download the cleaned CSV. Let Claude execute the transformation code rather than doing it manually."
+                correct: "Squadron Leader thinking. Option C is the only one that follows all three description rules: specific (lists actual phrases), loud (concrete words), third person ('Use when the user says...'). It also tells Claude what the skill returns.",
+                incorrect: "Option C is best. It uses third-person framing ('Use when the user says...'), lists actual user phrases, and briefly describes what the skill returns. Options A and B are summaries, not triggers. Option D is vague marketing copy. The pattern: open with 'Use when the user says...' then list actual sentences."
             },
             {
-                correct: "Correct! Each format has appropriate uses. CSV for data transfer and universal compatibility; Excel when you need formatting, multiple sheets, or formulas. Choose based on need, not capability.",
-                incorrect: "While Excel is more capable, CSV is often preferred for data interchange due to simplicity and universal compatibility. Use each format for its appropriate purpose."
+                correct: "Confirmed. This is one of the defining characteristics of Skills. They install at the user level — available in every conversation, every project, every fresh chat. Unlike Projects (bound to one workspace), Skills travel with you. This is the cross-project superpower.",
+                incorrect: "True. Skills install at the user level, not the project level. Once installed, the skill is available in every conversation, every project, every fresh chat. This is precisely why Skills are called 'portable methodology' — the methodology travels with you across every context."
             },
             {
-                correct: "Excellent reasoning! Use Claude for data analysis and CSV export (its strength), then choose your presentation tool based on workflow preference—Claude for downloadable files, Gemini for Google integration.",
-                incorrect: "The optimal approach: Claude for data work (analysis, CSV export), then choose Claude OR Gemini for the presentation based on whether you want downloadable files or Google Drive integration."
+                correct: "Squadron Architect-level thinking. This is the Litmus Test in action: if you find yourself iterating on the output AFTER the skill runs, the skill needs improvement. Calendar invites in output = Killer 4 (missing gotcha). Missing priority labels = incomplete output template. Encode the cleanup INSIDE the skill.",
+                incorrect: "This is the Litmus Test signal. Manual cleanup AFTER the skill runs means the skill is incomplete. Calendar invites in the output = add a gotcha. Missing priority labels = add a Priority column to the output template. The fix is to upgrade the skill, not write a better follow-up prompt. Encode it once, get it forever."
             }
         ];
         let currentQuestion = 0;
@@ -2535,9 +2684,9 @@ a tech startup would present to investors.</pre>
 
             let message = '';
             if (correct === quizAnswers.length) {
-                message = "Excellent! You've achieved Mission Output Commander level. Ready for Module 10!";
+                message = "Excellent! You've achieved Squadron Architect level. Build your next Mission Card.";
             } else if (correct >= 5) {
-                message = "Good foundation! Review the Claude vs. Gemini decision framework before continuing.";
+                message = "Good foundation! Review the tool selection concepts before continuing.";
             } else if (correct >= 3) {
                 message = "Review the video and flashcards, then retake the quiz.";
             } else {

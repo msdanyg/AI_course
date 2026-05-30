@@ -181,8 +181,8 @@ When creating `Video Script - ElevenLabs.md`:
 | 5 | The Sensory System | Gemini & Granola |
 | 6 | Decision Hygiene | Beating Sycophancy |
 | 7 | The Hybrid Agent | Mac, Mobile & Docs |
-| 8 | Introduction to Skills | Building Reusable Prompt Templates |
-| 9 | Systemizing Intelligence | Team Collaboration and Shared Projects |
+| 8 | The Squadron Playbook | Building, Sharing, and Mastering Claude Skills |
+| 9 | [RETIRED 2026-05-05] | Former: Systemizing Intelligence. Content merged into M8. Folder archived in `_unused_modules/`. |
 | 10 | Agentic Data Analysis | The "No Math" Rule |
 | 11 | Code Execution | File Creation (Excel, PPT, PDF) |
 | 12 | Future Frontiers | Agents & MCP |
